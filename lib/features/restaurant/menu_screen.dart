@@ -48,6 +48,12 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
     return RestaurantScaffold(
       title: context.l.navMenu,
       actions: [
+        if (wide && can.manageMenu && menu != null && !_reorder)
+          TextButton.icon(
+            onPressed: () => _openDish(context, tenant.id, null, menuId: menuId),
+            icon: const Icon(Icons.add),
+            label: Text(context.l.dish),
+          ),
         IconButton(tooltip: context.l.allDishes, icon: const Icon(Icons.table_rows_outlined), onPressed: () => context.push('/r/${tenant.id}/all-dishes')),
         if (can.manageMenu && menu != null)
           IconButton(
@@ -57,7 +63,7 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
           ),
         if (can.manageMenu) MenuActions(menu: menu, onChanged: (id) => setState(() => _menuId = id)),
       ],
-      fab: can.manageMenu && menu != null && !_reorder
+      fab: can.manageMenu && menu != null && !_reorder && !wide
           ? FloatingActionButton.extended(
               onPressed: () => _openDish(context, tenant.id, null, menuId: menuId),
               icon: const Icon(Icons.add),

@@ -6,7 +6,6 @@ import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:menu_admin/app/theme.dart';
 import 'package:menu_admin/core/api/api_client.dart';
@@ -45,12 +44,19 @@ class FakeApi implements HttpClientAdapter {
     final body = options.data is String ? jsonDecode(options.data as String) : options.data;
     final call = Call(options.method, path, Map.of(options.headers), body);
     calls.add(call);
-    final withQuery = full.hasQuery ? '$path?${full.query}' : path;
-    final h = routes['${options.method} $withQuery'] ?? routes['${options.method} $path'];
+    final withQuery = full.hasQuery ? '$path?${_sorted(full.query)}' : path;
+    final h =
+        routes.entries.where((e) => _normal(e.key) == '${options.method} $withQuery').map((e) => e.value).firstOrNull ?? routes['${options.method} $path'];
     if (h == null) return ResponseBody.fromString(jsonEncode({'message': 'No fake for ${options.method} $withQuery'}), 404, headers: _json);
     final (status, data) = h(call);
     if (status == 204) return ResponseBody.fromString('', 204);
     return ResponseBody.fromString(jsonEncode(data), status, headers: _json);
+  }
+
+  static String _sorted(String q) => (q.split('&')..sort()).join('&');
+  static String _normal(String key) {
+    final i = key.indexOf('?');
+    return i < 0 ? key : '${key.substring(0, i)}?${_sorted(key.substring(i + 1))}';
   }
 
   static const _json = {

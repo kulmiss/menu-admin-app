@@ -63,19 +63,15 @@ List<RouteBase> restaurantRoutes(Ref ref, GlobalKey<NavigatorState> rootKey) => 
       );
     },
     routes: [
+      // Tabs are siblings, so switching tabs never shows a back arrow.
+      GoRoute(path: '/r/:tid', builder: (_, _) => const DashboardScreen()),
       GoRoute(
-        path: '/r/:tid',
-        builder: (_, _) => const DashboardScreen(),
-        routes: [
-          GoRoute(
-            path: 'menu',
-            builder: (_, s) => MenuScreen(menuId: int.tryParse(s.uri.queryParameters['menu'] ?? '')),
-          ),
-          GoRoute(path: 'sold-out', builder: (_, _) => const SoldOutScreen()),
-          GoRoute(path: 'insights', builder: (_, _) => const InsightsScreen()),
-          GoRoute(path: 'more', builder: (_, _) => const MoreScreen()),
-        ],
+        path: '/r/:tid/menu',
+        builder: (_, s) => MenuScreen(menuId: int.tryParse(s.uri.queryParameters['menu'] ?? '')),
       ),
+      GoRoute(path: '/r/:tid/sold-out', builder: (_, _) => const SoldOutScreen()),
+      GoRoute(path: '/r/:tid/insights', builder: (_, _) => const InsightsScreen()),
+      GoRoute(path: '/r/:tid/more', builder: (_, _) => const MoreScreen()),
     ],
   ),
   // Full-screen pages above the navigation.

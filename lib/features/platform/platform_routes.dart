@@ -30,19 +30,14 @@ List<RouteBase> platformRoutes(Ref ref, GlobalKey<NavigatorState> rootKey) => [
       );
     },
     routes: [
+      GoRoute(path: '/p', builder: (_, _) => const PlatformDashboard()),
       GoRoute(
-        path: '/p',
-        builder: (_, _) => const PlatformDashboard(),
-        routes: [
-          GoRoute(
-            path: 'restaurants',
-            builder: (_, s) => RestaurantsScreen(filters: s.uri.queryParameters),
-          ),
-          GoRoute(path: 'approvals', builder: (_, _) => const ApprovalsScreen()),
-          GoRoute(path: 'search', builder: (_, _) => const SearchScreen()),
-          GoRoute(path: 'more', builder: (_, _) => const PlatformMoreScreen()),
-        ],
+        path: '/p/restaurants',
+        builder: (_, s) => RestaurantsScreen(filters: s.uri.queryParameters),
       ),
+      GoRoute(path: '/p/approvals', builder: (_, _) => const ApprovalsScreen()),
+      GoRoute(path: '/p/search', builder: (_, _) => const SearchScreen()),
+      GoRoute(path: '/p/more', builder: (_, _) => const PlatformMoreScreen()),
     ],
   ),
   GoRoute(path: '/p/dashboard', redirect: (_, _) => '/p'),
