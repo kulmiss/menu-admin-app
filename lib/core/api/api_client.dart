@@ -93,12 +93,13 @@ class ApiClient {
     String path, {
     required String filePath,
     required String fileName,
+    String field = 'file',
     Map<String, dynamic> fields = const {},
     void Function(double)? onProgress,
   }) => _run(
     () async => dio.post<dynamic>(
       path,
-      data: FormData.fromMap({...fields, 'file': await MultipartFile.fromFile(filePath, filename: fileName)}),
+      data: FormData.fromMap({...fields, field: await MultipartFile.fromFile(filePath, filename: fileName)}),
       onSendProgress: (sent, total) => total > 0 ? onProgress?.call(sent / total) : null,
     ),
   );

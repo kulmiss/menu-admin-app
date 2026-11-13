@@ -6,7 +6,9 @@ import 'package:go_router/go_router.dart';
 import '../../core/cache/swr.dart';
 import '../../core/providers.dart';
 import '../../core/util/json.dart';
+import '../../core/util/photos.dart';
 import '../../core/widgets/kit.dart';
+import '../../core/widgets/net_image.dart';
 import '../../core/widgets/paged_list.dart';
 import '../restaurant/dish_editor_screen.dart' show minorToText, textToMinor;
 import '../restaurant/more_screen.dart' show activityLabel, showRestaurantSwitcher;
@@ -829,6 +831,7 @@ class _PlatformSettingsScreenState extends ConsumerState<PlatformSettingsScreen>
       'landing': l.tab_landing,
       'billing': l.tab_billing,
       'legal': l.tab_legal,
+      'images': l.tab_images,
       'mail': l.tab_mail,
       'app': l.tab_app,
     };
@@ -866,6 +869,8 @@ class _PlatformSettingsScreenState extends ConsumerState<PlatformSettingsScreen>
                   for (final tab in labels.keys)
                     if (tab == 'mail')
                       const _MailSettings()
+                    else if (tab == 'images')
+                      _ImagesSettings(settings: _v!, onChanged: () => setState(() => _v = null))
                     else
                       ListView(
                         padding: const EdgeInsets.all(16),
@@ -1068,6 +1073,63 @@ class _MailSettingsState extends ConsumerState<_MailSettings> {
           child: Text(l.sendTest),
         ),
       ],
+    );
+  }
+}
+
+/// E-mail logo and the default link-preview picture.
+class _ImagesSettings extends ConsumerWidget {
+  const _ImagesSettings({required this.settings, required this.onChanged});
+  final Map<String, dynamic> settings;
+  final VoidCallback onChanged;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l;
+    Widget row(String title, String? url, String path) => Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              NetImage(url, width: 160, height: 84),
+              const SizedBox(width: 12),
+              OutlinedButton(
+                onPressed: () async {
+                  final f = await pickPhoto(context);
+                  if (f == null || !context.mounted) return;
+                  if (await runOk(
+                    context,
+                    () => ref.read(apiProvider).upload('platform/settings/$path', filePath: f.path, fileName: '$path.jpg', field: 'image'),
+                    success: l.saved,
+                  )) {
+                    ref.invalidate(cachedProvider('platform/settings'));
+                    onChanged();
+                  }
+                },
+                child: Text(l.uploadImage),
+              ),
+              if (url != null)
+                TextButton(
+                  onPressed: () async {
+                    if (await runOk(context, () => ref.read(apiProvider).delete('platform/settings/$path'))) {
+                      ref.invalidate(cachedProvider('platform/settings'));
+                      onChanged();
+                    }
+                  },
+                  child: Text(l.remove),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [row(l.logo, settings['logo_url'] as String?, 'logo'), row(l.tab_images, settings['share_image_url'] as String?, 'share-image')],
     );
   }
 }
