@@ -68,4 +68,6 @@ jobs:
         run: |
           f=build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
           size=$(stat -c %s "$f"); echo "arm64 APK: $((size/1024/1024)) MB ($size bytes)" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '### Largest files (compressed)' >> "$GITHUB_STEP_SUMMARY"
+          unzip -v "$f" | sort -k3 -n -r | head -25 | awk '{print "    " $3 "\t" $8}' | tee -a "$GITHUB_STEP_SUMMARY"
           test "$size" -lt 20971520
