@@ -11,6 +11,7 @@ import '../../core/widgets/net_image.dart';
 import 'dish_editor_screen.dart';
 import 'menu_data.dart';
 import 'menu_settings.dart';
+import 'quick_edit.dart';
 import 'restaurant_scaffold.dart';
 
 /// Menu editor: menus → categories → dishes, quick sold-out switches,
@@ -45,7 +46,7 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
     final menu = list.where((m) => m.i('id') == menuId).firstOrNull;
     final wide = TwoPane.isWide(context);
 
-    return RestaurantScaffold(
+    return RestaurantScaffold.largeBody(
       title: context.l.navMenu,
       actions: [
         if (wide && can.manageMenu && menu != null && !_reorder)
@@ -204,6 +205,8 @@ class MenuTree extends ConsumerWidget {
                     soldOut: can.soldOut && (overrides[it.i('id')] ?? it.b('is_sold_out')),
                     onTap: () => onDish(it.i('id')),
                     onSoldOut: can.toggleSoldOut ? (v) => ref.read(soldOutProvider.notifier).set(context, it.i('id'), v) : null,
+                    onPrice: can.editPrices ? () => showPriceSheet(context, ref, it.i('id'), name: it.t('name')) : null,
+                    onLongPress: () => showDishActions(context, ref, it, onEdit: () => onDish(it.i('id'))),
                   ),
               ],
             );
@@ -215,7 +218,17 @@ class MenuTree extends ConsumerWidget {
 }
 
 class DishRow extends StatelessWidget {
-  const DishRow({super.key, required this.item, required this.currency, required this.soldOut, required this.onTap, this.onSoldOut, this.selected = false});
+  const DishRow({
+    super.key,
+    required this.item,
+    required this.currency,
+    required this.soldOut,
+    required this.onTap,
+    this.onSoldOut,
+    this.onPrice,
+    this.onLongPress,
+    this.selected = false,
+  });
   final J item;
   final String currency;
   final bool soldOut;
@@ -223,46 +236,86 @@ class DishRow extends StatelessWidget {
   final VoidCallback onTap;
   final ValueChanged<bool>? onSoldOut;
 
+  /// Tap on the price: the quick price sheet (when the role may edit prices).
+  final VoidCallback? onPrice;
+
+  /// Long press: the dish's quick actions.
+  final VoidCallback? onLongPress;
+
   @override
   Widget build(BuildContext context) {
+    final t = context.tokens;
+    final l = context.l;
     final hidden = !item.b('is_visible', true);
     final price = priceLine(item, currency);
     return Material(
-      color: selected ? context.colors.surfaceContainerHigh : Colors.transparent,
+      color: selected ? t.accent : Colors.transparent,
       child: InkWell(
         onTap: onTap,
+        onLongPress: onLongPress,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: AppTokens.pad, vertical: 8),
           child: Row(
             children: [
-              NetImage(item.photo('media'), size: 52, semanticLabel: item.t('name')),
+              Opacity(
+                opacity: soldOut || hidden ? .55 : 1,
+                child: NetImage(item.photo('media'), size: 52, semanticLabel: item.t('name')),
+              ),
               const SizedBox(width: 12),
               Expanded(
-                child: Opacity(
-                  opacity: soldOut || hidden ? .55 : 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.t('name'),
-                        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        [if (soldOut) context.l.soldOut, if (hidden) context.l.hiddenFromGuests, if (price.isNotEmpty) price].join(' · '),
-                        style: TextStyle(fontSize: 13, color: soldOut ? context.colors.error : context.colors.onSurfaceVariant),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.t('name'),
+                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: soldOut || hidden ? t.mutedForeground : t.foreground),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        if (price.isNotEmpty)
+                          onPrice == null
+                              ? Text(price, style: TextStyle(fontSize: 13, color: t.mutedForeground))
+                              : Semantics(
+                                  button: true,
+                                  label: '${l.actionChangePrice}: $price',
+                                  child: InkWell(
+                                    onTap: onPrice,
+                                    borderRadius: BorderRadius.circular(AppTokens.radiusSm),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 6, top: 4, bottom: 4),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              price,
+                                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: t.foreground),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Icon(AppIcons.pencil, size: 12, color: t.mutedForeground),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                        if (soldOut) AppBadge(l.soldOut, variant: BadgeVariant.destructive),
+                        if (hidden) AppBadge(l.hiddenFromGuests, variant: BadgeVariant.outline, icon: AppIcons.eyeOff),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               if (onSoldOut != null)
                 Semantics(
-                  label: '${item.t('name')}: ${context.l.available}',
+                  label: '${item.t('name')}: ${l.available}',
                   child: Switch(value: !soldOut, onChanged: (v) => onSoldOut!(!v)),
                 ),
             ],
@@ -271,6 +324,72 @@ class DishRow extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Long press on a dish: show/hide, price, sold out, edit everything.
+Future<void> showDishActions(BuildContext context, WidgetRef ref, J item, {required VoidCallback onEdit}) {
+  final can = ref.read(canProvider);
+  final l = context.l;
+  final hidden = !item.b('is_visible', true);
+  final soldOut = ref.read(soldOutProvider)[item.i('id')] ?? item.b('is_sold_out');
+  return showAppSheet<void>(
+    context,
+    title: item.t('name'),
+    builder: (c) => Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (can.editPrices)
+          ListTile(
+            leading: const Icon(AppIcons.tag),
+            title: Text(l.actionChangePrice),
+            onTap: () {
+              Navigator.pop(c);
+              showPriceSheet(context, ref, item.i('id'), name: item.t('name'));
+            },
+          ),
+        if (can.manageMenu)
+          ListTile(
+            leading: Icon(hidden ? AppIcons.eye : AppIcons.eyeOff),
+            title: Text(hidden ? l.show : l.hide),
+            onTap: () async {
+              Navigator.pop(c);
+              final t = ref.read(tenantProvider)!;
+              final ok = await runOk(
+                context,
+                () => ref
+                    .read(apiProvider)
+                    .post(
+                      tenantPath(t.id, 'items/bulk'),
+                      data: {
+                        'ids': [item.i('id')],
+                        'action': hidden ? 'show' : 'hide',
+                      },
+                    ),
+                success: l.saved,
+              );
+              if (ok) await invalidatePrefix(ref, tenantPath(t.id, 'menus'));
+            },
+          ),
+        if (can.toggleSoldOut)
+          ListTile(
+            leading: const Icon(AppIcons.circleMinus),
+            title: Text(soldOut ? l.available : l.soldOut),
+            onTap: () {
+              Navigator.pop(c);
+              ref.read(soldOutProvider.notifier).set(context, item.i('id'), !soldOut);
+            },
+          ),
+        ListTile(
+          leading: const Icon(AppIcons.pencil),
+          title: Text(l.edit),
+          onTap: () {
+            Navigator.pop(c);
+            onEdit();
+          },
+        ),
+      ],
+    ),
+  );
 }
 
 class _ReorderCategories extends ConsumerStatefulWidget {

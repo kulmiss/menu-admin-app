@@ -11,7 +11,7 @@ import '../helpers/fonts.dart';
 import '../helpers/screens.dart';
 import '../store/store_screenshots_test.dart' show demoRestaurant;
 
-const screens = {'home': '/r/7', 'orders': '/r/7/orders', 'more': '/r/7/more'};
+const screens = {'home': '/r/7', 'menu': '/r/7/menu', 'orders': '/r/7/orders', 'more': '/r/7/more'};
 
 void main() {
   setUpAll(loadTestFonts);

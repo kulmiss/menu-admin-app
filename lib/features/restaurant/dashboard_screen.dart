@@ -12,6 +12,7 @@ import '../../core/util/files.dart';
 import '../../core/util/json.dart';
 import '../../core/widgets/auth_image.dart';
 import '../../core/widgets/kit.dart';
+import 'quick_edit.dart';
 import 'restaurant_scaffold.dart';
 
 /// Restaurant Home (redesign 2026-11): today's numbers, the quick actions a
@@ -132,9 +133,9 @@ class QuickActions extends ConsumerWidget {
     final l = context.l;
     final id = tenant.id;
     final actions = <(IconData, String, VoidCallback)>[
-      if (can.editPrices) (AppIcons.tag, l.actionChangePrice, () => context.push('/r/$id/all-dishes')),
-      if (can.manageMenu) (AppIcons.eyeOff, l.actionHideDish, () => context.push('/r/$id/all-dishes')),
-      if (can.manageMenu && can.writable) (AppIcons.imagePlus, l.actionAddDish, () => context.push('/r/$id/dishes/new')),
+      if (can.editPrices) (AppIcons.tag, l.actionChangePrice, () => changePriceFlow(context, ref)),
+      if (can.manageMenu) (AppIcons.eyeOff, l.actionHideDish, () => showVisibilitySheet(context)),
+      if (can.manageMenu && can.writable) (AppIcons.imagePlus, l.actionAddDish, () => context.push('/r/$id/dishes/new?photo=1')),
       (AppIcons.qrCode, l.actionShareMenu, () => showMyMenuSheet(context, ref)),
       if (can.toggleSoldOut) (AppIcons.circleMinus, l.actionSoldOut, () => context.push('/r/$id/sold-out')),
       if (can.manageRestaurant && can.featureOn('promotions')) (AppIcons.megaphone, l.promotions, () => context.push('/r/$id/promotions')),

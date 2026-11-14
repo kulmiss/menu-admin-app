@@ -79,7 +79,11 @@ List<RouteBase> restaurantRoutes(Ref ref, GlobalKey<NavigatorState> rootKey) => 
     parentNavigatorKey: rootKey,
     builder: (_, s) => _TenantGuard(
       tenantId: _tid(s),
-      child: DishEditorScreen(menuId: int.tryParse(s.uri.queryParameters['menu'] ?? ''), categoryId: int.tryParse(s.uri.queryParameters['category'] ?? '')),
+      child: DishEditorScreen(
+        menuId: int.tryParse(s.uri.queryParameters['menu'] ?? ''),
+        categoryId: int.tryParse(s.uri.queryParameters['category'] ?? ''),
+        autoPhoto: s.uri.queryParameters['photo'] == '1',
+      ),
     ),
   ),
   GoRoute(

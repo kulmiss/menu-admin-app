@@ -386,6 +386,16 @@ ThemeData buildTheme(Brightness brightness) {
         side: BorderSide(color: t.border),
       ),
     ),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: t.primary,
+      foregroundColor: t.primaryForeground,
+      elevation: 2,
+      focusElevation: 2,
+      hoverElevation: 3,
+      highlightElevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTokens.radiusLg)),
+      extendedTextStyle: label,
+    ),
     progressIndicatorTheme: ProgressIndicatorThemeData(color: t.primary, linearTrackColor: t.secondary),
     checkboxTheme: CheckboxThemeData(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),

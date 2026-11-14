@@ -71,18 +71,22 @@ int? textToMinor(String text) {
 }
 
 class DishEditorScreen extends StatelessWidget {
-  const DishEditorScreen({super.key, this.dishId, this.menuId, this.categoryId});
+  const DishEditorScreen({super.key, this.dishId, this.menuId, this.categoryId, this.autoPhoto = false});
   final int? dishId;
   final int? menuId;
   final int? categoryId;
 
+  /// Home › "Add dish with photo": open the camera/gallery choice right away.
+  final bool autoPhoto;
+
   @override
-  Widget build(BuildContext context) => DishEditor(dishId: dishId, menuId: menuId, categoryId: categoryId);
+  Widget build(BuildContext context) => DishEditor(dishId: dishId, menuId: menuId, categoryId: categoryId, autoPhoto: autoPhoto);
 }
 
 /// Every field of a dish, photos from camera or gallery (crop, reorder, main).
 class DishEditor extends ConsumerStatefulWidget {
-  const DishEditor({super.key, this.dishId, this.menuId, this.categoryId, this.embedded = false, this.onClosed});
+  const DishEditor({super.key, this.dishId, this.menuId, this.categoryId, this.embedded = false, this.onClosed, this.autoPhoto = false});
+  final bool autoPhoto;
   final int? dishId;
   final int? menuId;
   final int? categoryId;
@@ -136,6 +140,7 @@ class _DishEditorState extends ConsumerState<DishEditor> {
       c.addListener(_markDirty);
     }
     if (_isNewDish) _loaded = true;
+    if (_isNewDish && widget.autoPhoto) WidgetsBinding.instance.addPostFrameCallback((_) => mounted ? _addPhoto() : null);
   }
 
   void _markDirty() {
