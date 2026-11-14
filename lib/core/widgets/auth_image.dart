@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers.dart';
+import '../../app/icons.dart';
 
 final _bytesProvider = FutureProvider.autoDispose.family<Uint8List, String>((ref, path) async {
   // Everything that needs the Ref happens before the await (it may be disposed by then).
@@ -35,7 +36,7 @@ class AuthImage extends ConsumerWidget {
       child: bytes.when(
         data: (b) => Image.memory(b, fit: BoxFit.contain, semanticLabel: semanticLabel, filterQuality: FilterQuality.none),
         loading: () => const Center(child: CircularProgressIndicator(strokeWidth: 2)),
-        error: (_, _) => const Icon(Icons.broken_image_outlined),
+        error: (_, _) => const Icon(AppIcons.imageOff),
       ),
     );
   }

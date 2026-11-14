@@ -52,11 +52,11 @@ List<RouteBase> restaurantRoutes(Ref ref, GlobalKey<NavigatorState> rootKey) => 
         child: ModeShell(
           location: state.uri.path,
           items: [
-            NavItem(l.navHome, Icons.home_outlined, Icons.home, '/r/$t'),
-            NavItem(l.navMenu, Icons.restaurant_menu_outlined, Icons.restaurant_menu, '/r/$t/menu'),
-            if (can.soldOut) NavItem(l.navSoldOut, Icons.do_not_disturb_on_outlined, Icons.do_not_disturb_on, '/r/$t/sold-out'),
-            if (can.viewInsights) NavItem(l.navInsights, Icons.insights_outlined, Icons.insights, '/r/$t/insights'),
-            NavItem(l.navMore, Icons.more_horiz, Icons.more_horiz, '/r/$t/more'),
+            NavItem(l.navHome, AppIcons.house, AppIcons.house, '/r/$t'),
+            NavItem(l.navMenu, AppIcons.utensils, AppIcons.utensils, '/r/$t/menu'),
+            if (can.soldOut) NavItem(l.navSoldOut, AppIcons.circleMinus, AppIcons.circleMinus, '/r/$t/sold-out'),
+            if (can.viewInsights) NavItem(l.navInsights, AppIcons.chartLine, AppIcons.chartLine, '/r/$t/insights'),
+            NavItem(l.navMore, AppIcons.ellipsis, AppIcons.ellipsis, '/r/$t/more'),
           ],
           child: child,
         ),

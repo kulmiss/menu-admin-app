@@ -14,7 +14,8 @@ import 'package:menu_admin/core/auth/token_store.dart';
 import 'package:menu_admin/core/providers.dart';
 
 import '../helpers/fake_api.dart';
-import '../store/store_screenshots_test.dart' show demoRestaurant, phone, loadScreenshotFonts;
+import '../store/store_screenshots_test.dart' show demoRestaurant, phone;
+import '../helpers/fonts.dart';
 
 final dir = Platform.environment['COMPARE_DIR'] ?? 'before';
 
@@ -42,7 +43,7 @@ Future<void> shot(WidgetTester tester, String path, String name, Brightness b, {
 }
 
 void main() {
-  setUpAll(loadScreenshotFonts);
+  setUpAll(loadTestFonts);
   for (final b in Brightness.values) {
     testWidgets('sign-in ${b.name}', (t) => shot(t, '/sign-in', 'sign_in', b, signedIn: false));
     testWidgets('home ${b.name}', (t) => shot(t, '/r/7', 'home', b));

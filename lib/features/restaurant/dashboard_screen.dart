@@ -33,7 +33,7 @@ class DashboardScreen extends ConsumerWidget {
     ];
     return RestaurantScaffold(
       title: context.l.navHome,
-      actions: [IconButton(tooltip: context.l.openMyMenu, icon: const Icon(Icons.qr_code_2), onPressed: () => showMyMenuSheet(context, ref))],
+      actions: [IconButton(tooltip: context.l.openMyMenu, icon: const Icon(AppIcons.qrCode), onPressed: () => showMyMenuSheet(context, ref))],
       body: RefreshIndicator(
         onRefresh: () => ref.refreshPaths(paths),
         child: ListView(
@@ -104,7 +104,7 @@ class _SoldOutCard extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Row(
             children: [
-              Icon(Icons.do_not_disturb_on_outlined, color: t.secondaryForeground),
+              Icon(AppIcons.circleMinus, color: t.secondaryForeground),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
@@ -175,9 +175,9 @@ class _SetupCard extends ConsumerWidget {
               for (final s in steps.where((s) => !s.b('done')).take(3))
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: Icon(Icons.radio_button_unchecked, color: context.colors.outline),
+                  leading: Icon(AppIcons.circle, color: context.colors.outline),
                   title: Text(_label(context, s.s('key'))),
-                  trailing: const Icon(Icons.chevron_right),
+                  trailing: const Icon(AppIcons.chevronRight),
                   onTap: () => context.go(_route(s.s('key'), tenantId)),
                 ),
             ],
@@ -291,7 +291,7 @@ class _MissingPhotos extends ConsumerWidget {
               ),
               for (final i in d.list('items').take(4))
                 ListTile(
-                  leading: const Icon(Icons.add_a_photo_outlined),
+                  leading: const Icon(AppIcons.imagePlus),
                   title: Text(i.t('name')),
                   trailing: Text('${i.i('views')}'),
                   onTap: () => context.push('/r/$tenantId/dishes/${i.i('id')}'),
@@ -422,7 +422,7 @@ class _PlanCard extends ConsumerWidget {
                   const SizedBox(height: 4),
                   OutlinedButton.icon(
                     onPressed: () => showUpgradeSheet(context, next.list('adds').isEmpty ? null : (next['adds'] as List).join(' · ')),
-                    icon: const Icon(Icons.arrow_upward, size: 18),
+                    icon: const Icon(AppIcons.arrowUp, size: 18),
                     label: Text(context.l.upgradeTo(next.t('name'))),
                   ),
                 ],
@@ -455,7 +455,7 @@ class _News extends ConsumerWidget {
           ),
           for (final a in rows.take(3))
             ListTile(
-              leading: Icon(a.s('level') == 'warning' ? Icons.warning_amber : Icons.campaign_outlined),
+              leading: Icon(a.s('level') == 'warning' ? AppIcons.triangleAlert : AppIcons.megaphone),
               title: Text(a.t('title')),
               subtitle: a.t('body').isEmpty ? null : Text(a.t('body'), maxLines: 2, overflow: TextOverflow.ellipsis),
               onTap: () => context.push('/r/$tenantId/news/${a.i('id')}'),
@@ -506,7 +506,7 @@ Future<void> showMyMenuSheet(BuildContext context, WidgetRef ref) {
                       Clipboard.setData(ClipboardData(text: url));
                       showSnack(c, c.l.copied);
                     },
-                    icon: const Icon(Icons.copy),
+                    icon: const Icon(AppIcons.copy),
                     label: Text(c.l.copyLink),
                   ),
                 ),
@@ -514,7 +514,7 @@ Future<void> showMyMenuSheet(BuildContext context, WidgetRef ref) {
                 Expanded(
                   child: FilledButton.icon(
                     onPressed: () => shareText(url, subject: tenant.name),
-                    icon: const Icon(Icons.share),
+                    icon: const Icon(AppIcons.share2),
                     label: Text(c.l.share),
                   ),
                 ),
@@ -549,7 +549,7 @@ class TwoFactorCard extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.verified_user_outlined, color: t.warning),
+                  Icon(AppIcons.shieldCheck, color: t.warning),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(

@@ -7,8 +7,11 @@ import '../../l10n/app_localizations.dart';
 import '../api/api_error.dart';
 import '../cache/swr.dart';
 import '../util/links.dart';
+import '../../app/theme.dart';
+import 'ui.dart';
 
 export '../../app/theme.dart' show AppTokens, AppTokensX;
+export 'ui.dart';
 
 extension LX on BuildContext {
   L get l => L.of(this);
@@ -33,17 +36,14 @@ String errorText(BuildContext context, Object error) {
   };
 }
 
-void showSnack(BuildContext context, String message, {SnackBarAction? action}) {
-  ScaffoldMessenger.of(context)
-    ..hideCurrentSnackBar()
-    ..showSnackBar(SnackBar(content: Text(message), action: action));
-}
+void showSnack(BuildContext context, String message, {SnackBarAction? action, ToastKind kind = ToastKind.info}) =>
+    showToast(context, message, kind: kind, action: action);
 
 /// Runs a change with a clear success/failure message. Returns the result or null.
 Future<T?> runAction<T>(BuildContext context, Future<T> Function() action, {String? success}) async {
   try {
     final r = await action();
-    if (context.mounted && success != null) showSnack(context, success);
+    if (context.mounted && success != null) showSnack(context, success, kind: ToastKind.success);
     return r;
   } catch (e) {
     if (context.mounted) {
@@ -51,7 +51,7 @@ Future<T?> runAction<T>(BuildContext context, Future<T> Function() action, {Stri
       if (err.needsUpgrade) {
         await showUpgradeSheet(context, err.message);
       } else {
-        showSnack(context, errorText(context, e));
+        showSnack(context, errorText(context, e), kind: ToastKind.error);
       }
     }
     return null;
@@ -117,7 +117,7 @@ class UpgradeCard extends ConsumerWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.workspace_premium_outlined, color: context.colors.primary),
+            Icon(AppIcons.crown, color: context.colors.primary),
             const SizedBox(width: 10),
             Expanded(
               child: Text(l.upgradeTitle, style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
@@ -132,7 +132,7 @@ class UpgradeCard extends ConsumerWidget {
             final url = whatsapp != null && whatsapp.isNotEmpty ? whatsapp : (email != null ? 'mailto:$email' : null);
             if (url != null) launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
           },
-          icon: const Icon(Icons.arrow_upward),
+          icon: const Icon(AppIcons.arrowUp),
           label: Text(l.upgradeButton),
         ),
       ],
@@ -185,7 +185,7 @@ class _SkeletonState extends State<Skeleton> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    final base = context.colors.surfaceContainerHigh;
+    final base = context.tokens.muted;
     return Semantics(
       label: context.l.loading,
       child: ListView.separated(
@@ -197,7 +197,7 @@ class _SkeletonState extends State<Skeleton> with SingleTickerProviderStateMixin
           opacity: Tween(begin: 0.55, end: 1.0).animate(_c),
           child: Container(
             height: widget.height,
-            decoration: BoxDecoration(color: base, borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(color: base, borderRadius: BorderRadius.circular(AppTokens.radiusXl)),
           ),
         ),
       ),
@@ -206,7 +206,7 @@ class _SkeletonState extends State<Skeleton> with SingleTickerProviderStateMixin
 }
 
 class EmptyState extends StatelessWidget {
-  const EmptyState({super.key, this.icon = Icons.inbox_outlined, this.title, this.body, this.action});
+  const EmptyState({super.key, this.icon = AppIcons.inbox, this.title, this.body, this.action});
   final IconData icon;
   final String? title;
   final String? body;
@@ -219,8 +219,13 @@ class EmptyState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 48, color: context.colors.onSurfaceVariant),
-          const SizedBox(height: 12),
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(color: context.tokens.muted, shape: BoxShape.circle),
+            child: Icon(icon, size: 24, color: context.tokens.mutedForeground),
+          ),
+          const SizedBox(height: 16),
           Text(
             title ?? context.l.emptyTitle,
             style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -256,9 +261,9 @@ class ErrorView extends StatelessWidget {
       );
     }
     return EmptyState(
-      icon: e.isOffline ? Icons.wifi_off : Icons.error_outline,
+      icon: e.isOffline ? AppIcons.wifiOff : AppIcons.circleAlert,
       title: errorText(context, error),
-      action: onRetry == null ? null : OutlinedButton.icon(onPressed: onRetry, icon: const Icon(Icons.refresh), label: Text(context.l.retry)),
+      action: onRetry == null ? null : OutlinedButton.icon(onPressed: onRetry, icon: const Icon(AppIcons.refreshCw), label: Text(context.l.retry)),
     );
   }
 }
@@ -307,7 +312,7 @@ class StaleBanner extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
-          Icon(meta.error!.isOffline ? Icons.wifi_off : Icons.history, size: 16, color: context.colors.onSurfaceVariant),
+          Icon(meta.error!.isOffline ? AppIcons.wifiOff : AppIcons.history, size: 16, color: context.colors.onSurfaceVariant),
           const SizedBox(width: 8),
           Expanded(
             child: Text(context.l.savedCopy(timeAgo(context, meta.fetchedAt)), style: TextStyle(fontSize: 13, color: context.colors.onSurfaceVariant)),

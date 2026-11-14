@@ -24,11 +24,7 @@ class TeamScreen extends ConsumerWidget {
     final inv = ref.watch(cachedProvider(invites)).value;
     return Scaffold(
       appBar: AppBar(title: Text(l.team)),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _invite(context, ref),
-        icon: const Icon(Icons.person_add_alt),
-        label: Text(l.invite),
-      ),
+      floatingActionButton: FloatingActionButton.extended(onPressed: () => _invite(context, ref), icon: const Icon(AppIcons.userPlus), label: Text(l.invite)),
       body: CachedView(
         path: members,
         builder: (context, data, _) => ListView(
@@ -73,12 +69,12 @@ class TeamScreen extends ConsumerWidget {
               SectionHeader(l.pendingInvitations),
               for (final i in J.dataList(inv.data))
                 ListTile(
-                  leading: const Icon(Icons.mail_outline),
+                  leading: const Icon(AppIcons.mail),
                   title: Text(i.s('email')),
                   subtitle: Text('${roleLabel(context, i.s('role'))} · ${l.expires(formatDate(context, i.sn('expires_at')))}'),
                   trailing: IconButton(
                     tooltip: l.delete,
-                    icon: const Icon(Icons.close),
+                    icon: const Icon(AppIcons.x),
                     onPressed: () async {
                       await runOk(context, () => ref.read(apiProvider).delete('$invites/${i.i('id')}'));
                       ref.invalidate(cachedProvider(invites));
@@ -177,7 +173,7 @@ class BillingScreenBody extends ConsumerWidget {
                     if (d.sn('paid_until') != null) Text('${l.paidUntil}: ${formatDate(context, d.s('paid_until'))}'),
                     if (d.sn('trial_ends_at') != null && d.sn('paid_until') == null) Text('${l.trialEnds}: ${formatDate(context, d.s('trial_ends_at'))}'),
                     const SizedBox(height: 12),
-                    OutlinedButton.icon(onPressed: () => showUpgradeSheet(context), icon: const Icon(Icons.arrow_upward), label: Text(l.upgradeButton)),
+                    OutlinedButton.icon(onPressed: () => showUpgradeSheet(context), icon: const Icon(AppIcons.arrowUp), label: Text(l.upgradeButton)),
                   ],
                 ),
               ),
@@ -197,12 +193,12 @@ class BillingScreenBody extends ConsumerWidget {
                     children: [
                       IconButton(
                         tooltip: l.open,
-                        icon: const Icon(Icons.picture_as_pdf_outlined),
+                        icon: const Icon(AppIcons.fileText),
                         onPressed: () => downloadAndOpen(context, ref, tenantPath(t.id, 'billing/invoices/${i.i('id')}/pdf'), '${i.s('number')}.pdf'),
                       ),
                       IconButton(
                         tooltip: l.share,
-                        icon: const Icon(Icons.share_outlined),
+                        icon: const Icon(AppIcons.share2),
                         onPressed: () =>
                             downloadAndOpen(context, ref, tenantPath(t.id, 'billing/invoices/${i.i('id')}/pdf'), '${i.s('number')}.pdf', share: true),
                       ),

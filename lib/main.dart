@@ -20,6 +20,7 @@ import 'core/platform/updates.dart';
 import 'core/providers.dart';
 import 'core/app_config.dart';
 import 'app/theme_mode.dart';
+import 'app/icons_license.dart';
 
 /// Cold start (PLAN.md §10): nothing waits for the network before the first
 /// frame — token, last `/me` and cached screens come from the device.
@@ -46,6 +47,7 @@ Future<void> main() async {
     container.read(analyticsProvider).load(),
     container.read(themeModeProvider.notifier).load(),
   ]);
+  LicenseRegistry.addLicense(lucideLicense);
   runApp(UncontrolledProviderScope(container: container, child: const MenuAdminApp()));
 
   // After the first frame: Firebase, push, start-up settings, in-app update.

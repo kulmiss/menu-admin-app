@@ -139,17 +139,17 @@ class _AppSettingsScreenState extends ConsumerState<AppSettingsScreen> {
                 ),
               ListTile(
                 title: Text(l.privacy),
-                trailing: const Icon(Icons.open_in_new),
+                trailing: const Icon(AppIcons.externalLink),
                 onTap: () => openExternal(context, config?.link('privacy') ?? '${ref.read(apiProvider).siteUrl}privacy'),
               ),
               ListTile(
                 title: Text(l.terms),
-                trailing: const Icon(Icons.open_in_new),
+                trailing: const Icon(AppIcons.externalLink),
                 onTap: () => openExternal(context, config?.link('terms') ?? '${ref.read(apiProvider).siteUrl}terms'),
               ),
               ListTile(
                 title: Text(l.deleteAccount),
-                trailing: const Icon(Icons.open_in_new),
+                trailing: const Icon(AppIcons.externalLink),
                 onTap: () => openExternal(context, '${config?.link('privacy') ?? '${ref.read(apiProvider).siteUrl}privacy'}#10-your-rights'),
               ),
             ],
@@ -159,13 +159,13 @@ class _AppSettingsScreenState extends ConsumerState<AppSettingsScreen> {
             children: [
               if (config?.link('support_whatsapp') != null)
                 ListTile(
-                  leading: const Icon(Icons.chat_outlined),
+                  leading: const Icon(AppIcons.messageCircle),
                   title: Text(l.supportWhatsapp),
                   onTap: () => openExternal(context, config!.link('support_whatsapp')!),
                 ),
               if (config?.link('support_email') != null)
-                ListTile(leading: const Icon(Icons.mail_outline), title: Text(l.supportEmail), subtitle: SelectableText(config!.link('support_email')!)),
-              ListTile(leading: const Icon(Icons.system_update_outlined), title: Text(l.checkUpdates), onTap: () => checkPlayUpdate(mustUpdate: false)),
+                ListTile(leading: const Icon(AppIcons.mail), title: Text(l.supportEmail), subtitle: SelectableText(config!.link('support_email')!)),
+              ListTile(leading: const Icon(AppIcons.smartphone), title: Text(l.checkUpdates), onTap: () => checkPlayUpdate(mustUpdate: false)),
             ],
           ),
           SectionHeader(l.about),

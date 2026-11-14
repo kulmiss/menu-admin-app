@@ -20,11 +20,11 @@ List<RouteBase> platformRoutes(Ref ref, GlobalKey<NavigatorState> rootKey) => [
       return ModeShell(
         location: state.uri.path,
         items: [
-          NavItem(l.navDashboard, Icons.dashboard_outlined, Icons.dashboard, '/p'),
-          NavItem(l.navRestaurants, Icons.storefront_outlined, Icons.storefront, '/p/restaurants'),
-          NavItem(l.navApprovals, Icons.how_to_reg_outlined, Icons.how_to_reg, '/p/approvals', badge: count > 0 ? '$count' : null),
-          NavItem(l.navSearch, Icons.search, Icons.search, '/p/search'),
-          NavItem(l.navMore, Icons.more_horiz, Icons.more_horiz, '/p/more'),
+          NavItem(l.navDashboard, AppIcons.layoutDashboard, AppIcons.layoutDashboard, '/p'),
+          NavItem(l.navRestaurants, AppIcons.store, AppIcons.store, '/p/restaurants'),
+          NavItem(l.navApprovals, AppIcons.userCheck, AppIcons.userCheck, '/p/approvals', badge: count > 0 ? '$count' : null),
+          NavItem(l.navSearch, AppIcons.search, AppIcons.search, '/p/search'),
+          NavItem(l.navMore, AppIcons.ellipsis, AppIcons.ellipsis, '/p/more'),
         ],
         child: child,
       );

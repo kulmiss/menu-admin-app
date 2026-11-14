@@ -45,7 +45,7 @@ class _InsightsScreenState extends ConsumerState<InsightsScreen> {
       actions: [
         PopupMenuButton<String>(
           tooltip: l.export,
-          icon: const Icon(Icons.ios_share),
+          icon: const Icon(AppIcons.share),
           onSelected: (v) {
             final base = tenantPath(t.id, v == 'pdf' ? 'insights/report.pdf' : 'insights/export.csv');
             downloadAndOpen(

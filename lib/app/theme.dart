@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'icons.dart';
+
 /// Tailwind slate scale and a few brand colours. Screens should use
 /// [AppTokens] (`context.tokens`) instead; these stay for brand previews.
 abstract final class AppColors {
@@ -234,6 +236,8 @@ ThemeData buildTheme(Brightness brightness) {
     visualDensity: VisualDensity.standard,
     materialTapTargetSize: MaterialTapTargetSize.padded,
     focusColor: t.ring.withValues(alpha: 0.5),
+    iconTheme: IconThemeData(color: t.foreground, size: 22),
+    actionIconTheme: ActionIconThemeData(backButtonIconBuilder: (_) => const Icon(AppIcons.arrowLeft), closeButtonIconBuilder: (_) => const Icon(AppIcons.x)),
     appBarTheme: AppBarTheme(
       backgroundColor: t.background,
       foregroundColor: t.foreground,
@@ -392,7 +396,8 @@ ThemeData buildTheme(Brightness brightness) {
     radioTheme: RadioThemeData(fillColor: WidgetStatePropertyAll(t.primary)),
     switchTheme: SwitchThemeData(
       trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
-      thumbColor: WidgetStatePropertyAll(t.background),
+      // shadcn: thumb is background (light) / foreground (dark) when off, primary-foreground when on.
+      thumbColor: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.selected) ? t.primaryForeground : (dark ? t.foreground : t.background)),
       thumbIcon: const WidgetStatePropertyAll(Icon(null)),
       trackColor: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.selected) ? t.primary : Color.alphaBlend(t.input, t.background)),
     ),

@@ -184,7 +184,7 @@ class _SearchFieldState extends State<SearchField> {
     autofocus: widget.autofocus,
     textInputAction: TextInputAction.search,
     decoration: InputDecoration(
-      prefixIcon: const Icon(Icons.search),
+      prefixIcon: const Icon(AppIcons.search),
       hintText: widget.hint ?? context.l.search,
       isDense: true,
       suffixIcon: ListenableBuilder(
@@ -193,7 +193,7 @@ class _SearchFieldState extends State<SearchField> {
             ? const SizedBox.shrink()
             : IconButton(
                 tooltip: context.l.close,
-                icon: const Icon(Icons.close),
+                icon: const Icon(AppIcons.x),
                 onPressed: () {
                   _c.clear();
                   widget.onChanged('');
