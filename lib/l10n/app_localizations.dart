@@ -91,12 +91,6 @@ abstract class L {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('en')];
 
-  /// No description provided for @appName.
-  ///
-  /// In en, this message translates to:
-  /// **'Menu Admin'**
-  String get appName;
-
   /// No description provided for @ok.
   ///
   /// In en, this message translates to:
@@ -163,12 +157,6 @@ abstract class L {
   /// **'Done'**
   String get done;
 
-  /// No description provided for @undo.
-  ///
-  /// In en, this message translates to:
-  /// **'Undo'**
-  String get undo;
-
   /// No description provided for @search.
   ///
   /// In en, this message translates to:
@@ -211,29 +199,11 @@ abstract class L {
   /// **'Copied. It is removed from the clipboard in 1 minute.'**
   String get copiedSecret;
 
-  /// No description provided for @yes.
-  ///
-  /// In en, this message translates to:
-  /// **'Yes'**
-  String get yes;
-
-  /// No description provided for @no.
-  ///
-  /// In en, this message translates to:
-  /// **'No'**
-  String get no;
-
   /// No description provided for @next.
   ///
   /// In en, this message translates to:
   /// **'Next'**
   String get next;
-
-  /// No description provided for @back.
-  ///
-  /// In en, this message translates to:
-  /// **'Back'**
-  String get back;
 
   /// No description provided for @none.
   ///
@@ -264,12 +234,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'You\'re offline. Showing saved data; changes need a connection.'**
   String get offlineBanner;
-
-  /// No description provided for @updatedAgo.
-  ///
-  /// In en, this message translates to:
-  /// **'Updated {time}'**
-  String updatedAgo(Object time);
 
   /// No description provided for @savedCopy.
   ///
@@ -601,47 +565,257 @@ abstract class L {
   /// **'Menu'**
   String get navMenu;
 
+  /// No description provided for @saTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Super Admin'**
+  String get saTitle;
+
+  /// No description provided for @saRestaurants.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurants'**
+  String get saRestaurants;
+
+  /// No description provided for @saActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Paying'**
+  String get saActive;
+
+  /// No description provided for @saTrial.
+  ///
+  /// In en, this message translates to:
+  /// **'On trial'**
+  String get saTrial;
+
+  /// No description provided for @saSignups30.
+  ///
+  /// In en, this message translates to:
+  /// **'New sign-ups · 30 days'**
+  String get saSignups30;
+
+  /// No description provided for @saViews30.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu views · 30 days'**
+  String get saViews30;
+
+  /// No description provided for @saEmergency.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency switches'**
+  String get saEmergency;
+
+  /// No description provided for @saEmergencyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Take effect on every phone within a minute.'**
+  String get saEmergencyHint;
+
+  /// No description provided for @saMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'App maintenance'**
+  String get saMaintenance;
+
+  /// No description provided for @saMaintenanceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant users see a maintenance screen. Super Admins still get in.'**
+  String get saMaintenanceHint;
+
+  /// No description provided for @saMaintenanceConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Put the app in maintenance? Every restaurant user is locked out of the app until you turn it off.'**
+  String get saMaintenanceConfirm;
+
+  /// No description provided for @saSignup.
+  ///
+  /// In en, this message translates to:
+  /// **'Self sign-up'**
+  String get saSignup;
+
+  /// No description provided for @saSignupHint.
+  ///
+  /// In en, this message translates to:
+  /// **'New restaurants can create an account on the website.'**
+  String get saSignupHint;
+
+  /// No description provided for @saPush.
+  ///
+  /// In en, this message translates to:
+  /// **'Push notifications'**
+  String get saPush;
+
+  /// No description provided for @saPushHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Phones receive notifications from the app.'**
+  String get saPushHint;
+
+  /// No description provided for @saSaSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Super Admin sign-in in the app'**
+  String get saSaSignIn;
+
+  /// No description provided for @saSaSignInHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: Super Admins use the website only.'**
+  String get saSaSignInHint;
+
+  /// No description provided for @saSaSignInConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off Super Admin sign-in? This phone loses Super Admin access at once; turn it back on from the website.'**
+  String get saSaSignInConfirm;
+
+  /// No description provided for @saOpenWeb.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Super Admin on the web'**
+  String get saOpenWeb;
+
+  /// No description provided for @saOpenWebHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurants, plans, payments, messages, backups and every other setting.'**
+  String get saOpenWebHint;
+
+  /// No description provided for @turnOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get turnOff;
+
+  /// No description provided for @turnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on'**
+  String get turnOn;
+
+  /// No description provided for @navOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get navOrders;
+
+  /// No description provided for @homeTodaySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today · {date}'**
+  String homeTodaySubtitle(Object date);
+
+  /// No description provided for @soldOutNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold out now'**
+  String get soldOutNow;
+
+  /// No description provided for @quickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick actions'**
+  String get quickActions;
+
+  /// No description provided for @actionChangePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Change a price'**
+  String get actionChangePrice;
+
+  /// No description provided for @actionHideDish.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide or show a dish'**
+  String get actionHideDish;
+
+  /// No description provided for @actionAddDish.
+  ///
+  /// In en, this message translates to:
+  /// **'Add dish with photo'**
+  String get actionAddDish;
+
+  /// No description provided for @actionShareMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Share menu link / QR'**
+  String get actionShareMenu;
+
+  /// No description provided for @actionSoldOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark sold out'**
+  String get actionSoldOut;
+
+  /// No description provided for @manageSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage'**
+  String get manageSection;
+
+  /// No description provided for @ordersOff.
+  ///
+  /// In en, this message translates to:
+  /// **'“My order” is off. Guests can\'t build a list to show the waiter.'**
+  String get ordersOff;
+
+  /// No description provided for @ordersTurnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on in Appearance'**
+  String get ordersTurnOn;
+
+  /// No description provided for @ordersEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No lists shown yet. They appear here when guests use “My order”.'**
+  String get ordersEmpty;
+
+  /// No description provided for @listsShown.
+  ///
+  /// In en, this message translates to:
+  /// **'Lists shown'**
+  String get listsShown;
+
+  /// No description provided for @averageList.
+  ///
+  /// In en, this message translates to:
+  /// **'Average list'**
+  String get averageList;
+
+  /// No description provided for @days7.
+  ///
+  /// In en, this message translates to:
+  /// **'7 days'**
+  String get days7;
+
+  /// No description provided for @days30.
+  ///
+  /// In en, this message translates to:
+  /// **'30 days'**
+  String get days30;
+
+  /// No description provided for @weekViews.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} views this week'**
+  String weekViews(int count);
+
   /// No description provided for @navSoldOut.
   ///
   /// In en, this message translates to:
   /// **'Sold out'**
   String get navSoldOut;
 
-  /// No description provided for @navInsights.
-  ///
-  /// In en, this message translates to:
-  /// **'Insights'**
-  String get navInsights;
-
   /// No description provided for @navMore.
   ///
   /// In en, this message translates to:
   /// **'More'**
   String get navMore;
-
-  /// No description provided for @navRestaurants.
-  ///
-  /// In en, this message translates to:
-  /// **'Restaurants'**
-  String get navRestaurants;
-
-  /// No description provided for @navApprovals.
-  ///
-  /// In en, this message translates to:
-  /// **'Approvals'**
-  String get navApprovals;
-
-  /// No description provided for @navSearch.
-  ///
-  /// In en, this message translates to:
-  /// **'Search'**
-  String get navSearch;
-
-  /// No description provided for @navDashboard.
-  ///
-  /// In en, this message translates to:
-  /// **'Dashboard'**
-  String get navDashboard;
 
   /// No description provided for @viewingAs.
   ///
@@ -673,18 +847,6 @@ abstract class L {
   /// **'Open the platform'**
   String get openPlatform;
 
-  /// No description provided for @dashSoldOut.
-  ///
-  /// In en, this message translates to:
-  /// **'Sold out — {count} dishes'**
-  String dashSoldOut(Object count);
-
-  /// No description provided for @dashSoldOutNone.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing is sold out'**
-  String get dashSoldOutNone;
-
   /// No description provided for @manage.
   ///
   /// In en, this message translates to:
@@ -702,12 +864,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'{done} of {total}'**
   String setupProgress(Object done, Object total);
-
-  /// No description provided for @setupHide.
-  ///
-  /// In en, this message translates to:
-  /// **'Hide'**
-  String get setupHide;
 
   /// No description provided for @setup_logo.
   ///
@@ -751,18 +907,6 @@ abstract class L {
   /// **'Download or print your QR codes'**
   String get setup_qr;
 
-  /// No description provided for @viewsWeek.
-  ///
-  /// In en, this message translates to:
-  /// **'Menu views · 7 days'**
-  String get viewsWeek;
-
-  /// No description provided for @scansWeek.
-  ///
-  /// In en, this message translates to:
-  /// **'QR scans · 7 days'**
-  String get scansWeek;
-
   /// No description provided for @viewsToday.
   ///
   /// In en, this message translates to:
@@ -787,12 +931,6 @@ abstract class L {
   /// **'Menu views'**
   String get viewsChart;
 
-  /// No description provided for @last7days.
-  ///
-  /// In en, this message translates to:
-  /// **'Last 7 days'**
-  String get last7days;
-
   /// No description provided for @missingPhotosTitle.
   ///
   /// In en, this message translates to:
@@ -811,29 +949,11 @@ abstract class L {
   /// **'“My order” lists'**
   String get myOrderTitle;
 
-  /// No description provided for @myOrderShown.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} lists shown · 30 days'**
-  String myOrderShown(Object count);
-
-  /// No description provided for @myOrderAverage.
-  ///
-  /// In en, this message translates to:
-  /// **'Average {amount}'**
-  String myOrderAverage(Object amount);
-
   /// No description provided for @myOrderTop.
   ///
   /// In en, this message translates to:
   /// **'Most added'**
   String get myOrderTop;
-
-  /// No description provided for @planTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Plan and usage'**
-  String get planTitle;
 
   /// No description provided for @planTrial.
   ///
@@ -901,12 +1021,6 @@ abstract class L {
   /// **'Your menu link'**
   String get menuLink;
 
-  /// No description provided for @shareMenu.
-  ///
-  /// In en, this message translates to:
-  /// **'Share menu link'**
-  String get shareMenu;
-
   /// No description provided for @copyLink.
   ///
   /// In en, this message translates to:
@@ -918,12 +1032,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'QR code'**
   String get showQr;
-
-  /// No description provided for @menus.
-  ///
-  /// In en, this message translates to:
-  /// **'Menus'**
-  String get menus;
 
   /// No description provided for @newMenu.
   ///
@@ -990,12 +1098,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'At set times'**
   String get scheduleTimes;
-
-  /// No description provided for @weekdays.
-  ///
-  /// In en, this message translates to:
-  /// **'Weekdays'**
-  String get weekdays;
 
   /// No description provided for @from.
   ///
@@ -1069,12 +1171,6 @@ abstract class L {
   /// **'No dishes in this category'**
   String get noDishes;
 
-  /// No description provided for @addDish.
-  ///
-  /// In en, this message translates to:
-  /// **'Add dish'**
-  String get addDish;
-
   /// No description provided for @dish.
   ///
   /// In en, this message translates to:
@@ -1105,18 +1201,6 @@ abstract class L {
   /// **'Drag to reorder'**
   String get dragToReorder;
 
-  /// No description provided for @moveUp.
-  ///
-  /// In en, this message translates to:
-  /// **'Move up'**
-  String get moveUp;
-
-  /// No description provided for @moveDown.
-  ///
-  /// In en, this message translates to:
-  /// **'Move down'**
-  String get moveDown;
-
   /// No description provided for @available.
   ///
   /// In en, this message translates to:
@@ -1129,12 +1213,6 @@ abstract class L {
   /// **'Sold out'**
   String get soldOut;
 
-  /// No description provided for @soldOutSince.
-  ///
-  /// In en, this message translates to:
-  /// **'Sold out'**
-  String get soldOutSince;
-
   /// No description provided for @availableAgain.
   ///
   /// In en, this message translates to:
@@ -1146,12 +1224,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Sold out'**
   String get markSoldOut;
-
-  /// No description provided for @guestsSeeSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Saved. Guests see it within seconds.'**
-  String get guestsSeeSoon;
 
   /// No description provided for @priceFrom.
   ///
@@ -1693,12 +1765,6 @@ abstract class L {
   /// **'Export CSV'**
   String get exportCsv;
 
-  /// No description provided for @selectAll.
-  ///
-  /// In en, this message translates to:
-  /// **'Select all'**
-  String get selectAll;
-
   /// No description provided for @sortBy.
   ///
   /// In en, this message translates to:
@@ -1734,12 +1800,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Nothing matches'**
   String get noMatches;
-
-  /// No description provided for @clearFilters.
-  ///
-  /// In en, this message translates to:
-  /// **'Clear filters'**
-  String get clearFilters;
 
   /// No description provided for @branches.
   ///
@@ -1812,12 +1872,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Add tables'**
   String get addTables;
-
-  /// No description provided for @tableLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Table name'**
-  String get tableLabel;
 
   /// No description provided for @tablesFrom.
   ///
@@ -1956,12 +2010,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Material'**
   String get material;
-
-  /// No description provided for @design.
-  ///
-  /// In en, this message translates to:
-  /// **'Design'**
-  String get design;
 
   /// No description provided for @darkPrint.
   ///
@@ -2245,12 +2293,6 @@ abstract class L {
   /// **'Other branches in the footer'**
   String get show_other_branches;
 
-  /// No description provided for @preview.
-  ///
-  /// In en, this message translates to:
-  /// **'Preview'**
-  String get preview;
-
   /// No description provided for @livePreview.
   ///
   /// In en, this message translates to:
@@ -2262,12 +2304,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'This colour is light; we darken it a little on the menu so text stays readable.'**
   String get contrastWarning;
-
-  /// No description provided for @themes.
-  ///
-  /// In en, this message translates to:
-  /// **'Themes'**
-  String get themes;
 
   /// No description provided for @unsavedChanges.
   ///
@@ -2377,18 +2413,6 @@ abstract class L {
   /// **'Note'**
   String get note;
 
-  /// No description provided for @startsOn.
-  ///
-  /// In en, this message translates to:
-  /// **'From'**
-  String get startsOn;
-
-  /// No description provided for @endsOn.
-  ///
-  /// In en, this message translates to:
-  /// **'Until'**
-  String get endsOn;
-
   /// No description provided for @nextDay.
   ///
   /// In en, this message translates to:
@@ -2443,12 +2467,6 @@ abstract class L {
   /// **'Text'**
   String get text;
 
-  /// No description provided for @linkedDish.
-  ///
-  /// In en, this message translates to:
-  /// **'Linked dish'**
-  String get linkedDish;
-
   /// No description provided for @startsAt.
   ///
   /// In en, this message translates to:
@@ -2472,12 +2490,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'On'**
   String get on;
-
-  /// No description provided for @off.
-  ///
-  /// In en, this message translates to:
-  /// **'Off'**
-  String get off;
 
   /// No description provided for @happyHour.
   ///
@@ -2521,12 +2533,6 @@ abstract class L {
   /// **'Value'**
   String get value;
 
-  /// No description provided for @allDay.
-  ///
-  /// In en, this message translates to:
-  /// **'All day'**
-  String get allDay;
-
   /// No description provided for @addDishes.
   ///
   /// In en, this message translates to:
@@ -2538,18 +2544,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Insights'**
   String get insights;
-
-  /// No description provided for @days7.
-  ///
-  /// In en, this message translates to:
-  /// **'7 days'**
-  String get days7;
-
-  /// No description provided for @days30.
-  ///
-  /// In en, this message translates to:
-  /// **'30 days'**
-  String get days30;
 
   /// No description provided for @days90.
   ///
@@ -2718,12 +2712,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Billing'**
   String get billing;
-
-  /// No description provided for @plan.
-  ///
-  /// In en, this message translates to:
-  /// **'Plan'**
-  String get plan;
 
   /// No description provided for @paidUntil.
   ///
@@ -2989,12 +2977,6 @@ abstract class L {
   /// **'Sign out {name}?'**
   String signOutDeviceConfirm(Object name);
 
-  /// No description provided for @emailChangedVerify.
-  ///
-  /// In en, this message translates to:
-  /// **'Check your inbox to confirm the new e-mail.'**
-  String get emailChangedVerify;
-
   /// No description provided for @emailChangeSent.
   ///
   /// In en, this message translates to:
@@ -3090,6 +3072,18 @@ abstract class L {
   /// In en, this message translates to:
   /// **'App settings'**
   String get appSettings;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeDark;
 
   /// No description provided for @appLock.
   ///
@@ -3214,7 +3208,7 @@ abstract class L {
   /// No description provided for @themeSystem.
   ///
   /// In en, this message translates to:
-  /// **'Follow the system'**
+  /// **'Phone'**
   String get themeSystem;
 
   /// No description provided for @version.
@@ -3247,23 +3241,11 @@ abstract class L {
   /// **'E-mail support'**
   String get supportEmail;
 
-  /// No description provided for @rateApp.
-  ///
-  /// In en, this message translates to:
-  /// **'Rate the app'**
-  String get rateApp;
-
   /// No description provided for @checkUpdates.
   ///
   /// In en, this message translates to:
   /// **'Check for updates'**
   String get checkUpdates;
-
-  /// No description provided for @upToDate.
-  ///
-  /// In en, this message translates to:
-  /// **'You have the latest version'**
-  String get upToDate;
 
   /// No description provided for @lockedTitle.
   ///
@@ -3271,203 +3253,11 @@ abstract class L {
   /// **'Menu Admin is locked'**
   String get lockedTitle;
 
-  /// No description provided for @kpiRestaurants.
-  ///
-  /// In en, this message translates to:
-  /// **'Restaurants'**
-  String get kpiRestaurants;
-
-  /// No description provided for @kpiActive.
-  ///
-  /// In en, this message translates to:
-  /// **'Active (daily avg.)'**
-  String get kpiActive;
-
-  /// No description provided for @kpiNew.
-  ///
-  /// In en, this message translates to:
-  /// **'New'**
-  String get kpiNew;
-
-  /// No description provided for @kpiPaying.
-  ///
-  /// In en, this message translates to:
-  /// **'Paying'**
-  String get kpiPaying;
-
-  /// No description provided for @kpiFree.
-  ///
-  /// In en, this message translates to:
-  /// **'Free'**
-  String get kpiFree;
-
-  /// No description provided for @kpiMrr.
-  ///
-  /// In en, this message translates to:
-  /// **'MRR'**
-  String get kpiMrr;
-
-  /// No description provided for @kpiRevenue.
-  ///
-  /// In en, this message translates to:
-  /// **'Revenue'**
-  String get kpiRevenue;
-
-  /// No description provided for @kpiViews.
-  ///
-  /// In en, this message translates to:
-  /// **'Menu views'**
-  String get kpiViews;
-
-  /// No description provided for @kpiScans.
-  ///
-  /// In en, this message translates to:
-  /// **'QR scans'**
-  String get kpiScans;
-
-  /// No description provided for @vsPrevious.
-  ///
-  /// In en, this message translates to:
-  /// **'{change} vs previous'**
-  String vsPrevious(Object change);
-
-  /// No description provided for @growth.
-  ///
-  /// In en, this message translates to:
-  /// **'Growth'**
-  String get growth;
-
-  /// No description provided for @healthGroups.
-  ///
-  /// In en, this message translates to:
-  /// **'Restaurant health'**
-  String get healthGroups;
-
-  /// No description provided for @health_healthy.
-  ///
-  /// In en, this message translates to:
-  /// **'Healthy'**
-  String get health_healthy;
-
-  /// No description provided for @health_at_risk.
-  ///
-  /// In en, this message translates to:
-  /// **'At risk'**
-  String get health_at_risk;
-
-  /// No description provided for @health_inactive.
-  ///
-  /// In en, this message translates to:
-  /// **'Inactive'**
-  String get health_inactive;
-
-  /// No description provided for @needsAttention.
-  ///
-  /// In en, this message translates to:
-  /// **'Needs attention'**
-  String get needsAttention;
-
-  /// No description provided for @expiringSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Ending soon'**
-  String get expiringSoon;
-
-  /// No description provided for @inactiveRestaurants.
-  ///
-  /// In en, this message translates to:
-  /// **'Inactive'**
-  String get inactiveRestaurants;
-
-  /// No description provided for @newSignups.
-  ///
-  /// In en, this message translates to:
-  /// **'New sign-ups'**
-  String get newSignups;
-
-  /// No description provided for @systemHealth.
-  ///
-  /// In en, this message translates to:
-  /// **'System health'**
-  String get systemHealth;
-
-  /// No description provided for @followUpsDue.
-  ///
-  /// In en, this message translates to:
-  /// **'Follow-ups due'**
-  String get followUpsDue;
-
-  /// No description provided for @topRestaurants.
-  ///
-  /// In en, this message translates to:
-  /// **'Top restaurants'**
-  String get topRestaurants;
-
-  /// No description provided for @featureUse.
-  ///
-  /// In en, this message translates to:
-  /// **'Feature use'**
-  String get featureUse;
-
-  /// No description provided for @days365.
-  ///
-  /// In en, this message translates to:
-  /// **'1 year'**
-  String get days365;
-
-  /// No description provided for @restaurants.
-  ///
-  /// In en, this message translates to:
-  /// **'Restaurants'**
-  String get restaurants;
-
   /// No description provided for @owner.
   ///
   /// In en, this message translates to:
   /// **'Owner'**
   String get owner;
-
-  /// No description provided for @created.
-  ///
-  /// In en, this message translates to:
-  /// **'Created'**
-  String get created;
-
-  /// No description provided for @overview.
-  ///
-  /// In en, this message translates to:
-  /// **'Overview'**
-  String get overview;
-
-  /// No description provided for @payments.
-  ///
-  /// In en, this message translates to:
-  /// **'Payments'**
-  String get payments;
-
-  /// No description provided for @features.
-  ///
-  /// In en, this message translates to:
-  /// **'Features'**
-  String get features;
-
-  /// No description provided for @notesTags.
-  ///
-  /// In en, this message translates to:
-  /// **'Notes and tags'**
-  String get notesTags;
-
-  /// No description provided for @recordPayment.
-  ///
-  /// In en, this message translates to:
-  /// **'Record payment'**
-  String get recordPayment;
-
-  /// No description provided for @amount.
-  ///
-  /// In en, this message translates to:
-  /// **'Amount'**
-  String get amount;
 
   /// No description provided for @method.
   ///
@@ -3475,779 +3265,17 @@ abstract class L {
   /// **'Method'**
   String get method;
 
-  /// No description provided for @method_cash.
-  ///
-  /// In en, this message translates to:
-  /// **'Cash'**
-  String get method_cash;
-
-  /// No description provided for @method_bank.
-  ///
-  /// In en, this message translates to:
-  /// **'Bank transfer'**
-  String get method_bank;
-
-  /// No description provided for @method_mobile_money.
-  ///
-  /// In en, this message translates to:
-  /// **'Mobile money'**
-  String get method_mobile_money;
-
-  /// No description provided for @method_other.
-  ///
-  /// In en, this message translates to:
-  /// **'Other'**
-  String get method_other;
-
-  /// No description provided for @reference.
-  ///
-  /// In en, this message translates to:
-  /// **'Reference'**
-  String get reference;
-
-  /// No description provided for @paidOn.
-  ///
-  /// In en, this message translates to:
-  /// **'Paid on'**
-  String get paidOn;
-
-  /// No description provided for @months.
-  ///
-  /// In en, this message translates to:
-  /// **'Months'**
-  String get months;
-
-  /// No description provided for @paymentSaved.
-  ///
-  /// In en, this message translates to:
-  /// **'Payment saved. Invoice created.'**
-  String get paymentSaved;
-
-  /// No description provided for @invoice.
-  ///
-  /// In en, this message translates to:
-  /// **'Invoice'**
-  String get invoice;
-
-  /// No description provided for @resendInvoice.
-  ///
-  /// In en, this message translates to:
-  /// **'E-mail again'**
-  String get resendInvoice;
-
-  /// No description provided for @voidInvoice.
-  ///
-  /// In en, this message translates to:
-  /// **'Void'**
-  String get voidInvoice;
-
-  /// No description provided for @voidConfirm.
-  ///
-  /// In en, this message translates to:
-  /// **'Void invoice {number}?'**
-  String voidConfirm(Object number);
-
-  /// No description provided for @suspend.
-  ///
-  /// In en, this message translates to:
-  /// **'Suspend'**
-  String get suspend;
-
-  /// No description provided for @unsuspend.
-  ///
-  /// In en, this message translates to:
-  /// **'Restore access'**
-  String get unsuspend;
-
-  /// No description provided for @suspendReason.
-  ///
-  /// In en, this message translates to:
-  /// **'Reason (shown to the owner)'**
-  String get suspendReason;
-
-  /// No description provided for @deleteRestaurant.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete restaurant'**
-  String get deleteRestaurant;
-
-  /// No description provided for @restoreRestaurant.
-  ///
-  /// In en, this message translates to:
-  /// **'Restore restaurant'**
-  String get restoreRestaurant;
-
-  /// No description provided for @deleteRestaurantBody.
-  ///
-  /// In en, this message translates to:
-  /// **'It can be restored for 30 days, then it\'s gone for good.'**
-  String get deleteRestaurantBody;
-
-  /// No description provided for @logInAs.
-  ///
-  /// In en, this message translates to:
-  /// **'Log in as owner'**
-  String get logInAs;
-
-  /// No description provided for @logInAsBody.
-  ///
-  /// In en, this message translates to:
-  /// **'You\'ll see the admin as the owner for up to 2 hours. Password, e-mail and some other changes stay blocked.'**
-  String get logInAsBody;
-
-  /// No description provided for @trialUntil.
-  ///
-  /// In en, this message translates to:
-  /// **'Trial until'**
-  String get trialUntil;
-
-  /// No description provided for @changePlan.
-  ///
-  /// In en, this message translates to:
-  /// **'Change plan'**
-  String get changePlan;
-
-  /// No description provided for @setTrial.
-  ///
-  /// In en, this message translates to:
-  /// **'Set trial end'**
-  String get setTrial;
-
-  /// No description provided for @featureDefault.
-  ///
-  /// In en, this message translates to:
-  /// **'Plan default'**
-  String get featureDefault;
-
   /// No description provided for @featureOn.
   ///
   /// In en, this message translates to:
   /// **'On for this restaurant'**
   String get featureOn;
 
-  /// No description provided for @featureOff.
-  ///
-  /// In en, this message translates to:
-  /// **'Off for this restaurant'**
-  String get featureOff;
-
-  /// No description provided for @notes.
-  ///
-  /// In en, this message translates to:
-  /// **'Notes'**
-  String get notes;
-
-  /// No description provided for @addNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Add note'**
-  String get addNote;
-
-  /// No description provided for @followUp.
-  ///
-  /// In en, this message translates to:
-  /// **'Follow-up'**
-  String get followUp;
-
-  /// No description provided for @followUpOn.
-  ///
-  /// In en, this message translates to:
-  /// **'Follow up on'**
-  String get followUpOn;
-
-  /// No description provided for @followUpReason.
-  ///
-  /// In en, this message translates to:
-  /// **'Why'**
-  String get followUpReason;
-
-  /// No description provided for @clearFollowUp.
-  ///
-  /// In en, this message translates to:
-  /// **'Clear follow-up'**
-  String get clearFollowUp;
-
-  /// No description provided for @menusCount.
-  ///
-  /// In en, this message translates to:
-  /// **'Menus'**
-  String get menusCount;
-
-  /// No description provided for @itemsCount.
-  ///
-  /// In en, this message translates to:
-  /// **'Dishes'**
-  String get itemsCount;
-
-  /// No description provided for @views30.
-  ///
-  /// In en, this message translates to:
-  /// **'Views (30 days)'**
-  String get views30;
-
-  /// No description provided for @approvals.
-  ///
-  /// In en, this message translates to:
-  /// **'Approvals'**
-  String get approvals;
-
-  /// No description provided for @approve.
-  ///
-  /// In en, this message translates to:
-  /// **'Approve'**
-  String get approve;
-
-  /// No description provided for @reject.
-  ///
-  /// In en, this message translates to:
-  /// **'Reject'**
-  String get reject;
-
-  /// No description provided for @rejectReason.
-  ///
-  /// In en, this message translates to:
-  /// **'Reason for the owner'**
-  String get rejectReason;
-
-  /// No description provided for @approvalsEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'No sign-ups waiting'**
-  String get approvalsEmpty;
-
-  /// No description provided for @plans.
-  ///
-  /// In en, this message translates to:
-  /// **'Plans'**
-  String get plans;
-
-  /// No description provided for @planName.
-  ///
-  /// In en, this message translates to:
-  /// **'Plan name'**
-  String get planName;
-
-  /// No description provided for @priceMonth.
-  ///
-  /// In en, this message translates to:
-  /// **'Price per month'**
-  String get priceMonth;
-
-  /// No description provided for @priceYear.
-  ///
-  /// In en, this message translates to:
-  /// **'Price per year'**
-  String get priceYear;
-
-  /// No description provided for @trialDays.
-  ///
-  /// In en, this message translates to:
-  /// **'Trial days'**
-  String get trialDays;
-
-  /// No description provided for @limits.
-  ///
-  /// In en, this message translates to:
-  /// **'Limits'**
-  String get limits;
-
-  /// No description provided for @limit_photos.
-  ///
-  /// In en, this message translates to:
-  /// **'Photos'**
-  String get limit_photos;
-
-  /// No description provided for @limit_branches.
-  ///
-  /// In en, this message translates to:
-  /// **'Branches'**
-  String get limit_branches;
-
-  /// No description provided for @limit_menus.
-  ///
-  /// In en, this message translates to:
-  /// **'Menus'**
-  String get limit_menus;
-
-  /// No description provided for @limit_items.
-  ///
-  /// In en, this message translates to:
-  /// **'Dishes'**
-  String get limit_items;
-
-  /// No description provided for @limit_tables.
-  ///
-  /// In en, this message translates to:
-  /// **'Tables'**
-  String get limit_tables;
-
-  /// No description provided for @limit_members.
-  ///
-  /// In en, this message translates to:
-  /// **'Team members'**
-  String get limit_members;
-
-  /// No description provided for @limit_languages.
-  ///
-  /// In en, this message translates to:
-  /// **'Languages'**
-  String get limit_languages;
-
-  /// No description provided for @publicPlan.
-  ///
-  /// In en, this message translates to:
-  /// **'Shown on the website'**
-  String get publicPlan;
-
-  /// No description provided for @restaurantsOnPlan.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} restaurants'**
-  String restaurantsOnPlan(Object count);
-
-  /// No description provided for @invoicesTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Invoices'**
-  String get invoicesTitle;
-
-  /// No description provided for @paymentsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Payments'**
-  String get paymentsTitle;
-
-  /// No description provided for @messages.
-  ///
-  /// In en, this message translates to:
-  /// **'Messages'**
-  String get messages;
-
-  /// No description provided for @newMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'New e-mail'**
-  String get newMessage;
-
-  /// No description provided for @subject.
-  ///
-  /// In en, this message translates to:
-  /// **'Subject'**
-  String get subject;
-
   /// No description provided for @message.
   ///
   /// In en, this message translates to:
   /// **'Message'**
   String get message;
-
-  /// No description provided for @recipients.
-  ///
-  /// In en, this message translates to:
-  /// **'Recipients'**
-  String get recipients;
-
-  /// No description provided for @recipientsCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} restaurant owners'**
-  String recipientsCount(Object count);
-
-  /// No description provided for @filterPlan.
-  ///
-  /// In en, this message translates to:
-  /// **'Plan'**
-  String get filterPlan;
-
-  /// No description provided for @filterStatus.
-  ///
-  /// In en, this message translates to:
-  /// **'Status'**
-  String get filterStatus;
-
-  /// No description provided for @filterTag.
-  ///
-  /// In en, this message translates to:
-  /// **'Tag'**
-  String get filterTag;
-
-  /// No description provided for @filterInactiveDays.
-  ///
-  /// In en, this message translates to:
-  /// **'Inactive for (days)'**
-  String get filterInactiveDays;
-
-  /// No description provided for @status_active.
-  ///
-  /// In en, this message translates to:
-  /// **'Paying'**
-  String get status_active;
-
-  /// No description provided for @status_trial.
-  ///
-  /// In en, this message translates to:
-  /// **'Trial'**
-  String get status_trial;
-
-  /// No description provided for @status_expiring.
-  ///
-  /// In en, this message translates to:
-  /// **'Ending soon'**
-  String get status_expiring;
-
-  /// No description provided for @status_expired.
-  ///
-  /// In en, this message translates to:
-  /// **'Ended'**
-  String get status_expired;
-
-  /// No description provided for @status_suspended.
-  ///
-  /// In en, this message translates to:
-  /// **'Suspended'**
-  String get status_suspended;
-
-  /// No description provided for @sendTest.
-  ///
-  /// In en, this message translates to:
-  /// **'Send me a test'**
-  String get sendTest;
-
-  /// No description provided for @testSent.
-  ///
-  /// In en, this message translates to:
-  /// **'Test sent'**
-  String get testSent;
-
-  /// No description provided for @sendNow.
-  ///
-  /// In en, this message translates to:
-  /// **'Send'**
-  String get sendNow;
-
-  /// No description provided for @sendConfirm.
-  ///
-  /// In en, this message translates to:
-  /// **'Send to {count} owners?'**
-  String sendConfirm(Object count);
-
-  /// No description provided for @campaignSent.
-  ///
-  /// In en, this message translates to:
-  /// **'Sending started'**
-  String get campaignSent;
-
-  /// No description provided for @sent.
-  ///
-  /// In en, this message translates to:
-  /// **'Sent'**
-  String get sent;
-
-  /// No description provided for @failed.
-  ///
-  /// In en, this message translates to:
-  /// **'Failed'**
-  String get failed;
-
-  /// No description provided for @waiting.
-  ///
-  /// In en, this message translates to:
-  /// **'Waiting'**
-  String get waiting;
-
-  /// No description provided for @retryFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Resend to failed'**
-  String get retryFailed;
-
-  /// No description provided for @placeholdersHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Placeholders in curly brackets: restaurant_name, owner_name, plan, menu_link.'**
-  String get placeholdersHint;
-
-  /// No description provided for @backups.
-  ///
-  /// In en, this message translates to:
-  /// **'Backups'**
-  String get backups;
-
-  /// No description provided for @backUpNow.
-  ///
-  /// In en, this message translates to:
-  /// **'Back up now'**
-  String get backUpNow;
-
-  /// No description provided for @backupQueued.
-  ///
-  /// In en, this message translates to:
-  /// **'Backup started'**
-  String get backupQueued;
-
-  /// No description provided for @backupDownloadsWeb.
-  ///
-  /// In en, this message translates to:
-  /// **'Downloads are on the web admin only, for safety.'**
-  String get backupDownloadsWeb;
-
-  /// No description provided for @diskFree.
-  ///
-  /// In en, this message translates to:
-  /// **'{free} free of {total}'**
-  String diskFree(Object free, Object total);
-
-  /// No description provided for @backupProblem.
-  ///
-  /// In en, this message translates to:
-  /// **'Problem'**
-  String get backupProblem;
-
-  /// No description provided for @offsite.
-  ///
-  /// In en, this message translates to:
-  /// **'Off-site'**
-  String get offsite;
-
-  /// No description provided for @globalSearch.
-  ///
-  /// In en, this message translates to:
-  /// **'Search restaurants, owners, invoices…'**
-  String get globalSearch;
-
-  /// No description provided for @group_restaurants.
-  ///
-  /// In en, this message translates to:
-  /// **'Restaurants'**
-  String get group_restaurants;
-
-  /// No description provided for @group_owners.
-  ///
-  /// In en, this message translates to:
-  /// **'Owners'**
-  String get group_owners;
-
-  /// No description provided for @group_invoices.
-  ///
-  /// In en, this message translates to:
-  /// **'Invoices'**
-  String get group_invoices;
-
-  /// No description provided for @group_payments.
-  ///
-  /// In en, this message translates to:
-  /// **'Payments'**
-  String get group_payments;
-
-  /// No description provided for @group_tags.
-  ///
-  /// In en, this message translates to:
-  /// **'Tags'**
-  String get group_tags;
-
-  /// No description provided for @searchMin.
-  ///
-  /// In en, this message translates to:
-  /// **'Type at least 2 letters'**
-  String get searchMin;
-
-  /// No description provided for @announcements.
-  ///
-  /// In en, this message translates to:
-  /// **'Announcements'**
-  String get announcements;
-
-  /// No description provided for @newAnnouncementTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'New announcement'**
-  String get newAnnouncementTitle;
-
-  /// No description provided for @level.
-  ///
-  /// In en, this message translates to:
-  /// **'Level'**
-  String get level;
-
-  /// No description provided for @level_info.
-  ///
-  /// In en, this message translates to:
-  /// **'Info'**
-  String get level_info;
-
-  /// No description provided for @level_warning.
-  ///
-  /// In en, this message translates to:
-  /// **'Warning'**
-  String get level_warning;
-
-  /// No description provided for @allPlans.
-  ///
-  /// In en, this message translates to:
-  /// **'All plans'**
-  String get allPlans;
-
-  /// No description provided for @platformSettings.
-  ///
-  /// In en, this message translates to:
-  /// **'Settings'**
-  String get platformSettings;
-
-  /// No description provided for @tab_general.
-  ///
-  /// In en, this message translates to:
-  /// **'General'**
-  String get tab_general;
-
-  /// No description provided for @tab_signup.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign-up'**
-  String get tab_signup;
-
-  /// No description provided for @tab_landing.
-  ///
-  /// In en, this message translates to:
-  /// **'Landing page'**
-  String get tab_landing;
-
-  /// No description provided for @tab_billing.
-  ///
-  /// In en, this message translates to:
-  /// **'Billing'**
-  String get tab_billing;
-
-  /// No description provided for @tab_legal.
-  ///
-  /// In en, this message translates to:
-  /// **'Terms and privacy'**
-  String get tab_legal;
-
-  /// No description provided for @tab_images.
-  ///
-  /// In en, this message translates to:
-  /// **'Logo and link preview'**
-  String get tab_images;
-
-  /// No description provided for @tab_mail.
-  ///
-  /// In en, this message translates to:
-  /// **'E-mail (SMTP)'**
-  String get tab_mail;
-
-  /// No description provided for @tab_app.
-  ///
-  /// In en, this message translates to:
-  /// **'Mobile app'**
-  String get tab_app;
-
-  /// No description provided for @resetDefault.
-  ///
-  /// In en, this message translates to:
-  /// **'Reset to default text'**
-  String get resetDefault;
-
-  /// No description provided for @smtpHost.
-  ///
-  /// In en, this message translates to:
-  /// **'Host'**
-  String get smtpHost;
-
-  /// No description provided for @smtpPort.
-  ///
-  /// In en, this message translates to:
-  /// **'Port'**
-  String get smtpPort;
-
-  /// No description provided for @smtpEncryption.
-  ///
-  /// In en, this message translates to:
-  /// **'Encryption'**
-  String get smtpEncryption;
-
-  /// No description provided for @smtpUsername.
-  ///
-  /// In en, this message translates to:
-  /// **'Username'**
-  String get smtpUsername;
-
-  /// No description provided for @smtpPassword.
-  ///
-  /// In en, this message translates to:
-  /// **'Password'**
-  String get smtpPassword;
-
-  /// No description provided for @smtpFromAddress.
-  ///
-  /// In en, this message translates to:
-  /// **'From address'**
-  String get smtpFromAddress;
-
-  /// No description provided for @smtpFromName.
-  ///
-  /// In en, this message translates to:
-  /// **'From name'**
-  String get smtpFromName;
-
-  /// No description provided for @sendTestTo.
-  ///
-  /// In en, this message translates to:
-  /// **'Send a test e-mail to'**
-  String get sendTestTo;
-
-  /// No description provided for @uploadImage.
-  ///
-  /// In en, this message translates to:
-  /// **'Upload'**
-  String get uploadImage;
-
-  /// No description provided for @appMinVersion.
-  ///
-  /// In en, this message translates to:
-  /// **'Minimum app version'**
-  String get appMinVersion;
-
-  /// No description provided for @appLatestVersion.
-  ///
-  /// In en, this message translates to:
-  /// **'Latest app version'**
-  String get appLatestVersion;
-
-  /// No description provided for @appFlags.
-  ///
-  /// In en, this message translates to:
-  /// **'Feature flags'**
-  String get appFlags;
-
-  /// No description provided for @addFlag.
-  ///
-  /// In en, this message translates to:
-  /// **'Add flag'**
-  String get addFlag;
-
-  /// No description provided for @flagName.
-  ///
-  /// In en, this message translates to:
-  /// **'Flag name'**
-  String get flagName;
-
-  /// No description provided for @platformActivity.
-  ///
-  /// In en, this message translates to:
-  /// **'Activity log'**
-  String get platformActivity;
-
-  /// No description provided for @logInAsStarted.
-  ///
-  /// In en, this message translates to:
-  /// **'Now viewing as the owner'**
-  String get logInAsStarted;
-
-  /// No description provided for @resendWelcome.
-  ///
-  /// In en, this message translates to:
-  /// **'Send the welcome e-mail again'**
-  String get resendWelcome;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {
