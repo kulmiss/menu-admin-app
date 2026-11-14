@@ -104,6 +104,15 @@ class _AppSettingsScreenState extends ConsumerState<AppSettingsScreen> {
                   setState(() {});
                 },
               ),
+              SwitchListTile(
+                title: Text(l.crashReports),
+                subtitle: Text(l.crashReportsHint),
+                value: analytics.crashes,
+                onChanged: (v) async {
+                  await analytics.setCrashes(v);
+                  setState(() {});
+                },
+              ),
               ListTile(
                 title: Text(l.privacy),
                 trailing: const Icon(Icons.open_in_new),

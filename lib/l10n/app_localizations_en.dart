@@ -1555,6 +1555,12 @@ class LEn extends L {
   String get useBiometrics => 'Use fingerprint or face';
 
   @override
+  String get crashReports => 'Send crash reports';
+
+  @override
+  String get crashReportsHint => 'When the app crashes, send a technical report (no menu content, no personal data) so we can fix it.';
+
+  @override
   String get usageStats => 'Anonymous usage statistics';
 
   @override

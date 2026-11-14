@@ -574,6 +574,8 @@
   "pinSignedOut": "Too many wrong PINs, so the app signed out. Sign in again with your password.",
   "unlock": "Unlock",
   "useBiometrics": "Use fingerprint or face",
+  "crashReports": "Send crash reports",
+  "crashReportsHint": "When the app crashes, send a technical report (no menu content, no personal data) so we can fix it.",
   "usageStats": "Anonymous usage statistics",
   "usageStatsHint": "Which screens and features are used, to improve the app. Never your menu content.",
   "theme": "Theme",

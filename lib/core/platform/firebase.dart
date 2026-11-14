@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -17,41 +18,89 @@ class FirebaseState {
   FirebaseState._();
   static bool ready = false;
 
-  /// Called after the first frame so it never slows the cold start.
-  static Future<bool> init() async {
+  /// Called after the first frame so it never slows the cold start. Collection is
+  /// off in the manifest / Info.plist until this applies the user's two switches,
+  /// so nothing is sent before the choice is known (SECURITY_REPORT.md M16).
+  static Future<bool> init({bool analytics = true, bool crashes = true}) async {
     if (ready) return true;
     try {
       await Firebase.initializeApp();
       ready = true;
-      if (!kDebugMode) {
-        FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-        PlatformDispatcher.instance.onError = (e, s) {
-          FirebaseCrashlytics.instance.recordError(e, s, fatal: true);
-          return true;
-        };
-      }
-      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(!kDebugMode);
+      await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(analytics);
+      await setCrashes(crashes);
     } catch (_) {
       ready = false;
     }
     return ready;
   }
+
+  static Future<void> setCrashes(bool on) async {
+    if (!ready) return;
+    final send = on && !kDebugMode;
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(send);
+    if (send) {
+      FlutterError.onError = (d) => FirebaseCrashlytics.instance.recordFlutterFatalError(
+        FlutterErrorDetails(exception: scrubError(d.exception), stack: d.stack, library: d.library, context: d.context),
+      );
+      PlatformDispatcher.instance.onError = (e, s) {
+        FirebaseCrashlytics.instance.recordError(scrubError(e), s, fatal: true);
+        return true;
+      };
+    } else {
+      FlutterError.onError = FlutterError.presentError;
+      PlatformDispatcher.instance.onError = null;
+    }
+  }
 }
 
-/// Anonymous screen and feature events only (QUESTIONS M15), with an off switch.
+/// A crash report never carries a server answer, a URL with ids or a query, or
+/// request headers: only status, method and the route shape (M16).
+class ApiFailure implements Exception {
+  ApiFailure(this.status, this.method, this.route);
+  final int? status;
+  final String method;
+  final String route;
+  @override
+  String toString() => 'ApiFailure($status $method $route)';
+}
+
+Object scrubError(Object error) {
+  if (error is DioException) {
+    return ApiFailure(
+      error.response?.statusCode,
+      error.requestOptions.method,
+      screenNameOf(error.requestOptions.uri.path.replaceFirst(RegExp(r'^/api/v1'), '')),
+    );
+  }
+  return error;
+}
+
+/// Anonymous screen and feature events only (QUESTIONS M15), and crash
+/// reports, each with its own off switch (SECURITY_REPORT.md M16).
 class Analytics {
   Analytics(this._store);
   final TokenStore _store;
   bool enabled = true;
+  bool crashes = true;
 
   static const _key = 'analytics_enabled';
+  static const _crashKey = 'crash_reports_enabled';
 
-  Future<void> load() async => enabled = (await _store.read(_key)) != '0';
+  Future<void> load() async {
+    enabled = (await _store.read(_key)) != '0';
+    crashes = (await _store.read(_crashKey)) != '0';
+  }
 
   Future<void> setEnabled(bool v) async {
     enabled = v;
     await _store.write(_key, v ? '1' : '0');
     if (FirebaseState.ready) await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(v);
+  }
+
+  Future<void> setCrashes(bool v) async {
+    crashes = v;
+    await _store.write(_crashKey, v ? '1' : '0');
+    await FirebaseState.setCrashes(v);
   }
 
   /// Route paths without ids: /r/12/dishes/5 → /r/:id/dishes/:id.
@@ -75,5 +124,5 @@ void reportNonFatal(Object error, StackTrace stack) {
   if (!FirebaseState.ready || kDebugMode) return;
   final e = ApiError.from(error);
   if (e.kind != ApiErrorKind.server && e.kind != ApiErrorKind.unknown) return;
-  unawaited(FirebaseCrashlytics.instance.recordError(error, stack, reason: 'api ${e.status}', fatal: false));
+  unawaited(FirebaseCrashlytics.instance.recordError(scrubError(error), stack, reason: 'api ${e.status}', fatal: false));
 }

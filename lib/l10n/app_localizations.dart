@@ -3073,6 +3073,18 @@ abstract class L {
   /// **'Use fingerprint or face'**
   String get useBiometrics;
 
+  /// No description provided for @crashReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Send crash reports'**
+  String get crashReports;
+
+  /// No description provided for @crashReportsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When the app crashes, send a technical report (no menu content, no personal data) so we can fix it.'**
+  String get crashReportsHint;
+
   /// No description provided for @usageStats.
   ///
   /// In en, this message translates to:

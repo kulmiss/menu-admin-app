@@ -47,7 +47,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="default" />
-        <meta-data android:name="firebase_analytics_collection_deactivated" android:value="false" />
+        <!-- Off until the app applies the user's choices (SECURITY_REPORT.md M16). -->
+        <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
+        <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
         <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
         <meta-data android:name="google_analytics_default_allow_ad_personalization_signals" android:value="false" />
         <meta-data android:name="flutterEmbedding" android:value="2" />
