@@ -3091,6 +3091,18 @@ abstract class L {
   /// **'App settings'**
   String get appSettings;
 
+  /// No description provided for @themeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeDark;
+
   /// No description provided for @appLock.
   ///
   /// In en, this message translates to:
@@ -3214,7 +3226,7 @@ abstract class L {
   /// No description provided for @themeSystem.
   ///
   /// In en, this message translates to:
-  /// **'Follow the system'**
+  /// **'Phone'**
   String get themeSystem;
 
   /// No description provided for @version.

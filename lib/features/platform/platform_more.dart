@@ -23,7 +23,7 @@ class PlatformMoreScreen extends ConsumerWidget {
     final l = context.l;
     final s = ref.watch(sessionProvider);
     ListTile item(IconData i, String t, String p) =>
-        ListTile(leading: Icon(i), title: Text(t), trailing: const Icon(Icons.chevron_right), onTap: () => context.push(p));
+        ListTile(leading: Icon(i), title: Text(t), trailing: const Icon(AppIcons.chevronRight), onTap: () => context.push(p));
     return RestaurantScaffold(
       title: l.navMore,
       body: ListView(
@@ -32,30 +32,28 @@ class PlatformMoreScreen extends ConsumerWidget {
           SectionHeader(l.platform),
           Group(
             children: [
-              item(Icons.workspace_premium_outlined, l.plans, '/p/plans'),
-              item(Icons.payments_outlined, l.paymentsTitle, '/p/payments'),
-              item(Icons.receipt_long_outlined, l.invoicesTitle, '/p/invoices'),
-              item(Icons.mail_outline, l.messages, '/p/messages'),
-              item(Icons.campaign_outlined, l.announcements, '/p/announcements'),
-              item(Icons.backup_outlined, l.backups, '/p/backups'),
-              item(Icons.history, l.platformActivity, '/p/activity'),
-              item(Icons.settings_outlined, l.platformSettings, '/p/settings'),
+              item(AppIcons.crown, l.plans, '/p/plans'),
+              item(AppIcons.banknote, l.paymentsTitle, '/p/payments'),
+              item(AppIcons.receipt, l.invoicesTitle, '/p/invoices'),
+              item(AppIcons.mail, l.messages, '/p/messages'),
+              item(AppIcons.megaphone, l.announcements, '/p/announcements'),
+              item(AppIcons.cloudUpload, l.backups, '/p/backups'),
+              item(AppIcons.history, l.platformActivity, '/p/activity'),
+              item(AppIcons.settings, l.platformSettings, '/p/settings'),
             ],
           ),
           if ((s.me?.tenants.length ?? 0) > 0) ...[
             SectionHeader(l.restaurantSection),
             Group(
-              children: [
-                ListTile(leading: const Icon(Icons.storefront_outlined), title: Text(l.switchRestaurant), onTap: () => showRestaurantSwitcher(context, ref)),
-              ],
+              children: [ListTile(leading: const Icon(AppIcons.store), title: Text(l.switchRestaurant), onTap: () => showRestaurantSwitcher(context, ref))],
             ),
           ],
           SectionHeader(l.account),
           Group(
             children: [
-              item(Icons.notifications_outlined, l.notifications, '/inbox'),
-              item(Icons.person_outline, l.profile, '/account'),
-              item(Icons.settings_outlined, l.appSettings, '/account/app'),
+              item(AppIcons.bell, l.notifications, '/inbox'),
+              item(AppIcons.user, l.profile, '/account'),
+              item(AppIcons.settings, l.appSettings, '/account/app'),
             ],
           ),
         ],
@@ -77,7 +75,7 @@ class ApprovalsScreen extends ConsumerWidget {
         key: key,
         path: 'platform/restaurants',
         query: const {'state': 'pending'},
-        empty: EmptyState(icon: Icons.how_to_reg_outlined, title: l.approvalsEmpty),
+        empty: EmptyState(icon: AppIcons.userCheck, title: l.approvalsEmpty),
         itemBuilder: (context, r, _) => Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           child: Card(
@@ -170,7 +168,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ),
           Expanded(
             child: _q.length < 2
-                ? EmptyState(icon: Icons.search, title: l.searchMin)
+                ? EmptyState(icon: AppIcons.search, title: l.searchMin)
                 : CachedView(
                     path: 'platform/search?q=${Uri.encodeQueryComponent(_q)}',
                     builder: (context, data, _) {
@@ -178,7 +176,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       final any = groups.keys.any((g) => d.list(g).isNotEmpty);
                       if (!any) {
                         return ListView(
-                          children: [EmptyState(icon: Icons.search_off, title: l.noMatches)],
+                          children: [EmptyState(icon: AppIcons.searchX, title: l.noMatches)],
                         );
                       }
                       return ListView(
@@ -224,7 +222,7 @@ class PlansScreen extends ConsumerWidget {
                 subtitle: Text(
                   '${formatMoney(p.i('price_minor'), p.s('currency'))} / ${p.s('interval')} · ${l.restaurantsOnPlan(p.i('restaurants'))}${p.b('is_public') ? '' : ' · hidden'}',
                 ),
-                trailing: const Icon(Icons.chevron_right),
+                trailing: const Icon(AppIcons.chevronRight),
                 onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => PlanEditor(plan: p))),
               ),
           ],
@@ -406,7 +404,7 @@ class MessagesScreen extends ConsumerWidget {
       appBar: AppBar(title: Text(l.messages)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push('/p/messages/new'),
-        icon: const Icon(Icons.edit_outlined),
+        icon: const Icon(AppIcons.pencil),
         label: Text(l.newMessage),
       ),
       body: CachedView(
@@ -612,7 +610,7 @@ class BackupsScreen extends ConsumerWidget {
           await runOk(context, () => ref.read(apiProvider).post('platform/backups'), success: l.backupQueued);
           ref.invalidate(cachedProvider('platform/backups'));
         },
-        icon: const Icon(Icons.backup_outlined),
+        icon: const Icon(AppIcons.cloudUpload),
         label: Text(l.backUpNow),
       ),
       body: CachedView(
@@ -626,9 +624,9 @@ class BackupsScreen extends ConsumerWidget {
                 Card(
                   margin: const EdgeInsets.all(16),
                   color: context.colors.errorContainer,
-                  child: ListTile(leading: const Icon(Icons.warning_amber), title: Text(l.backupProblem), subtitle: Text(d.s('problem'))),
+                  child: ListTile(leading: const Icon(AppIcons.triangleAlert), title: Text(l.backupProblem), subtitle: Text(d.s('problem'))),
                 ),
-              ListTile(leading: const Icon(Icons.storage_outlined), title: Text(l.diskFree(size(d['disk_free'] as num?), size(d['disk_total'] as num?)))),
+              ListTile(leading: const Icon(AppIcons.database), title: Text(l.diskFree(size(d['disk_free'] as num?), size(d['disk_total'] as num?)))),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(l.backupDownloadsWeb, style: TextStyle(fontSize: 13, color: context.colors.onSurfaceVariant)),
@@ -636,7 +634,7 @@ class BackupsScreen extends ConsumerWidget {
               for (final b in d.list('backups'))
                 ListTile(
                   leading: Icon(
-                    b.s('status') == 'ok' ? Icons.check_circle_outline : (b.s('status') == 'failed' ? Icons.error_outline : Icons.hourglass_empty),
+                    b.s('status') == 'ok' ? AppIcons.circleCheck : (b.s('status') == 'failed' ? AppIcons.circleAlert : AppIcons.hourglass),
                     color: b.s('status') == 'failed' ? context.colors.error : null,
                   ),
                   title: Text(formatDate(context, b.sn('created_at'), time: true)),
@@ -727,7 +725,7 @@ class AnnouncementsScreen extends ConsumerWidget {
       appBar: AppBar(title: Text(l.announcements)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _edit(context, ref, null),
-        icon: const Icon(Icons.add),
+        icon: const Icon(AppIcons.plus),
         label: Text(l.newAnnouncementTitle),
       ),
       body: CachedView(
@@ -737,13 +735,13 @@ class AnnouncementsScreen extends ConsumerWidget {
           children: [
             for (final a in J.dataList(data))
               ListTile(
-                leading: Icon(a.s('level') == 'warning' ? Icons.warning_amber : Icons.campaign_outlined),
+                leading: Icon(a.s('level') == 'warning' ? AppIcons.triangleAlert : AppIcons.megaphone),
                 title: Text(a.t('title')),
                 subtitle: Text(a.t('body'), maxLines: 2, overflow: TextOverflow.ellipsis),
                 onTap: () => _edit(context, ref, a),
                 trailing: IconButton(
                   tooltip: l.delete,
-                  icon: const Icon(Icons.delete_outline),
+                  icon: const Icon(AppIcons.trash2),
                   onPressed: () async {
                     if (await confirm(context, title: l.confirmDeleteTitle(a.t('title')), action: l.delete, danger: true) && context.mounted) {
                       await runOk(context, () => ref.read(apiProvider).delete('platform/announcements/${a.i('id')}'));
@@ -943,7 +941,7 @@ class _FlagsEditorState extends State<_FlagsEditor> {
               widget.onChanged(_f);
             }
           },
-          icon: const Icon(Icons.add),
+          icon: const Icon(AppIcons.plus),
           label: Text(context.l.addFlag),
         ),
       ),

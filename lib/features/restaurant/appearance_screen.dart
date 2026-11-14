@@ -153,8 +153,8 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
               IconButton(
                 tooltip: l.livePreview,
                 isSelected: _preview,
-                icon: const Icon(Icons.visibility_outlined),
-                selectedIcon: const Icon(Icons.edit_outlined),
+                icon: const Icon(AppIcons.eye),
+                selectedIcon: const Icon(AppIcons.pencil),
                 onPressed: () => setState(() => _preview = !_preview),
               ),
             Padding(
@@ -211,7 +211,7 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
             for (final s in ['editorial', 'grid', 'bistro', 'minimal'])
               ChoiceChip(
                 label: Text(_styleLabel(s)),
-                avatar: styles.contains(s) ? null : const Icon(Icons.lock_outline, size: 16),
+                avatar: styles.contains(s) ? null : const Icon(AppIcons.lock, size: 16),
                 selected: _v!['style'] == s,
                 onSelected: (_) => styles.contains(s) ? setState(() => _v!['style'] = s) : showUpgradeSheet(context),
               ),

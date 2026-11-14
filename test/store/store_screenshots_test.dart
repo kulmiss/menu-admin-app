@@ -3,9 +3,6 @@
 @Tags(['store'])
 library;
 
-import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,17 +13,7 @@ import 'package:menu_admin/core/providers.dart';
 
 import '../helpers/fake_api.dart';
 import '../widgets/flows.dart';
-
-Future<void> _fonts() async {
-  final inter = FontLoader('Inter');
-  for (final w in ['Regular', 'Medium', 'SemiBold', 'Bold']) {
-    inter.addFont(rootBundle.load('assets/fonts/Inter-$w.ttf'));
-  }
-  await inter.load();
-  final root = Platform.environment['FLUTTER_ROOT'] ?? '/opt/sdk/flutter';
-  final icons = File('$root/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
-  await (FontLoader('MaterialIcons')..addFont(Future.value(ByteData.sublistView(icons.readAsBytesSync())))).load();
-}
+import '../helpers/fonts.dart';
 
 Map<String, dynamic> item(int id, String name, String cat, int price, {bool sold = false}) => {
   'id': id,
@@ -236,7 +223,7 @@ Future<void> shoot(WidgetTester tester, FakeApi api, String path, String name, S
 }
 
 void main() {
-  setUpAll(_fonts);
+  setUpAll(loadTestFonts);
   testWidgets('phone 1 dashboard', (t) => shoot(t, demoRestaurant(), '/r/7', 'phone_1_dashboard', phone, 2.75));
   testWidgets('phone 2 menu', (t) => shoot(t, demoRestaurant(), '/r/7/menu', 'phone_2_menu', phone, 2.75));
   testWidgets('phone 3 sold out', (t) => shoot(t, demoRestaurant(), '/r/7/sold-out', 'phone_3_sold_out', phone, 2.75));

@@ -38,7 +38,7 @@ class _PlatformDashboardState extends ConsumerState<PlatformDashboard> {
       actions: [
         PopupMenuButton<int>(
           initialValue: _days,
-          icon: const Icon(Icons.date_range),
+          icon: const Icon(AppIcons.calendarRange),
           tooltip: l.last7days,
           onSelected: (v) => setState(() => _days = v),
           itemBuilder: (c) => [
@@ -48,7 +48,7 @@ class _PlatformDashboardState extends ConsumerState<PlatformDashboard> {
             PopupMenuItem(value: 365, child: Text(l.days365)),
           ],
         ),
-        IconButton(tooltip: l.inbox, icon: const Icon(Icons.notifications_outlined), onPressed: () => context.push('/inbox')),
+        IconButton(tooltip: l.inbox, icon: const Icon(AppIcons.bell), onPressed: () => context.push('/inbox')),
       ],
       body: RefreshIndicator(
         onRefresh: () => ref.refreshPaths(paths),
@@ -251,7 +251,7 @@ class _Attention extends ConsumerWidget {
                   dense: true,
                   title: Text(name),
                   subtitle: Text(sub),
-                  trailing: const Icon(Icons.chevron_right),
+                  trailing: const Icon(AppIcons.chevronRight),
                   onTap: () => context.push('/p/restaurants/$id'),
                 ),
             ],
@@ -271,34 +271,34 @@ class _Attention extends ConsumerWidget {
             padding: const EdgeInsets.only(bottom: 10),
             child: Card(
               color: context.colors.errorContainer,
-              child: ListTile(leading: const Icon(Icons.monitor_heart_outlined), title: Text(l.systemHealth), subtitle: Text(warnings.join('\n'))),
+              child: ListTile(leading: const Icon(AppIcons.activity), title: Text(l.systemHealth), subtitle: Text(warnings.join('\n'))),
             ),
           ),
         list(
           'platform/widgets/follow-ups',
           l.followUpsDue,
-          Icons.event_note_outlined,
+          AppIcons.calendarDays,
           (d) => [for (final r in J.dataList(d)) (r.s('name'), '${r.s('date')} · ${r.s('reason')}', r.i('id'))],
           more: '/p/restaurants?follow_up=due',
         ),
         list(
           'platform/widgets/signups',
           l.newSignups,
-          Icons.storefront_outlined,
+          AppIcons.store,
           (d) => [for (final r in J.dataList(d)) (r.s('name'), formatDate(context, r.sn('created_at')), r.i('id'))],
           more: '/p/approvals',
         ),
         list(
           'platform/widgets/expiring',
           l.expiringSoon,
-          Icons.event_busy_outlined,
+          AppIcons.calendarX,
           (d) => [for (final r in J.dataList(d)) (r.s('name'), l.planEndsIn(r.i('days_left')), r.i('id'))],
           more: '/p/restaurants?state=active&sort=paid_until',
         ),
         list(
           'platform/widgets/inactive',
           l.inactiveRestaurants,
-          Icons.bedtime_outlined,
+          AppIcons.moon,
           (d) => [for (final r in J.dataList(d)) (r.s('name'), r.s('last_activity'), r.i('id'))],
           more: '/p/restaurants?health=inactive',
         ),
