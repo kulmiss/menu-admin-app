@@ -186,7 +186,18 @@ class _LockScreenState extends ConsumerState<LockScreen> {
   );
 
   Future<void> _check() async {
-    final ok = await ref.read(appLockProvider.notifier).checkPin(_pin.text);
-    if (!ok && mounted) setState(() => _error = context.l.pinWrong);
+    final r = await ref.read(appLockProvider.notifier).checkPin(_pin.text);
+    if (!mounted || r.ok) return;
+    final l = context.l;
+    _pin.clear();
+    setState(
+      () => _error = switch (r.kind) {
+        PinOutcome.wait => l.pinWait(r.wait.inSeconds),
+        PinOutcome.signedOut => l.pinSignedOut,
+        _ when r.wait > Duration.zero => '${l.pinWrong} · ${l.pinWait(r.wait.inSeconds)}',
+        _ when r.triesLeft <= 5 => '${l.pinWrong} · ${l.pinTriesLeft(r.triesLeft)}',
+        _ => l.pinWrong,
+      },
+    );
   }
 }

@@ -1530,6 +1530,25 @@ class LEn extends L {
   String get pinWrong => 'Wrong PIN';
 
   @override
+  String pinWait(int seconds) {
+    return 'Too many wrong PINs. Try again in $seconds s.';
+  }
+
+  @override
+  String pinTriesLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tries left before the app signs out',
+      one: '1 try left before the app signs out',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pinSignedOut => 'Too many wrong PINs, so the app signed out. Sign in again with your password.';
+
+  @override
   String get unlock => 'Unlock';
 
   @override
