@@ -49,7 +49,8 @@ Future<void> main() async {
   // After the first frame: Firebase, push, start-up settings, in-app update.
   WidgetsBinding.instance.addPostFrameCallback((_) async {
     container.listen(cachedProvider('mobile/config'), (_, _) {});
-    await FirebaseState.init();
+    final telemetry = container.read(analyticsProvider);
+    await FirebaseState.init(analytics: telemetry.enabled, crashes: telemetry.crashes);
     final push = container.read(pushServiceProvider);
     void startPush() => unawaited(push.start());
     if (container.read(sessionProvider).status == SessionStatus.signedIn) startPush();
