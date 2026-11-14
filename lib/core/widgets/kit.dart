@@ -8,6 +8,8 @@ import '../api/api_error.dart';
 import '../cache/swr.dart';
 import '../util/links.dart';
 
+export '../../app/theme.dart' show AppTokens, AppTokensX;
+
 extension LX on BuildContext {
   L get l => L.of(this);
   ColorScheme get colors => Theme.of(this).colorScheme;

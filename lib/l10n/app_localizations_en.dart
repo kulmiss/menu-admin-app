@@ -1556,6 +1556,12 @@ class LEn extends L {
   String get appSettings => 'App settings';
 
   @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
   String get appLock => 'App lock';
 
   @override
@@ -1629,7 +1635,7 @@ class LEn extends L {
   String get theme => 'Theme';
 
   @override
-  String get themeSystem => 'Follow the system';
+  String get themeSystem => 'Phone';
 
   @override
   String version(Object version) {

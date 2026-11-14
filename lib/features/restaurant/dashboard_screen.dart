@@ -93,9 +93,9 @@ class _SoldOutCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final c = ref.watch(cachedProvider(path)).value;
     final count = c == null ? null : J.data(c.data).list('sold_out').length;
-    final dark = Theme.of(context).brightness == Brightness.dark;
+    final t = context.tokens;
     return Material(
-      color: dark ? context.colors.surfaceContainerHigh : context.colors.secondary,
+      color: t.secondary,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
@@ -104,15 +104,15 @@ class _SoldOutCard extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Row(
             children: [
-              Icon(Icons.do_not_disturb_on_outlined, color: dark ? context.colors.onSurface : context.colors.onSecondary),
+              Icon(Icons.do_not_disturb_on_outlined, color: t.secondaryForeground),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   count == null || count == 0 ? context.l.dashSoldOutNone : context.l.dashSoldOut(count),
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: dark ? context.colors.onSurface : context.colors.onSecondary),
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: t.secondaryForeground),
                 ),
               ),
-              Text(context.l.manage, style: TextStyle(color: dark ? context.colors.onSurfaceVariant : context.colors.outline)),
+              Text(context.l.manage, style: TextStyle(color: t.mutedForeground)),
             ],
           ),
         ),
@@ -537,10 +537,11 @@ class TwoFactorCard extends ConsumerWidget {
     final s = ref.watch(sessionProvider);
     if (s.impersonating || (s.me?.twoFactorEnabled ?? true)) return const SizedBox.shrink();
     final l = context.l;
+    final t = context.tokens;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Card(
-        color: const Color(0xFFFEF3C7),
+        color: t.warningSurface,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -548,18 +549,18 @@ class TwoFactorCard extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.verified_user_outlined, color: Color(0xFF92400E)),
+                  Icon(Icons.verified_user_outlined, color: t.warning),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       l.twoFactorCardTitle,
-                      style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700, color: const Color(0xFF451A03)),
+                      style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700, color: t.foreground),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 6),
-              Text(l.twoFactorCardText, style: const TextStyle(color: Color(0xFF451A03))),
+              Text(l.twoFactorCardText, style: TextStyle(color: t.foreground)),
               const SizedBox(height: 10),
               FilledButton(onPressed: () => context.push('/account/two-factor?setup=1'), child: Text(l.twoFactorCardAction)),
             ],
