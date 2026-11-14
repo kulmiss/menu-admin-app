@@ -48,6 +48,15 @@ class Me {
   String get email => json['email'] as String? ?? '';
   bool get emailVerified => json['email_verified'] as bool? ?? true;
   bool get twoFactorEnabled => json['two_factor_enabled'] as bool? ?? false;
+
+  /// A new e-mail address waiting for its confirmation link (SECURITY_REPORT.md H3).
+  String? get pendingEmail => json['pending_email'] as String?;
+
+  /// The password is on the common/leaked list: a gentle banner (M3).
+  bool get passwordWeak => json['password_weak'] as bool? ?? false;
+
+  /// The Super Admin requires two-factor for Owners and it isn't on yet (M17).
+  bool get twoFactorRequired => json['two_factor_required'] as bool? ?? false;
   bool get isSuperAdmin => json['is_super_admin'] as bool? ?? false;
   Impersonation? get impersonation => json['impersonation'] is Map ? Impersonation((json['impersonation'] as Map).cast<String, dynamic>()) : null;
   List<TenantInfo> get tenants => [for (final t in (json['tenants'] as List? ?? const [])) TenantInfo((t as Map).cast<String, dynamic>())];

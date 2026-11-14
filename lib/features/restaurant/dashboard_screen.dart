@@ -43,6 +43,8 @@ class DashboardScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
           children: [
+            // Owners and Managers without two-step sign-in: strongly encouraged (owner, 2026-11-14; M17).
+            if (can.manageRestaurant) const TwoFactorCard(),
             _SoldOutCard(path: '${t}dashboard', tenantId: tenant.id),
             const SizedBox(height: 12),
             if (can.manageRestaurant) ...[_SetupCard(path: '${t}widgets/setup', tenantId: tenant.id), const SizedBox(height: 12)],
@@ -530,4 +532,45 @@ Future<void> showMyMenuSheet(BuildContext context, WidgetRef ref) {
       ),
     ),
   );
+}
+
+/// "Protect your restaurant": until two-step sign-in is on. One tap starts the setup.
+class TwoFactorCard extends ConsumerWidget {
+  const TwoFactorCard({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final s = ref.watch(sessionProvider);
+    if (s.impersonating || (s.me?.twoFactorEnabled ?? true)) return const SizedBox.shrink();
+    final l = context.l;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Card(
+        color: const Color(0xFFFEF3C7),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.verified_user_outlined, color: Color(0xFF92400E)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      l.twoFactorCardTitle,
+                      style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700, color: const Color(0xFF451A03)),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(l.twoFactorCardText, style: const TextStyle(color: Color(0xFF451A03))),
+              const SizedBox(height: 10),
+              FilledButton(onPressed: () => context.push('/account/two-factor?setup=1'), child: Text(l.twoFactorCardAction)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

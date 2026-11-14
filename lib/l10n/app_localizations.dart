@@ -2941,6 +2941,54 @@ abstract class L {
   /// **'Check your inbox to confirm the new e-mail.'**
   String get emailChangedVerify;
 
+  /// No description provided for @emailChangeSent.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a link to {email}. Your address changes when you click it.'**
+  String emailChangeSent(String email);
+
+  /// No description provided for @emailPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for confirmation: {email}. Click the link we sent there (valid for 1 hour).'**
+  String emailPending(String email);
+
+  /// No description provided for @passwordWeakBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Your password is on a list of common or leaked passwords.'**
+  String get passwordWeakBanner;
+
+  /// No description provided for @passwordWeakAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Change it'**
+  String get passwordWeakAction;
+
+  /// No description provided for @twoFactorCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Protect your restaurant with two-step sign-in'**
+  String get twoFactorCardTitle;
+
+  /// No description provided for @twoFactorCardText.
+  ///
+  /// In en, this message translates to:
+  /// **'A 6-digit code from your phone at sign-in, so a stolen password alone can\'t open your menu, prices or team.'**
+  String get twoFactorCardText;
+
+  /// No description provided for @twoFactorCardAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn it on'**
+  String get twoFactorCardAction;
+
+  /// No description provided for @twoFactorRequiredText.
+  ///
+  /// In en, this message translates to:
+  /// **'Your platform requires two-step sign-in for restaurant owners. Turn it on to continue.'**
+  String get twoFactorRequiredText;
+
   /// No description provided for @notificationSettings.
   ///
   /// In en, this message translates to:
