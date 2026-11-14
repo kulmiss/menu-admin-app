@@ -127,13 +127,13 @@ class _AllDishesScreenState extends ConsumerState<AllDishesScreen> {
     };
     return Scaffold(
       appBar: AppBar(
-        leading: selecting ? IconButton(tooltip: l.close, icon: const Icon(Icons.close), onPressed: () => setState(_selected.clear)) : null,
+        leading: selecting ? IconButton(tooltip: l.close, icon: const Icon(AppIcons.x), onPressed: () => setState(_selected.clear)) : null,
         title: Text(selecting ? l.selectedCount(_selected.length) : l.allDishes),
         actions: [
           if (!selecting) ...[
             PopupMenuButton<String>(
               tooltip: l.sortBy,
-              icon: const Icon(Icons.sort),
+              icon: const Icon(AppIcons.arrowDownWideNarrow),
               initialValue: _sort,
               onSelected: (v) => setState(() => _sort = v),
               itemBuilder: (c) => [
@@ -146,7 +146,7 @@ class _AllDishesScreenState extends ConsumerState<AllDishesScreen> {
             if (can.exportDishes)
               IconButton(
                 tooltip: l.exportCsv,
-                icon: const Icon(Icons.download_outlined),
+                icon: const Icon(AppIcons.download),
                 onPressed: () =>
                     downloadAndOpen(context, ref, tenantPath(t.id, 'items'), '${t.slug}-dishes.csv', share: true, query: {..._query, 'format': 'csv'}),
               ),
@@ -211,7 +211,7 @@ class _AllDishesScreenState extends ConsumerState<AllDishesScreen> {
               key: _list,
               path: tenantPath(t.id, 'items'),
               query: _query,
-              empty: EmptyState(icon: Icons.search_off, title: l.noMatches),
+              empty: EmptyState(icon: AppIcons.searchX, title: l.noMatches),
               itemBuilder: (context, row, _) {
                 final id = row.i('id');
                 final sel = _selected.contains(id);

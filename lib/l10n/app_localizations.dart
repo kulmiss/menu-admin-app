@@ -601,6 +601,114 @@ abstract class L {
   /// **'Menu'**
   String get navMenu;
 
+  /// No description provided for @navOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get navOrders;
+
+  /// No description provided for @homeTodaySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today · {date}'**
+  String homeTodaySubtitle(Object date);
+
+  /// No description provided for @soldOutNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold out now'**
+  String get soldOutNow;
+
+  /// No description provided for @quickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick actions'**
+  String get quickActions;
+
+  /// No description provided for @actionChangePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Change a price'**
+  String get actionChangePrice;
+
+  /// No description provided for @actionHideDish.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide or show a dish'**
+  String get actionHideDish;
+
+  /// No description provided for @actionAddDish.
+  ///
+  /// In en, this message translates to:
+  /// **'Add dish with photo'**
+  String get actionAddDish;
+
+  /// No description provided for @actionShareMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Share menu link / QR'**
+  String get actionShareMenu;
+
+  /// No description provided for @actionSoldOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark sold out'**
+  String get actionSoldOut;
+
+  /// No description provided for @manageSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage'**
+  String get manageSection;
+
+  /// No description provided for @ordersOff.
+  ///
+  /// In en, this message translates to:
+  /// **'“My order” is off. Guests can\'t build a list to show the waiter.'**
+  String get ordersOff;
+
+  /// No description provided for @ordersTurnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on in Appearance'**
+  String get ordersTurnOn;
+
+  /// No description provided for @ordersEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No lists shown yet. They appear here when guests use “My order”.'**
+  String get ordersEmpty;
+
+  /// No description provided for @listsShown.
+  ///
+  /// In en, this message translates to:
+  /// **'Lists shown'**
+  String get listsShown;
+
+  /// No description provided for @averageList.
+  ///
+  /// In en, this message translates to:
+  /// **'Average list'**
+  String get averageList;
+
+  /// No description provided for @days7.
+  ///
+  /// In en, this message translates to:
+  /// **'7 days'**
+  String get days7;
+
+  /// No description provided for @days30.
+  ///
+  /// In en, this message translates to:
+  /// **'30 days'**
+  String get days30;
+
+  /// No description provided for @weekViews.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} views this week'**
+  String weekViews(int count);
+
   /// No description provided for @navSoldOut.
   ///
   /// In en, this message translates to:
@@ -2539,18 +2647,6 @@ abstract class L {
   /// **'Insights'**
   String get insights;
 
-  /// No description provided for @days7.
-  ///
-  /// In en, this message translates to:
-  /// **'7 days'**
-  String get days7;
-
-  /// No description provided for @days30.
-  ///
-  /// In en, this message translates to:
-  /// **'30 days'**
-  String get days30;
-
   /// No description provided for @days90.
   ///
   /// In en, this message translates to:
@@ -3091,6 +3187,18 @@ abstract class L {
   /// **'App settings'**
   String get appSettings;
 
+  /// No description provided for @themeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeDark;
+
   /// No description provided for @appLock.
   ///
   /// In en, this message translates to:
@@ -3214,7 +3322,7 @@ abstract class L {
   /// No description provided for @themeSystem.
   ///
   /// In en, this message translates to:
-  /// **'Follow the system'**
+  /// **'Phone'**
   String get themeSystem;
 
   /// No description provided for @version.

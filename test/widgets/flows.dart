@@ -171,7 +171,7 @@ Future<void> loginWithTwoFactor(WidgetTester tester) async {
 Future<void> toggleSoldOut(WidgetTester tester) async {
   final api = restaurantServer(role: 'staff');
   await startApp(tester, api, token: 'tok');
-  await tester.tap(find.text('Sold out').first);
+  await tester.tap(find.text('Mark sold out'));
   await tester.pumpAndSettle();
   await tester.tap(find.text('All dishes'));
   await tester.pumpAndSettle();

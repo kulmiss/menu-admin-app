@@ -32,7 +32,7 @@ class NoRestaurantScreen extends ConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: EmptyState(
-          icon: unverified ? Icons.mark_email_unread_outlined : Icons.storefront_outlined,
+          icon: unverified ? AppIcons.mailWarning : AppIcons.store,
           title: unverified ? context.l.emailUnverifiedTitle : context.l.noRestaurantTitle,
           body: unverified ? context.l.emailUnverifiedBody(me.email) : context.l.noRestaurantBody,
           action: Column(
@@ -159,7 +159,7 @@ class _AppGatesState extends ConsumerState<AppGates> with WidgetsBindingObserver
       case AppBlock.maintenance:
         return BlockedScreen(
           key: const Key('maintenance'),
-          icon: Icons.construction_outlined,
+          icon: AppIcons.construction,
           title: l.maintenanceTitle,
           body: config?.maintenanceMessage ?? gate?.message ?? l.maintenanceBody,
           onRetry: _retry,
@@ -171,7 +171,7 @@ class _AppGatesState extends ConsumerState<AppGates> with WidgetsBindingObserver
       case AppBlock.appOff:
         return BlockedScreen(
           key: const Key('app-off'),
-          icon: Icons.phonelink_off_outlined,
+          icon: AppIcons.monitorOff,
           title: l.appOffTitle,
           body: config?.signInMessage ?? gate?.message ?? l.appOffBody,
           onRetry: _retry,
@@ -192,7 +192,7 @@ class _AppGatesState extends ConsumerState<AppGates> with WidgetsBindingObserver
       if (offerUpdate)
         _TopCard(
           key: const Key('update-prompt'),
-          icon: Icons.system_update_outlined,
+          icon: AppIcons.smartphone,
           text: [l.updateAvailable, if (config!.releaseNotes != null) config.releaseNotes!].join('\n'),
           action: TextButton(onPressed: () => _openStore(context, config, mustUpdate: false), child: Text(l.updateNow)),
           onClose: () => _skipUpdate(recommended),
@@ -200,7 +200,7 @@ class _AppGatesState extends ConsumerState<AppGates> with WidgetsBindingObserver
       if (showBanner)
         _TopCard(
           key: const Key('app-banner'),
-          icon: Icons.campaign_outlined,
+          icon: AppIcons.megaphone,
           text: banner.text,
           onTap: banner.link == null ? null : () => _openLink(context, banner.link!),
           onClose: () => _closeBanner(banner.text),
@@ -323,7 +323,7 @@ class _TopCard extends StatelessWidget {
               Semantics(
                 button: true,
                 label: context.l.close,
-                child: IconButton(onPressed: onClose, icon: const Icon(Icons.close), color: c.onPrimaryContainer),
+                child: IconButton(onPressed: onClose, icon: const Icon(AppIcons.x), color: c.onPrimaryContainer),
               ),
             ],
           ),
@@ -346,7 +346,7 @@ class RootWarning extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.warning_amber_rounded, color: Colors.amber.shade900),
+          Icon(AppIcons.triangleAlert, color: Colors.amber.shade900),
           const SizedBox(width: 12),
           Expanded(
             child: Text(context.l.rootWarning, style: TextStyle(color: Colors.brown.shade900)),
@@ -354,7 +354,7 @@ class RootWarning extends StatelessWidget {
           Semantics(
             button: true,
             label: context.l.close,
-            child: IconButton(onPressed: onClose, icon: const Icon(Icons.close)),
+            child: IconButton(onPressed: onClose, icon: const Icon(AppIcons.x)),
           ),
         ],
       ),
@@ -381,7 +381,7 @@ class _UpdateRequiredState extends State<_UpdateRequired> {
     key: const Key('update-required'),
     body: SafeArea(
       child: EmptyState(
-        icon: Icons.system_update,
+        icon: AppIcons.smartphone,
         title: context.l.updateRequiredTitle,
         body: [context.l.updateRequiredBody, if (widget.config?.releaseNotes != null) widget.config!.releaseNotes!].join('\n\n'),
         action: FilledButton(onPressed: () => _openStore(context, widget.config, mustUpdate: true), child: Text(context.l.updateNow)),
@@ -441,7 +441,7 @@ class _LockScreenState extends ConsumerState<LockScreen> {
                 ),
                 const SizedBox(height: 12),
                 FilledButton(onPressed: _check, child: Text(context.l.unlock)),
-                TextButton.icon(onPressed: _bio, icon: const Icon(Icons.fingerprint), label: Text(context.l.useBiometrics)),
+                TextButton.icon(onPressed: _bio, icon: const Icon(AppIcons.fingerprint), label: Text(context.l.useBiometrics)),
               ],
             ),
           ),

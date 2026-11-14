@@ -114,37 +114,37 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           Group(
             children: [
               ListTile(
-                leading: const Icon(Icons.password),
+                leading: const Icon(AppIcons.rectangleEllipsis),
                 title: Text(l.changePassword),
-                trailing: const Icon(Icons.chevron_right),
+                trailing: const Icon(AppIcons.chevronRight),
                 enabled: !s.impersonating,
                 onTap: () => context.push('/account/password'),
               ),
               ListTile(
-                leading: const Icon(Icons.verified_user_outlined),
+                leading: const Icon(AppIcons.shieldCheck),
                 title: Text(l.twoFactor),
                 subtitle: Text(me.twoFactorEnabled ? l.twoFactorOn : l.twoFactorOff),
-                trailing: const Icon(Icons.chevron_right),
+                trailing: const Icon(AppIcons.chevronRight),
                 enabled: !s.impersonating,
                 onTap: () => context.push('/account/two-factor'),
               ),
               ListTile(
-                leading: const Icon(Icons.devices_outlined),
+                leading: const Icon(AppIcons.monitorSmartphone),
                 title: Text(l.devices),
-                trailing: const Icon(Icons.chevron_right),
+                trailing: const Icon(AppIcons.chevronRight),
                 enabled: !s.impersonating,
                 onTap: () => context.push('/account/devices'),
               ),
               ListTile(
-                leading: const Icon(Icons.notifications_outlined),
+                leading: const Icon(AppIcons.bell),
                 title: Text(l.notificationSettings),
-                trailing: const Icon(Icons.chevron_right),
+                trailing: const Icon(AppIcons.chevronRight),
                 onTap: () => context.push('/account/notifications'),
               ),
               ListTile(
-                leading: const Icon(Icons.settings_outlined),
+                leading: const Icon(AppIcons.settings),
                 title: Text(l.appSettings),
-                trailing: const Icon(Icons.chevron_right),
+                trailing: const Icon(AppIcons.chevronRight),
                 onTap: () => context.push('/account/app'),
               ),
             ],
@@ -153,7 +153,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           Group(
             children: [
               ListTile(
-                leading: Icon(Icons.logout, color: context.colors.error),
+                leading: Icon(AppIcons.logOut, color: context.colors.error),
                 title: Text(l.signOut, style: TextStyle(color: context.colors.error)),
                 onTap: () async {
                   await ref.read(pushServiceProvider).unregister();
@@ -162,7 +162,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
               if (!s.impersonating)
                 ListTile(
-                  leading: Icon(Icons.phonelink_erase, color: context.colors.error),
+                  leading: Icon(AppIcons.monitorOff, color: context.colors.error),
                   title: Text(l.signOutEverywhere, style: TextStyle(color: context.colors.error)),
                   onTap: () async {
                     if (await confirm(context, title: l.signOutEverywhere, action: l.signOut, danger: true)) {
@@ -362,7 +362,7 @@ class _TwoFactorScreenState extends ConsumerState<TwoFactorScreen> {
                   await SecureScreens.copySecret(_codes!.join('\n'));
                   if (context.mounted) showSnack(context, l.copiedSecret);
                 },
-                icon: const Icon(Icons.copy),
+                icon: const Icon(AppIcons.copy),
                 label: Text(l.copy),
               ),
             ] else if (_setup != null) ...[
@@ -522,7 +522,7 @@ class DevicesScreen extends ConsumerWidget {
           children: [
             for (final d in J.dataList(data))
               ListTile(
-                leading: Icon(d.s('platform') == 'ios' ? Icons.phone_iphone : Icons.phone_android),
+                leading: Icon(d.s('platform') == 'ios' ? AppIcons.smartphone : AppIcons.smartphone),
                 title: Text(d.s('name')),
                 subtitle: Text(
                   [
@@ -535,7 +535,7 @@ class DevicesScreen extends ConsumerWidget {
                     ? null
                     : IconButton(
                         tooltip: l.signOutDevice,
-                        icon: const Icon(Icons.logout),
+                        icon: const Icon(AppIcons.logOut),
                         onPressed: () async {
                           if (await confirm(context, title: l.signOutDeviceConfirm(d.s('name')), action: l.signOut, danger: true) && context.mounted) {
                             await runOk(context, () => ref.read(apiProvider).delete('mobile/devices/${d.i('id')}'));

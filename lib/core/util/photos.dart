@@ -18,8 +18,8 @@ Future<File?> pickPhoto(BuildContext context, {ImageSource? source, CropAspectRa
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ListTile(leading: const Icon(Icons.photo_camera_outlined), title: Text(c.l.takePhoto), onTap: () => Navigator.pop(c, ImageSource.camera)),
-          ListTile(leading: const Icon(Icons.photo_library_outlined), title: Text(c.l.choosePhoto), onTap: () => Navigator.pop(c, ImageSource.gallery)),
+          ListTile(leading: const Icon(AppIcons.camera), title: Text(c.l.takePhoto), onTap: () => Navigator.pop(c, ImageSource.camera)),
+          ListTile(leading: const Icon(AppIcons.images), title: Text(c.l.choosePhoto), onTap: () => Navigator.pop(c, ImageSource.gallery)),
         ],
       ),
     ),
