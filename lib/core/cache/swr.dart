@@ -89,13 +89,25 @@ final cachedProvider = StreamProvider.autoDispose.family<Cached<dynamic>, String
 
 /// Helpers for screens.
 extension CacheRefresh on WidgetRef {
-  /// Pull-to-refresh: fetch again and wait for the answer.
-  Future<void> refreshPath(String path) async {
-    invalidate(cachedProvider(path));
+  /// Pull-to-refresh: fetch again and wait for the NETWORK answer (or its
+  /// error). Waiting only for the first value returned the saved copy at once,
+  /// so the spinner vanished before anything was fetched.
+  Future<void> refreshPath(String path, {Duration timeout = const Duration(seconds: 20)}) async {
+    final done = Completer<void>();
+    final sub = listenManual<AsyncValue<Cached<dynamic>>>(cachedProvider(path), (_, next) {
+      if (done.isCompleted || next.isLoading) return;
+      if (next.hasError || (next.value != null && (!next.value!.fromCache || next.value!.error != null))) done.complete();
+    });
     try {
-      await read(cachedProvider(path).future);
-    } catch (_) {}
+      invalidate(cachedProvider(path));
+      await done.future.timeout(timeout, onTimeout: () {});
+    } finally {
+      sub.close();
+    }
   }
+
+  /// Several paths at once (the dashboards).
+  Future<void> refreshPaths(Iterable<String> paths) => Future.wait(paths.map(refreshPath));
 }
 
 /// Drops saved answers whose path starts with [prefix] and reloads open screens.
