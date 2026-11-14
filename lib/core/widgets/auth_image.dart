@@ -7,14 +7,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers.dart';
 
 final _bytesProvider = FutureProvider.autoDispose.family<Uint8List, String>((ref, path) async {
-  final r = await ref
-      .watch(apiProvider)
-      .dio
-      .get<List<int>>(
-        path,
-        options: Options(responseType: ResponseType.bytes, headers: {'Accept': '*/*'}),
-      );
-  ref.keepAlive();
+  // Everything that needs the Ref happens before the await (it may be disposed by then).
+  final dio = ref.watch(apiProvider).dio;
+  final cancel = CancelToken();
+  ref.onDispose(() => cancel.cancel('provider disposed'));
+  final r = await dio.get<List<int>>(
+    path,
+    options: Options(responseType: ResponseType.bytes, headers: {'Accept': '*/*'}),
+    cancelToken: cancel,
+  );
+  if (ref.mounted) ref.keepAlive();
   return Uint8List.fromList(r.data ?? const []);
 });
 

@@ -51,8 +51,8 @@ class ApiClient {
     }
   }
 
-  Future<dynamic> get(String path, {Map<String, dynamic>? query, Options? options}) =>
-      _run(() => dio.get<dynamic>(path, queryParameters: query, options: options));
+  Future<dynamic> get(String path, {Map<String, dynamic>? query, Options? options, CancelToken? cancelToken}) =>
+      _run(() => dio.get<dynamic>(path, queryParameters: query, options: options, cancelToken: cancelToken));
 
   Future<dynamic> post(String path, {Object? data, String? idempotencyKey, Options? options}) =>
       _run(() => dio.post<dynamic>(path, data: data, options: _withKey(options, idempotencyKey)));
