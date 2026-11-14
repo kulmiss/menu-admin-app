@@ -240,7 +240,7 @@ class _HoursState extends ConsumerState<_Hours> {
                 if ((r['closes_at'] as String).compareTo(r['opens_at'] as String) < 0)
                   Text('(${l.nextDay})', style: TextStyle(fontSize: 12, color: context.colors.onSurfaceVariant)),
                 const Spacer(),
-                IconButton(tooltip: l.delete, onPressed: () => setState(() => [_rows!.remove(r), _dirty = true]), icon: const Icon(Icons.close)),
+                IconButton(tooltip: l.delete, onPressed: () => setState(() => [_rows!.remove(r), _dirty = true]), icon: const Icon(AppIcons.x)),
               ],
             ),
           Align(
@@ -252,7 +252,7 @@ class _HoursState extends ConsumerState<_Hours> {
                   _dirty = true,
                 ],
               ),
-              icon: const Icon(Icons.add, size: 18),
+              icon: const Icon(AppIcons.plus, size: 18),
               label: Text(l.addBreak),
             ),
           ),
@@ -305,7 +305,7 @@ class _Closures extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.all(16),
             child: OutlinedButton.icon(
-              icon: const Icon(Icons.add),
+              icon: const Icon(AppIcons.plus),
               label: Text(l.addClosure),
               onPressed: () async {
                 final range = await showDateRangePicker(
@@ -332,12 +332,12 @@ class _Closures extends ConsumerWidget {
           ),
           for (final c in J.dataList(data))
             ListTile(
-              leading: const Icon(Icons.event_busy_outlined),
+              leading: const Icon(AppIcons.calendarX),
               title: Text('${formatDate(context, c.s('starts_on'))} – ${formatDate(context, c.s('ends_on'))}'),
               subtitle: c.t('note').isEmpty ? null : Text(c.t('note')),
               trailing: IconButton(
                 tooltip: l.delete,
-                icon: const Icon(Icons.delete_outline),
+                icon: const Icon(AppIcons.trash2),
                 onPressed: () async {
                   await runOk(context, () => ref.read(apiProvider).delete('$path/${c.i('id')}'));
                   ref.invalidate(cachedProvider(path));

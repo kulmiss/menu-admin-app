@@ -26,83 +26,82 @@ class MoreScreen extends ConsumerWidget {
     ListTile item(IconData icon, String title, String path, {String? feature, bool show = true}) => ListTile(
       leading: Icon(icon),
       title: Text(title),
-      trailing: feature != null && !can.feature(feature) ? const UpgradeBadge() : const Icon(Icons.chevron_right),
+      trailing: feature != null && !can.feature(feature) ? const UpgradeBadge() : const Icon(AppIcons.chevronRight),
       onTap: () => context.push('/r/${t.id}/$path'),
     );
 
-    return RestaurantScaffold(
+    return RestaurantScaffold.large(
       title: l.navMore,
-      body: ListView(
-        padding: const EdgeInsets.only(bottom: 32),
-        children: [
-          if ((s.me?.tenants.length ?? 0) > 1 || (s.me?.isSuperAdmin ?? false) && !s.impersonating)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-              child: OutlinedButton.icon(
-                onPressed: () => showRestaurantSwitcher(context, ref),
-                icon: const Icon(Icons.swap_horiz),
-                label: Text('${t.name} · ${l.switchRestaurant}'),
-              ),
+      children: [
+        if ((s.me?.tenants.length ?? 0) > 1 || (s.me?.isSuperAdmin ?? false) && !s.impersonating)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+            child: OutlinedButton.icon(
+              onPressed: () => showRestaurantSwitcher(context, ref),
+              icon: const Icon(AppIcons.arrowLeftRight),
+              label: Text('${t.name} · ${l.switchRestaurant}'),
             ),
-          SectionHeader(l.restaurantSection),
-          Group(
-            children: [
-              ListTile(leading: const Icon(Icons.qr_code_2), title: Text(l.openMyMenu), onTap: () => showMyMenuSheet(context, ref)),
-              item(Icons.table_rows_outlined, l.allDishes, 'all-dishes'),
-              if (can.manageRestaurant) ...[
-                item(Icons.storefront_outlined, l.branches, 'branches'),
-                item(Icons.qr_code, l.qrCodes, 'qr'),
-                if (can.printMaterials) item(Icons.print_outlined, l.printMaterials, 'print'),
-                item(Icons.palette_outlined, l.appearance, 'appearance'),
-                item(Icons.schedule, l.infoHours, 'info'),
-                item(Icons.campaign_outlined, l.promotions, 'promotions', feature: 'promotions'),
-                item(Icons.local_bar_outlined, l.happyHour, 'happy-hour', feature: 'price_periods'),
-              ],
-              if (can.viewTeam) item(Icons.group_outlined, l.team, 'team'),
-              if (can.viewActivity) item(Icons.history, l.activity, 'activity'),
-              if (can.viewBilling) item(Icons.receipt_long_outlined, l.billing, 'billing'),
-            ],
           ),
-          SectionHeader(l.account),
-          Group(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.notifications_outlined),
-                title: Text(l.notifications),
-                trailing: unreadCount > 0 ? Badge(label: Text('$unreadCount')) : const Icon(Icons.chevron_right),
-                onTap: () => context.push('/inbox'),
-              ),
-              ListTile(
-                leading: const Icon(Icons.person_outline),
-                title: Text(l.profile),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => context.push('/account'),
-              ),
-              ListTile(
-                leading: const Icon(Icons.settings_outlined),
-                title: Text(l.settings),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => context.push('/account/app'),
-              ),
+        SectionHeader(l.restaurantSection),
+        Group(
+          children: [
+            ListTile(leading: const Icon(AppIcons.qrCode), title: Text(l.openMyMenu), onTap: () => showMyMenuSheet(context, ref)),
+            item(AppIcons.rows3, l.allDishes, 'all-dishes'),
+            if (can.soldOut) item(AppIcons.circleMinus, l.soldOut, 'sold-out'),
+            if (can.viewInsights) item(AppIcons.chartLine, l.insights, 'insights'),
+            if (can.manageRestaurant) ...[
+              item(AppIcons.store, l.branches, 'branches'),
+              item(AppIcons.qrCode, l.qrCodes, 'qr'),
+              if (can.printMaterials) item(AppIcons.printer, l.printMaterials, 'print'),
+              item(AppIcons.palette, l.appearance, 'appearance'),
+              item(AppIcons.clock, l.infoHours, 'info'),
+              item(AppIcons.megaphone, l.promotions, 'promotions', feature: 'promotions'),
+              item(AppIcons.wine, l.happyHour, 'happy-hour', feature: 'price_periods'),
             ],
-          ),
-          if ((s.me?.isSuperAdmin ?? false) && !s.impersonating) ...[
-            SectionHeader(l.platform),
-            Group(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.admin_panel_settings_outlined),
-                  title: Text(l.openPlatform),
-                  onTap: () async {
-                    await ref.read(sessionProvider.notifier).selectTenant(null);
-                    if (context.mounted) context.go('/p');
-                  },
-                ),
-              ],
+            if (can.viewTeam) item(AppIcons.users, l.team, 'team'),
+            if (can.viewActivity) item(AppIcons.history, l.activity, 'activity'),
+            if (can.viewBilling) item(AppIcons.receipt, l.billing, 'billing'),
+          ],
+        ),
+        SectionHeader(l.account),
+        Group(
+          children: [
+            ListTile(
+              leading: const Icon(AppIcons.bell),
+              title: Text(l.notifications),
+              trailing: unreadCount > 0 ? Badge(label: Text('$unreadCount')) : const Icon(AppIcons.chevronRight),
+              onTap: () => context.push('/inbox'),
+            ),
+            ListTile(
+              leading: const Icon(AppIcons.user),
+              title: Text(l.profile),
+              trailing: const Icon(AppIcons.chevronRight),
+              onTap: () => context.push('/account'),
+            ),
+            ListTile(
+              leading: const Icon(AppIcons.settings),
+              title: Text(l.settings),
+              trailing: const Icon(AppIcons.chevronRight),
+              onTap: () => context.push('/account/app'),
             ),
           ],
+        ),
+        if ((s.me?.isSuperAdmin ?? false) && !s.impersonating) ...[
+          SectionHeader(l.platform),
+          Group(
+            children: [
+              ListTile(
+                leading: const Icon(AppIcons.shieldUser),
+                title: Text(l.openPlatform),
+                onTap: () async {
+                  await ref.read(sessionProvider.notifier).selectTenant(null);
+                  if (context.mounted) context.go('/p');
+                },
+              ),
+            ],
+          ),
         ],
-      ),
+      ],
     );
   }
 }
@@ -131,7 +130,7 @@ Future<void> showRestaurantSwitcher(BuildContext context, WidgetRef ref) {
             ),
           if (s.me!.isSuperAdmin && !s.impersonating)
             ListTile(
-              leading: const Icon(Icons.admin_panel_settings_outlined),
+              leading: const Icon(AppIcons.shieldUser),
               title: Text(c.l.platform),
               onTap: () {
                 Navigator.pop(c);

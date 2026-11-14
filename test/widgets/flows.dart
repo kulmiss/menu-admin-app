@@ -10,6 +10,7 @@ import 'package:menu_admin/core/auth/token_store.dart';
 import 'package:menu_admin/core/providers.dart';
 
 import '../helpers/fake_api.dart';
+import '../store/store_screenshots_test.dart' show demoPlatform;
 
 Map<String, dynamic> dish({bool soldOut = false}) => {
   'id': 41,
@@ -171,7 +172,7 @@ Future<void> loginWithTwoFactor(WidgetTester tester) async {
 Future<void> toggleSoldOut(WidgetTester tester) async {
   final api = restaurantServer(role: 'staff');
   await startApp(tester, api, token: 'tok');
-  await tester.tap(find.text('Sold out').first);
+  await tester.tap(find.text('Mark sold out'));
   await tester.pumpAndSettle();
   await tester.tap(find.text('All dishes'));
   await tester.pumpAndSettle();
@@ -207,63 +208,34 @@ Future<void> editDish(WidgetTester tester) async {
   expect(find.text('Dish saved'), findsOneWidget);
 }
 
-Future<void> recordPaymentFlow(WidgetTester tester) async {
-  final restaurant = {
-    'id': 9,
-    'name': 'Nine Wells Coffee',
-    'state': 'active',
-    'currency_code': 'ETB',
-    'plan': {'id': 3, 'name': 'Pro'},
-    'owner': {'name': 'Hana', 'email': 'hana@example.com'},
-    'counts': {},
-    'features': {},
-    'overrides': {},
-    'tags': [],
-    'members': [],
-    'payments': [],
-    'url': 'https://menu.test/nine-wells',
-  };
-  final api = FakeApi()
-    ..json('GET me', meJson(superAdmin: true))
-    ..json('GET platform/restaurants/9', {'data': restaurant})
-    ..json('GET platform/plans', {
-      'data': [
-        {
-          'id': 3,
-          'name': {'en': 'Pro'},
-          'currency': 'ETB',
-          'price_minor': 99000,
-        },
-      ],
-    })
-    ..json('GET platform/tags', {'data': []})
-    ..json('GET platform/restaurants/9/notes', {'data': []})
+/// Super Admin: overview, then an emergency switch (maintenance, with a confirm).
+Future<void> superAdminSwitchFlow(WidgetTester tester) async {
+  final api = demoPlatform()
     ..on(
-      'POST platform/restaurants/9/payments',
+      'PUT platform/mobile-app',
       (c) => (
-        201,
+        200,
         {
-          'data': {'id': 1},
+          'data': {'maintenance': true},
         },
       ),
     );
   final container = await startApp(tester, api, token: 'admin-tok');
   expect(container.read(sessionProvider).platformMode, isTrue);
+  expect(find.text('Super Admin'), findsOneWidget);
+  expect(find.text('128'), findsOneWidget);
+  expect(find.text('Open Super Admin on the web'), findsNothing, reason: 'below the fold until scrolled');
 
+  await tester.tap(find.byKey(const Key('sa-maintenance')));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('Turn on'));
+  await tester.pumpAndSettle();
+  expect(api.called('PUT', 'platform/mobile-app').single.body, {'maintenance': true});
+
+  // Old links (pushes, bookmarks) land on the overview.
   container.read(routerProvider).go('/p/restaurants/9/payments');
   await tester.pumpAndSettle();
-  await tester.tap(find.text('Record payment'));
-  await tester.pumpAndSettle();
-  await tester.enterText(find.byKey(const Key('paymentAmount')), '9900');
-  await tester.tap(find.byKey(const Key('savePayment')));
-  await tester.pumpAndSettle();
-
-  final call = api.called('POST', 'platform/restaurants/9/payments').single;
-  expect(call.body['amount_minor'], 990000);
-  expect(call.body['months'], 12);
-  expect(call.body['method'], 'mobile_money');
-  expect(call.body['plan_id'], 3);
-  expect(find.text('Payment saved. Invoice created.'), findsOneWidget);
+  expect(find.text('Super Admin'), findsOneWidget);
 }
 
 Future<ProviderContainer> startAppNoSettle(WidgetTester tester, FakeApi api) async {

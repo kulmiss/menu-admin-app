@@ -47,6 +47,8 @@ class AdaptiveShell extends StatelessWidget {
         Expanded(child: child),
       ],
     );
+    // One screen (Super Admin): no navigation bar.
+    if (items.length < 2) return Scaffold(body: body);
     if (width < 600) {
       return Scaffold(
         body: body,

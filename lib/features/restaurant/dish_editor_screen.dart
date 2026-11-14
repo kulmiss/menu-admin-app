@@ -71,18 +71,22 @@ int? textToMinor(String text) {
 }
 
 class DishEditorScreen extends StatelessWidget {
-  const DishEditorScreen({super.key, this.dishId, this.menuId, this.categoryId});
+  const DishEditorScreen({super.key, this.dishId, this.menuId, this.categoryId, this.autoPhoto = false});
   final int? dishId;
   final int? menuId;
   final int? categoryId;
 
+  /// Home › "Add dish with photo": open the camera/gallery choice right away.
+  final bool autoPhoto;
+
   @override
-  Widget build(BuildContext context) => DishEditor(dishId: dishId, menuId: menuId, categoryId: categoryId);
+  Widget build(BuildContext context) => DishEditor(dishId: dishId, menuId: menuId, categoryId: categoryId, autoPhoto: autoPhoto);
 }
 
 /// Every field of a dish, photos from camera or gallery (crop, reorder, main).
 class DishEditor extends ConsumerStatefulWidget {
-  const DishEditor({super.key, this.dishId, this.menuId, this.categoryId, this.embedded = false, this.onClosed});
+  const DishEditor({super.key, this.dishId, this.menuId, this.categoryId, this.embedded = false, this.onClosed, this.autoPhoto = false});
+  final bool autoPhoto;
   final int? dishId;
   final int? menuId;
   final int? categoryId;
@@ -136,6 +140,7 @@ class _DishEditorState extends ConsumerState<DishEditor> {
       c.addListener(_markDirty);
     }
     if (_isNewDish) _loaded = true;
+    if (_isNewDish && widget.autoPhoto) WidgetsBinding.instance.addPostFrameCallback((_) => mounted ? _addPhoto() : null);
   }
 
   void _markDirty() {
@@ -299,7 +304,7 @@ class _DishEditorState extends ConsumerState<DishEditor> {
       appBar: AppBar(
         automaticallyImplyLeading: !widget.embedded,
         leading: widget.embedded
-            ? IconButton(tooltip: l.close, icon: const Icon(Icons.close), onPressed: () async => await _confirmLeave() ? widget.onClosed?.call() : null)
+            ? IconButton(tooltip: l.close, icon: const Icon(AppIcons.x), onPressed: () async => await _confirmLeave() ? widget.onClosed?.call() : null)
             : null,
         title: Text(_isNewDish ? l.newDish : l.editDish),
         actions: [
@@ -557,12 +562,12 @@ class _DishEditorState extends ConsumerState<DishEditor> {
                       validator: (v) => textToMinor(v ?? '') == null ? l.requiredField : null,
                     ),
                   ),
-                  if (!locked) IconButton(tooltip: l.delete, onPressed: () => setState(() => _sizes.removeAt(i)), icon: const Icon(Icons.close)),
+                  if (!locked) IconButton(tooltip: l.delete, onPressed: () => setState(() => _sizes.removeAt(i)), icon: const Icon(AppIcons.x)),
                 ],
               ),
             ),
           if (!locked && _sizes.length < 20)
-            TextButton.icon(onPressed: () => setState(() => _sizes.add(_SizeRow())), icon: const Icon(Icons.add), label: Text(l.addSize)),
+            TextButton.icon(onPressed: () => setState(() => _sizes.add(_SizeRow())), icon: const Icon(AppIcons.plus), label: Text(l.addSize)),
         ],
       ],
     );
@@ -618,7 +623,7 @@ class _PhotoStrip extends StatelessWidget {
                             : Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(Icons.add_a_photo_outlined),
+                                  const Icon(AppIcons.imagePlus),
                                   const SizedBox(height: 6),
                                   Text(l.addPhoto, style: const TextStyle(fontSize: 12)),
                                 ],
@@ -643,7 +648,7 @@ class _PhotoStrip extends StatelessWidget {
                                 children: [
                                   if (i > 0)
                                     ListTile(
-                                      leading: const Icon(Icons.star_outline),
+                                      leading: const Icon(AppIcons.star),
                                       title: Text(c.l.makeMain),
                                       onTap: () {
                                         Navigator.pop(c);
@@ -651,7 +656,7 @@ class _PhotoStrip extends StatelessWidget {
                                       },
                                     ),
                                   ListTile(
-                                    leading: Icon(Icons.delete_outline, color: c.colors.error),
+                                    leading: Icon(AppIcons.trash2, color: c.colors.error),
                                     title: Text(c.l.removePhoto),
                                     onTap: () {
                                       Navigator.pop(c);

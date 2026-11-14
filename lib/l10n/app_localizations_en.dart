@@ -10,9 +10,6 @@ class LEn extends L {
   LEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'Menu Admin';
-
-  @override
   String get ok => 'OK';
 
   @override
@@ -46,9 +43,6 @@ class LEn extends L {
   String get done => 'Done';
 
   @override
-  String get undo => 'Undo';
-
-  @override
   String get search => 'Search';
 
   @override
@@ -70,16 +64,7 @@ class LEn extends L {
   String get copiedSecret => 'Copied. It is removed from the clipboard in 1 minute.';
 
   @override
-  String get yes => 'Yes';
-
-  @override
-  String get no => 'No';
-
-  @override
   String get next => 'Next';
-
-  @override
-  String get back => 'Back';
 
   @override
   String get none => 'None';
@@ -95,11 +80,6 @@ class LEn extends L {
 
   @override
   String get offlineBanner => 'You\'re offline. Showing saved data; changes need a connection.';
-
-  @override
-  String updatedAgo(Object time) {
-    return 'Updated $time';
-  }
 
   @override
   String savedCopy(Object time) {
@@ -273,25 +253,134 @@ class LEn extends L {
   String get navMenu => 'Menu';
 
   @override
+  String get saTitle => 'Super Admin';
+
+  @override
+  String get saRestaurants => 'Restaurants';
+
+  @override
+  String get saActive => 'Paying';
+
+  @override
+  String get saTrial => 'On trial';
+
+  @override
+  String get saSignups30 => 'New sign-ups · 30 days';
+
+  @override
+  String get saViews30 => 'Menu views · 30 days';
+
+  @override
+  String get saEmergency => 'Emergency switches';
+
+  @override
+  String get saEmergencyHint => 'Take effect on every phone within a minute.';
+
+  @override
+  String get saMaintenance => 'App maintenance';
+
+  @override
+  String get saMaintenanceHint => 'Restaurant users see a maintenance screen. Super Admins still get in.';
+
+  @override
+  String get saMaintenanceConfirm => 'Put the app in maintenance? Every restaurant user is locked out of the app until you turn it off.';
+
+  @override
+  String get saSignup => 'Self sign-up';
+
+  @override
+  String get saSignupHint => 'New restaurants can create an account on the website.';
+
+  @override
+  String get saPush => 'Push notifications';
+
+  @override
+  String get saPushHint => 'Phones receive notifications from the app.';
+
+  @override
+  String get saSaSignIn => 'Super Admin sign-in in the app';
+
+  @override
+  String get saSaSignInHint => 'Off: Super Admins use the website only.';
+
+  @override
+  String get saSaSignInConfirm => 'Turn off Super Admin sign-in? This phone loses Super Admin access at once; turn it back on from the website.';
+
+  @override
+  String get saOpenWeb => 'Open Super Admin on the web';
+
+  @override
+  String get saOpenWebHint => 'Restaurants, plans, payments, messages, backups and every other setting.';
+
+  @override
+  String get turnOff => 'Turn off';
+
+  @override
+  String get turnOn => 'Turn on';
+
+  @override
+  String get navOrders => 'Orders';
+
+  @override
+  String homeTodaySubtitle(Object date) {
+    return 'Today · $date';
+  }
+
+  @override
+  String get soldOutNow => 'Sold out now';
+
+  @override
+  String get quickActions => 'Quick actions';
+
+  @override
+  String get actionChangePrice => 'Change a price';
+
+  @override
+  String get actionHideDish => 'Hide or show a dish';
+
+  @override
+  String get actionAddDish => 'Add dish with photo';
+
+  @override
+  String get actionShareMenu => 'Share menu link / QR';
+
+  @override
+  String get actionSoldOut => 'Mark sold out';
+
+  @override
+  String get manageSection => 'Manage';
+
+  @override
+  String get ordersOff => '“My order” is off. Guests can\'t build a list to show the waiter.';
+
+  @override
+  String get ordersTurnOn => 'Turn on in Appearance';
+
+  @override
+  String get ordersEmpty => 'No lists shown yet. They appear here when guests use “My order”.';
+
+  @override
+  String get listsShown => 'Lists shown';
+
+  @override
+  String get averageList => 'Average list';
+
+  @override
+  String get days7 => '7 days';
+
+  @override
+  String get days30 => '30 days';
+
+  @override
+  String weekViews(int count) {
+    return '$count views this week';
+  }
+
+  @override
   String get navSoldOut => 'Sold out';
 
   @override
-  String get navInsights => 'Insights';
-
-  @override
   String get navMore => 'More';
-
-  @override
-  String get navRestaurants => 'Restaurants';
-
-  @override
-  String get navApprovals => 'Approvals';
-
-  @override
-  String get navSearch => 'Search';
-
-  @override
-  String get navDashboard => 'Dashboard';
 
   @override
   String viewingAs(Object name) {
@@ -311,14 +400,6 @@ class LEn extends L {
   String get openPlatform => 'Open the platform';
 
   @override
-  String dashSoldOut(Object count) {
-    return 'Sold out — $count dishes';
-  }
-
-  @override
-  String get dashSoldOutNone => 'Nothing is sold out';
-
-  @override
   String get manage => 'Manage';
 
   @override
@@ -328,9 +409,6 @@ class LEn extends L {
   String setupProgress(Object done, Object total) {
     return '$done of $total';
   }
-
-  @override
-  String get setupHide => 'Hide';
 
   @override
   String get setup_logo => 'Add your logo';
@@ -354,12 +432,6 @@ class LEn extends L {
   String get setup_qr => 'Download or print your QR codes';
 
   @override
-  String get viewsWeek => 'Menu views · 7 days';
-
-  @override
-  String get scansWeek => 'QR scans · 7 days';
-
-  @override
   String get viewsToday => 'Views today';
 
   @override
@@ -374,9 +446,6 @@ class LEn extends L {
   String get viewsChart => 'Menu views';
 
   @override
-  String get last7days => 'Last 7 days';
-
-  @override
   String get missingPhotosTitle => 'Dishes guests look at, without a photo';
 
   @override
@@ -388,20 +457,7 @@ class LEn extends L {
   String get myOrderTitle => '“My order” lists';
 
   @override
-  String myOrderShown(Object count) {
-    return '$count lists shown · 30 days';
-  }
-
-  @override
-  String myOrderAverage(Object amount) {
-    return 'Average $amount';
-  }
-
-  @override
   String get myOrderTop => 'Most added';
-
-  @override
-  String get planTitle => 'Plan and usage';
 
   @override
   String get planTrial => 'Trial';
@@ -441,16 +497,10 @@ class LEn extends L {
   String get menuLink => 'Your menu link';
 
   @override
-  String get shareMenu => 'Share menu link';
-
-  @override
   String get copyLink => 'Copy link';
 
   @override
   String get showQr => 'QR code';
-
-  @override
-  String get menus => 'Menus';
 
   @override
   String get newMenu => 'New menu';
@@ -484,9 +534,6 @@ class LEn extends L {
 
   @override
   String get scheduleTimes => 'At set times';
-
-  @override
-  String get weekdays => 'Weekdays';
 
   @override
   String get from => 'From';
@@ -525,9 +572,6 @@ class LEn extends L {
   String get noDishes => 'No dishes in this category';
 
   @override
-  String get addDish => 'Add dish';
-
-  @override
   String get dish => 'Dish';
 
   @override
@@ -543,28 +587,16 @@ class LEn extends L {
   String get dragToReorder => 'Drag to reorder';
 
   @override
-  String get moveUp => 'Move up';
-
-  @override
-  String get moveDown => 'Move down';
-
-  @override
   String get available => 'Available';
 
   @override
   String get soldOut => 'Sold out';
 
   @override
-  String get soldOutSince => 'Sold out';
-
-  @override
   String get availableAgain => 'Available again';
 
   @override
   String get markSoldOut => 'Sold out';
-
-  @override
-  String get guestsSeeSoon => 'Saved. Guests see it within seconds.';
 
   @override
   String priceFrom(Object price) {
@@ -845,9 +877,6 @@ class LEn extends L {
   String get exportCsv => 'Export CSV';
 
   @override
-  String get selectAll => 'Select all';
-
-  @override
   String get sortBy => 'Sort';
 
   @override
@@ -864,9 +893,6 @@ class LEn extends L {
 
   @override
   String get noMatches => 'Nothing matches';
-
-  @override
-  String get clearFilters => 'Clear filters';
 
   @override
   String get branches => 'Branches';
@@ -905,9 +931,6 @@ class LEn extends L {
 
   @override
   String get addTables => 'Add tables';
-
-  @override
-  String get tableLabel => 'Table name';
 
   @override
   String get tablesFrom => 'From number';
@@ -977,9 +1000,6 @@ class LEn extends L {
 
   @override
   String get material => 'Material';
-
-  @override
-  String get design => 'Design';
 
   @override
   String get darkPrint => 'Dark';
@@ -1123,16 +1143,10 @@ class LEn extends L {
   String get show_other_branches => 'Other branches in the footer';
 
   @override
-  String get preview => 'Preview';
-
-  @override
   String get livePreview => 'Live preview';
 
   @override
   String get contrastWarning => 'This colour is light; we darken it a little on the menu so text stays readable.';
-
-  @override
-  String get themes => 'Themes';
 
   @override
   String get unsavedChanges => 'Unsaved changes';
@@ -1189,12 +1203,6 @@ class LEn extends L {
   String get note => 'Note';
 
   @override
-  String get startsOn => 'From';
-
-  @override
-  String get endsOn => 'Until';
-
-  @override
   String get nextDay => 'next day';
 
   @override
@@ -1222,9 +1230,6 @@ class LEn extends L {
   String get text => 'Text';
 
   @override
-  String get linkedDish => 'Linked dish';
-
-  @override
   String get startsAt => 'Starts';
 
   @override
@@ -1235,9 +1240,6 @@ class LEn extends L {
 
   @override
   String get on => 'On';
-
-  @override
-  String get off => 'Off';
 
   @override
   String get happyHour => 'Happy hour';
@@ -1261,19 +1263,10 @@ class LEn extends L {
   String get value => 'Value';
 
   @override
-  String get allDay => 'All day';
-
-  @override
   String get addDishes => 'Add dishes';
 
   @override
   String get insights => 'Insights';
-
-  @override
-  String get days7 => '7 days';
-
-  @override
-  String get days30 => '30 days';
 
   @override
   String get days90 => '90 days';
@@ -1360,9 +1353,6 @@ class LEn extends L {
 
   @override
   String get billing => 'Billing';
-
-  @override
-  String get plan => 'Plan';
 
   @override
   String get paidUntil => 'Paid until';
@@ -1501,9 +1491,6 @@ class LEn extends L {
   }
 
   @override
-  String get emailChangedVerify => 'Check your inbox to confirm the new e-mail.';
-
-  @override
   String emailChangeSent(String email) {
     return 'We sent a link to $email. Your address changes when you click it.';
   }
@@ -1554,6 +1541,12 @@ class LEn extends L {
 
   @override
   String get appSettings => 'App settings';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
 
   @override
   String get appLock => 'App lock';
@@ -1629,7 +1622,7 @@ class LEn extends L {
   String get theme => 'Theme';
 
   @override
-  String get themeSystem => 'Follow the system';
+  String get themeSystem => 'Phone';
 
   @override
   String version(Object version) {
@@ -1649,515 +1642,20 @@ class LEn extends L {
   String get supportEmail => 'E-mail support';
 
   @override
-  String get rateApp => 'Rate the app';
-
-  @override
   String get checkUpdates => 'Check for updates';
-
-  @override
-  String get upToDate => 'You have the latest version';
 
   @override
   String get lockedTitle => 'Menu Admin is locked';
 
   @override
-  String get kpiRestaurants => 'Restaurants';
-
-  @override
-  String get kpiActive => 'Active (daily avg.)';
-
-  @override
-  String get kpiNew => 'New';
-
-  @override
-  String get kpiPaying => 'Paying';
-
-  @override
-  String get kpiFree => 'Free';
-
-  @override
-  String get kpiMrr => 'MRR';
-
-  @override
-  String get kpiRevenue => 'Revenue';
-
-  @override
-  String get kpiViews => 'Menu views';
-
-  @override
-  String get kpiScans => 'QR scans';
-
-  @override
-  String vsPrevious(Object change) {
-    return '$change vs previous';
-  }
-
-  @override
-  String get growth => 'Growth';
-
-  @override
-  String get healthGroups => 'Restaurant health';
-
-  @override
-  String get health_healthy => 'Healthy';
-
-  @override
-  String get health_at_risk => 'At risk';
-
-  @override
-  String get health_inactive => 'Inactive';
-
-  @override
-  String get needsAttention => 'Needs attention';
-
-  @override
-  String get expiringSoon => 'Ending soon';
-
-  @override
-  String get inactiveRestaurants => 'Inactive';
-
-  @override
-  String get newSignups => 'New sign-ups';
-
-  @override
-  String get systemHealth => 'System health';
-
-  @override
-  String get followUpsDue => 'Follow-ups due';
-
-  @override
-  String get topRestaurants => 'Top restaurants';
-
-  @override
-  String get featureUse => 'Feature use';
-
-  @override
-  String get days365 => '1 year';
-
-  @override
-  String get restaurants => 'Restaurants';
-
-  @override
   String get owner => 'Owner';
-
-  @override
-  String get created => 'Created';
-
-  @override
-  String get overview => 'Overview';
-
-  @override
-  String get payments => 'Payments';
-
-  @override
-  String get features => 'Features';
-
-  @override
-  String get notesTags => 'Notes and tags';
-
-  @override
-  String get recordPayment => 'Record payment';
-
-  @override
-  String get amount => 'Amount';
 
   @override
   String get method => 'Method';
 
   @override
-  String get method_cash => 'Cash';
-
-  @override
-  String get method_bank => 'Bank transfer';
-
-  @override
-  String get method_mobile_money => 'Mobile money';
-
-  @override
-  String get method_other => 'Other';
-
-  @override
-  String get reference => 'Reference';
-
-  @override
-  String get paidOn => 'Paid on';
-
-  @override
-  String get months => 'Months';
-
-  @override
-  String get paymentSaved => 'Payment saved. Invoice created.';
-
-  @override
-  String get invoice => 'Invoice';
-
-  @override
-  String get resendInvoice => 'E-mail again';
-
-  @override
-  String get voidInvoice => 'Void';
-
-  @override
-  String voidConfirm(Object number) {
-    return 'Void invoice $number?';
-  }
-
-  @override
-  String get suspend => 'Suspend';
-
-  @override
-  String get unsuspend => 'Restore access';
-
-  @override
-  String get suspendReason => 'Reason (shown to the owner)';
-
-  @override
-  String get deleteRestaurant => 'Delete restaurant';
-
-  @override
-  String get restoreRestaurant => 'Restore restaurant';
-
-  @override
-  String get deleteRestaurantBody => 'It can be restored for 30 days, then it\'s gone for good.';
-
-  @override
-  String get logInAs => 'Log in as owner';
-
-  @override
-  String get logInAsBody => 'You\'ll see the admin as the owner for up to 2 hours. Password, e-mail and some other changes stay blocked.';
-
-  @override
-  String get trialUntil => 'Trial until';
-
-  @override
-  String get changePlan => 'Change plan';
-
-  @override
-  String get setTrial => 'Set trial end';
-
-  @override
-  String get featureDefault => 'Plan default';
-
-  @override
   String get featureOn => 'On for this restaurant';
 
   @override
-  String get featureOff => 'Off for this restaurant';
-
-  @override
-  String get notes => 'Notes';
-
-  @override
-  String get addNote => 'Add note';
-
-  @override
-  String get followUp => 'Follow-up';
-
-  @override
-  String get followUpOn => 'Follow up on';
-
-  @override
-  String get followUpReason => 'Why';
-
-  @override
-  String get clearFollowUp => 'Clear follow-up';
-
-  @override
-  String get menusCount => 'Menus';
-
-  @override
-  String get itemsCount => 'Dishes';
-
-  @override
-  String get views30 => 'Views (30 days)';
-
-  @override
-  String get approvals => 'Approvals';
-
-  @override
-  String get approve => 'Approve';
-
-  @override
-  String get reject => 'Reject';
-
-  @override
-  String get rejectReason => 'Reason for the owner';
-
-  @override
-  String get approvalsEmpty => 'No sign-ups waiting';
-
-  @override
-  String get plans => 'Plans';
-
-  @override
-  String get planName => 'Plan name';
-
-  @override
-  String get priceMonth => 'Price per month';
-
-  @override
-  String get priceYear => 'Price per year';
-
-  @override
-  String get trialDays => 'Trial days';
-
-  @override
-  String get limits => 'Limits';
-
-  @override
-  String get limit_photos => 'Photos';
-
-  @override
-  String get limit_branches => 'Branches';
-
-  @override
-  String get limit_menus => 'Menus';
-
-  @override
-  String get limit_items => 'Dishes';
-
-  @override
-  String get limit_tables => 'Tables';
-
-  @override
-  String get limit_members => 'Team members';
-
-  @override
-  String get limit_languages => 'Languages';
-
-  @override
-  String get publicPlan => 'Shown on the website';
-
-  @override
-  String restaurantsOnPlan(Object count) {
-    return '$count restaurants';
-  }
-
-  @override
-  String get invoicesTitle => 'Invoices';
-
-  @override
-  String get paymentsTitle => 'Payments';
-
-  @override
-  String get messages => 'Messages';
-
-  @override
-  String get newMessage => 'New e-mail';
-
-  @override
-  String get subject => 'Subject';
-
-  @override
   String get message => 'Message';
-
-  @override
-  String get recipients => 'Recipients';
-
-  @override
-  String recipientsCount(Object count) {
-    return '$count restaurant owners';
-  }
-
-  @override
-  String get filterPlan => 'Plan';
-
-  @override
-  String get filterStatus => 'Status';
-
-  @override
-  String get filterTag => 'Tag';
-
-  @override
-  String get filterInactiveDays => 'Inactive for (days)';
-
-  @override
-  String get status_active => 'Paying';
-
-  @override
-  String get status_trial => 'Trial';
-
-  @override
-  String get status_expiring => 'Ending soon';
-
-  @override
-  String get status_expired => 'Ended';
-
-  @override
-  String get status_suspended => 'Suspended';
-
-  @override
-  String get sendTest => 'Send me a test';
-
-  @override
-  String get testSent => 'Test sent';
-
-  @override
-  String get sendNow => 'Send';
-
-  @override
-  String sendConfirm(Object count) {
-    return 'Send to $count owners?';
-  }
-
-  @override
-  String get campaignSent => 'Sending started';
-
-  @override
-  String get sent => 'Sent';
-
-  @override
-  String get failed => 'Failed';
-
-  @override
-  String get waiting => 'Waiting';
-
-  @override
-  String get retryFailed => 'Resend to failed';
-
-  @override
-  String get placeholdersHint => 'Placeholders in curly brackets: restaurant_name, owner_name, plan, menu_link.';
-
-  @override
-  String get backups => 'Backups';
-
-  @override
-  String get backUpNow => 'Back up now';
-
-  @override
-  String get backupQueued => 'Backup started';
-
-  @override
-  String get backupDownloadsWeb => 'Downloads are on the web admin only, for safety.';
-
-  @override
-  String diskFree(Object free, Object total) {
-    return '$free free of $total';
-  }
-
-  @override
-  String get backupProblem => 'Problem';
-
-  @override
-  String get offsite => 'Off-site';
-
-  @override
-  String get globalSearch => 'Search restaurants, owners, invoices…';
-
-  @override
-  String get group_restaurants => 'Restaurants';
-
-  @override
-  String get group_owners => 'Owners';
-
-  @override
-  String get group_invoices => 'Invoices';
-
-  @override
-  String get group_payments => 'Payments';
-
-  @override
-  String get group_tags => 'Tags';
-
-  @override
-  String get searchMin => 'Type at least 2 letters';
-
-  @override
-  String get announcements => 'Announcements';
-
-  @override
-  String get newAnnouncementTitle => 'New announcement';
-
-  @override
-  String get level => 'Level';
-
-  @override
-  String get level_info => 'Info';
-
-  @override
-  String get level_warning => 'Warning';
-
-  @override
-  String get allPlans => 'All plans';
-
-  @override
-  String get platformSettings => 'Settings';
-
-  @override
-  String get tab_general => 'General';
-
-  @override
-  String get tab_signup => 'Sign-up';
-
-  @override
-  String get tab_landing => 'Landing page';
-
-  @override
-  String get tab_billing => 'Billing';
-
-  @override
-  String get tab_legal => 'Terms and privacy';
-
-  @override
-  String get tab_images => 'Logo and link preview';
-
-  @override
-  String get tab_mail => 'E-mail (SMTP)';
-
-  @override
-  String get tab_app => 'Mobile app';
-
-  @override
-  String get resetDefault => 'Reset to default text';
-
-  @override
-  String get smtpHost => 'Host';
-
-  @override
-  String get smtpPort => 'Port';
-
-  @override
-  String get smtpEncryption => 'Encryption';
-
-  @override
-  String get smtpUsername => 'Username';
-
-  @override
-  String get smtpPassword => 'Password';
-
-  @override
-  String get smtpFromAddress => 'From address';
-
-  @override
-  String get smtpFromName => 'From name';
-
-  @override
-  String get sendTestTo => 'Send a test e-mail to';
-
-  @override
-  String get uploadImage => 'Upload';
-
-  @override
-  String get appMinVersion => 'Minimum app version';
-
-  @override
-  String get appLatestVersion => 'Latest app version';
-
-  @override
-  String get appFlags => 'Feature flags';
-
-  @override
-  String get addFlag => 'Add flag';
-
-  @override
-  String get flagName => 'Flag name';
-
-  @override
-  String get platformActivity => 'Activity log';
-
-  @override
-  String get logInAsStarted => 'Now viewing as the owner';
-
-  @override
-  String get resendWelcome => 'Send the welcome e-mail again';
 }
