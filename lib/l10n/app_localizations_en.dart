@@ -1530,6 +1530,10 @@ class LEn extends L {
   String get pinWrong => 'Wrong PIN';
 
   @override
+  String get rootWarning =>
+      'This phone looks rooted or jailbroken. The app works, but other apps on it may be able to read your restaurant data. If you can, use a phone that is not modified.';
+
+  @override
   String pinWait(int seconds) {
     return 'Too many wrong PINs. Try again in $seconds s.';
   }

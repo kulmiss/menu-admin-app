@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/app_config.dart';
 import '../../core/platform/app_lock.dart';
+import '../../core/platform/device_integrity.dart';
 import '../../core/platform/secure_screen.dart';
 import '../../core/platform/updates.dart';
 import '../../core/providers.dart';
@@ -54,11 +55,27 @@ class AppGates extends ConsumerStatefulWidget {
 
 class _AppGatesState extends ConsumerState<AppGates> with WidgetsBindingObserver {
   bool _cover = false;
+  bool _rootWarning = false;
+
+  static const _warnedKey = 'integrity_warned';
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkDevice());
+  }
+
+  /// Rooted / jailbroken phone: one warning, then never again (L12).
+  Future<void> _checkDevice() async {
+    final store = ref.read(tokenStoreProvider);
+    if (await store.read(_warnedKey) == '1') return;
+    if (await DeviceIntegrity.looksCompromised() && mounted) setState(() => _rootWarning = true);
+  }
+
+  Future<void> _dismissRootWarning() async {
+    await ref.read(tokenStoreProvider).write(_warnedKey, '1');
+    if (mounted) setState(() => _rootWarning = false);
   }
 
   @override
@@ -87,6 +104,13 @@ class _AppGatesState extends ConsumerState<AppGates> with WidgetsBindingObserver
       children: [
         widget.child,
         if (signedIn && lock.enabled && lock.locked) const Positioned.fill(child: LockScreen()),
+        if (_rootWarning)
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            child: SafeArea(child: RootWarning(onClose: _dismissRootWarning)),
+          ),
         if (_cover)
           Positioned.fill(
             child: ColoredBox(
@@ -97,6 +121,31 @@ class _AppGatesState extends ConsumerState<AppGates> with WidgetsBindingObserver
       ],
     );
   }
+}
+
+/// "This phone is rooted": a warning only; the app keeps working (L12).
+class RootWarning extends StatelessWidget {
+  const RootWarning({super.key, required this.onClose});
+  final VoidCallback onClose;
+  @override
+  Widget build(BuildContext context) => Material(
+    color: Colors.amber.shade100,
+    elevation: 2,
+    child: Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 4, 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.warning_amber_rounded, color: Colors.amber.shade900),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(context.l.rootWarning, style: TextStyle(color: Colors.brown.shade900)),
+          ),
+          IconButton(onPressed: onClose, tooltip: context.l.close, icon: const Icon(Icons.close)),
+        ],
+      ),
+    ),
+  );
 }
 
 class _UpdateRequired extends StatefulWidget {

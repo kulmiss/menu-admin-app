@@ -3043,6 +3043,12 @@ abstract class L {
   /// **'Wrong PIN'**
   String get pinWrong;
 
+  /// No description provided for @rootWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone looks rooted or jailbroken. The app works, but other apps on it may be able to read your restaurant data. If you can, use a phone that is not modified.'**
+  String get rootWarning;
+
   /// No description provided for @pinWait.
   ///
   /// In en, this message translates to:
