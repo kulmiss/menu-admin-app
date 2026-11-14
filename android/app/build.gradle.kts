@@ -52,7 +52,7 @@ android {
 
     buildTypes {
         release {
-            // Without key.properties (CI, Claude's workspace) release builds use the debug key.
+            // Without key.properties only an explicitly allowed test build may use the debug key (see below).
             signingConfig = if (keyProperties.isNotEmpty()) signingConfigs.getByName("release") else signingConfigs.getByName("debug")
             isMinifyEnabled = true
             isShrinkResources = true
@@ -73,4 +73,14 @@ dependencies {
 
 flutter {
     source = "../.."
+}
+
+// A store build must be signed with the upload key (SECURITY_REPORT.md L10). Only CI's size
+// check (or a local test) may fall back to the debug key, and only when it asks explicitly.
+// Checked when a release task runs, so debug builds and `flutter run` are unaffected.
+gradle.taskGraph.whenReady {
+    val release = allTasks.any { it.name.contains("Release") && (it.name.startsWith("assemble") || it.name.startsWith("bundle")) }
+    if (release && keyProperties.isEmpty() && System.getenv("ALLOW_DEBUG_SIGNING") != "true") {
+        throw GradleException("Release build without android/key.properties. Add the upload key (docs/release.md), or set ALLOW_DEBUG_SIGNING=true for a test build.")
+    }
 }

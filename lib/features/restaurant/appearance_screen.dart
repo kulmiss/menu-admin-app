@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 import '../../app/theme.dart';
 import '../../core/cache/swr.dart';
@@ -325,13 +326,28 @@ class _LivePreview extends ConsumerStatefulWidget {
 }
 
 class _LivePreviewState extends ConsumerState<_LivePreview> {
-  late final WebViewController _web = WebViewController()
-    ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    ..setNavigationDelegate(
-      NavigationDelegate(
-        onNavigationRequest: (r) => r.url.startsWith('about:') || r.url.startsWith('data:') ? NavigationDecision.navigate : NavigationDecision.prevent,
+  // The preview's own script needs JavaScript; nothing else is allowed (SECURITY_REPORT.md L8):
+  // no JS bridge, no navigation away (links do nothing), no file or content:// access, no mixed content.
+  late final WebViewController _web = _hardened(
+    WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onNavigationRequest: (r) => allowPreviewNavigation(r.url, ref.read(apiProvider).siteUrl) ? NavigationDecision.navigate : NavigationDecision.prevent,
+        ),
       ),
-    );
+  );
+
+  static WebViewController _hardened(WebViewController c) {
+    final p = c.platform;
+    if (p is AndroidWebViewController) {
+      unawaited(p.setAllowFileAccess(false));
+      unawaited(p.setAllowContentAccess(false));
+      unawaited(p.setMixedContentMode(MixedContentMode.neverAllow));
+    }
+    return c;
+  }
+
   Timer? _debounce;
   String? _last;
   bool _loading = true;
@@ -392,3 +408,8 @@ class _LivePreviewState extends ConsumerState<_LivePreview> {
     ],
   );
 }
+
+/// Only loading the preview itself (about:blank, or exactly the site address it is
+/// loaded under, which iOS reports); every link inside it is blocked (SECURITY_REPORT.md L8).
+@visibleForTesting
+bool allowPreviewNavigation(String url, String siteUrl) => url.startsWith('about:') || url == siteUrl;
