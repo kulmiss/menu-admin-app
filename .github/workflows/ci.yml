@@ -1,0 +1,76 @@
+# Checks only; CI never commits or pushes. Kept lean (QUESTIONS M26):
+# one test job, an APK size check, cached SDK + pub, skipped for docs-only changes.
+name: CI
+
+on:
+  pull_request:
+    branches: [develop, main]
+    paths-ignore: ['**.md', 'docs/**', 'store/**', 'assets/icon/concepts/**']
+  push:
+    branches: [develop]
+    paths-ignore: ['**.md', 'docs/**', 'store/**', 'assets/icon/concepts/**']
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  FLUTTER_VERSION: 3.47.9
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+          pub-cache: true
+      - run: flutter pub get
+      - name: No secrets in the repository
+        run: |
+          ! git ls-files | grep -E '(google-services\.json|GoogleService-Info\.plist|key\.properties|\.jks$|\.keystore$|service-account.*\.json)$'
+      - name: Format
+        run: dart format --output=none --set-exit-if-changed -l 160 lib test integration_test
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+      - name: Unit, widget and golden tests
+        run: flutter test --reporter=github
+
+  android-size:
+    # Release build of one ABI to catch Gradle/R8 problems and watch the size budget (< 20 MB).
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    needs: test
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+          pub-cache: true
+      - run: flutter pub get
+      - run: flutter build apk --release --split-per-abi --target-platform android-arm64 --obfuscate --split-debug-info=build/symbols
+      - name: Size budget
+        # Native libraries are stored uncompressed in APKs (faster installs, AGP default); Play
+        # compresses the download. The budget (QUESTIONS M34) is on the compressed size.
+        run: |
+          f=build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+          size=$(stat -c %s "$f"); dl=$(gzip -9 -c "$f" | wc -c)
+          echo "arm64 APK file: $((size/1024/1024)) MB · download (compressed): $((dl/1024/1024)) MB ($dl bytes)" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '### Largest files' >> "$GITHUB_STEP_SUMMARY"
+          unzip -v "$f" | sort -k3 -n -r | head -8 | awk '{print "    " $3 "\t" $8}' | tee -a "$GITHUB_STEP_SUMMARY"
+          test "$dl" -lt 20971520
