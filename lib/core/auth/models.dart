@@ -25,6 +25,12 @@ class TenantInfo {
   String? get stageEndsAt => _sub['stage_ends_at'] as String?;
   Map<String, dynamic> get features => (json['features'] as Map?)?.cast<String, dynamic>() ?? const {};
   bool feature(String key) => features[key] == true;
+
+  /// For switches that are on unless the server says otherwise (newer keys
+  /// such as `sold_out`, `share`, `print_materials`: an older server doesn't
+  /// send them yet). Global OFF (Super Admin → Settings → Features) arrives
+  /// here as `false` too.
+  bool featureOn(String key) => features[key] != false;
   Map<String, dynamic> get upgrade => (json['upgrade'] as Map?)?.cast<String, dynamic>() ?? const {};
   Map<String, dynamic>? get _membership => (json['membership'] as Map?)?.cast<String, dynamic>();
   Role get role => roleFrom(_membership?['role'] as String?);

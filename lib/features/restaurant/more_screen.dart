@@ -52,7 +52,7 @@ class MoreScreen extends ConsumerWidget {
               if (can.manageRestaurant) ...[
                 item(Icons.storefront_outlined, l.branches, 'branches'),
                 item(Icons.qr_code, l.qrCodes, 'qr'),
-                item(Icons.print_outlined, l.printMaterials, 'print'),
+                if (can.printMaterials) item(Icons.print_outlined, l.printMaterials, 'print'),
                 item(Icons.palette_outlined, l.appearance, 'appearance'),
                 item(Icons.schedule, l.infoHours, 'info'),
                 item(Icons.campaign_outlined, l.promotions, 'promotions', feature: 'promotions'),

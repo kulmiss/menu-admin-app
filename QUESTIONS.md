@@ -42,6 +42,12 @@ Backend decisions for this app are also listed in `kulmiss/menu` QUESTIONS.md (#
 | M34 | How the 20 MB budget is measured | On the **compressed download** of the arm64 release (the APK gzipped, about what Play sends). The APK file itself is about 24 MB because Android stores native libraries (Flutter engine 11.7 MB, Dart code 8.8 MB, SQLite 1.7 MB) uncompressed for faster installs and less storage. CI prints both numbers. | This is the size users download. Compressing libraries in the APK (`useLegacyPackaging`) would shrink the file but make installs bigger. |
 | M30 | Languages | English only, all texts in ARB (`lib/l10n/app_en.arb`), `flutter gen-l10n` | As requested. |
 
+## Owner requests (2026-11-14, later)
+
+| # | Question | Decision | Why |
+|---|---|---|---|
+| M35 | Feature switches in the app (backend #191/#192) | The app reads `features` in `/me` (plan + restaurant + global switch already combined by the server). New keys (`sold_out`, `share`, `print_materials`) count as **on unless the server says `false`**, so an older server keeps them. "Sold out" off: no Sold out tab (the address shows "turned off"), no dashboard card, no switches in Menu, the dish editor (the field isn't sent), All dishes (filter, bulk) or branch overrides; marks show as available. `print_materials` off hides Print materials; `share`, `pdf_menu`, `order_list` off hide their Appearance switches (like the web). | Same rules as the web admin; the server refuses the calls anyway (402). |
+
 ## Open (owner)
 - Live domain for `API_BASE_URL` (M9).
 - Firebase project, `google-services.json`, FCM service-account JSON on the server (see docs/firebase.md).

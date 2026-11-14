@@ -45,8 +45,7 @@ class DashboardScreen extends ConsumerWidget {
           children: [
             // Owners and Managers without two-step sign-in: strongly encouraged (owner, 2026-11-14; M17).
             if (can.manageRestaurant) const TwoFactorCard(),
-            _SoldOutCard(path: '${t}dashboard', tenantId: tenant.id),
-            const SizedBox(height: 12),
+            if (can.soldOut) ...[_SoldOutCard(path: '${t}dashboard', tenantId: tenant.id), const SizedBox(height: 12)],
             if (can.manageRestaurant) ...[_SetupCard(path: '${t}widgets/setup', tenantId: tenant.id), const SizedBox(height: 12)],
             _TrendCard(path: '${t}widgets/trend'),
             const SizedBox(height: 12),

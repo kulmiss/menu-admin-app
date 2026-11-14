@@ -15,7 +15,12 @@ class Can {
   bool get viewActivity => _managerOrOwner;
   bool get manageAccount => _role == Role.owner;
   bool get viewBilling => _role == Role.owner;
-  bool get toggleSoldOut => _role != null;
+
+  /// "Sold out" can be switched off per plan, per restaurant or for everyone
+  /// (backend QUESTIONS #191/#192): then every sold-out control is hidden.
+  bool get soldOut => tenant?.featureOn('sold_out') ?? true;
+  bool get toggleSoldOut => _role != null && soldOut;
+  bool get printMaterials => tenant?.featureOn('print_materials') ?? true;
   bool get viewInsights => _managerOrOwner;
 
   /// The server sends `can_edit_prices` already resolved (owner/manager always; staff when allowed).
@@ -31,6 +36,9 @@ class Can {
 
   /// Plan switch (shows an "Upgrade" badge when off).
   bool feature(String key) => tenant?.feature(key) ?? false;
+
+  /// On unless the server sends `false` (see [TenantInfo.featureOn]).
+  bool featureOn(String key) => tenant?.featureOn(key) ?? true;
 
   /// Writes refused while the subscription is read-only (402).
   bool get writable => tenant?.allowsWrites ?? true;

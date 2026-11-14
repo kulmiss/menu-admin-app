@@ -15,6 +15,9 @@ import '../../core/util/photos.dart';
 import '../../core/widgets/kit.dart';
 import '../../core/widgets/net_image.dart';
 
+/// Guest-menu switches that belong to a feature: hidden when it is off.
+const _flagFeature = {'show_share': 'share', 'show_pdf_link': 'pdf_menu', 'show_order_list': 'order_list'};
+
 const _flags = [
   'show_prices',
   'show_photos',
@@ -292,7 +295,8 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
         ),
         SectionHeader(l.showOnMenu),
         for (final f in _flags)
-          SwitchListTile(contentPadding: EdgeInsets.zero, title: Text(_label(f)), value: _v![f] as bool, onChanged: (v) => setState(() => _v![f] = v)),
+          if (ref.watch(canProvider).featureOn(_flagFeature[f] ?? ''))
+            SwitchListTile(contentPadding: EdgeInsets.zero, title: Text(_label(f)), value: _v![f] as bool, onChanged: (v) => setState(() => _v![f] = v)),
       ],
     );
   }

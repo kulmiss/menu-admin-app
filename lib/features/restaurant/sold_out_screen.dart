@@ -24,6 +24,13 @@ class _SoldOutScreenState extends ConsumerState<SoldOutScreen> {
     final t = ref.watch(tenantProvider)!;
     final overrides = ref.watch(soldOutProvider);
     final l = context.l;
+    // Switched off for this restaurant, its plan or everyone (backend #191/#192).
+    if (!ref.watch(canProvider).soldOut) {
+      return RestaurantScaffold(
+        title: l.navSoldOut,
+        body: EmptyState(icon: Icons.do_not_disturb_off_outlined, title: l.soldOutOffTitle, body: l.soldOutOffBody),
+      );
+    }
     return RestaurantScaffold(
       title: l.navSoldOut,
       body: Column(
