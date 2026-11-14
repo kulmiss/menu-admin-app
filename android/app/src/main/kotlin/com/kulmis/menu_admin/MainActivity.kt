@@ -36,6 +36,15 @@ class MainActivity : FlutterFragmentActivity() {
                     (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(clip)
                     result.success(true)
                 }
+                // Warning only (SECURITY_REPORT.md L12): su binaries or a test-keys build.
+                "looksRooted" -> {
+                    val paths = listOf(
+                        "/system/bin/su", "/system/xbin/su", "/sbin/su", "/su/bin/su", "/data/local/su",
+                        "/data/local/bin/su", "/data/local/xbin/su", "/system/app/Superuser.apk", "/data/adb/magisk",
+                    )
+                    val tags = Build.TAGS ?: ""
+                    result.success(tags.contains("test-keys") || paths.any { java.io.File(it).exists() })
+                }
                 else -> result.notImplemented()
             }
         }

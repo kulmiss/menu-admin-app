@@ -567,6 +567,7 @@
   "enterPin": "Enter your PIN",
   "pinHint": "4 to 6 digits",
   "pinWrong": "Wrong PIN",
+  "rootWarning": "This phone looks rooted or jailbroken. The app works, but other apps on it may be able to read your restaurant data. If you can, use a phone that is not modified.",
   "pinWait": "Too many wrong PINs. Try again in {seconds} s.",
   "@pinWait": {"placeholders": {"seconds": {"type": "int"}}},
   "pinTriesLeft": "{count, plural, =1{1 try left before the app signs out} other{{count} tries left before the app signs out}}",
