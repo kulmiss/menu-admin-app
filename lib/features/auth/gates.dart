@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/app_config.dart';
 import '../../core/platform/app_lock.dart';
+import '../../core/platform/secure_screen.dart';
 import '../../core/platform/updates.dart';
 import '../../core/providers.dart';
 import '../../core/widgets/app_logo.dart';
@@ -70,7 +71,9 @@ class _AppGatesState extends ConsumerState<AppGates> with WidgetsBindingObserver
   void didChangeAppLifecycleState(AppLifecycleState state) {
     ref.read(appLockProvider.notifier).onLifecycle(state);
     final lockOn = ref.read(appLockProvider).enabled;
-    setState(() => _cover = lockOn && state != AppLifecycleState.resumed);
+    // Also cover a secret screen (two-factor key, recovery codes) in the app switcher (M13).
+    final secret = SecureScreens.open.value > 0;
+    setState(() => _cover = (lockOn || secret) && state != AppLifecycleState.resumed);
   }
 
   @override

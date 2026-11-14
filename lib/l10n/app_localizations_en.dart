@@ -67,6 +67,9 @@ class LEn extends L {
   String get copied => 'Copied';
 
   @override
+  String get copiedSecret => 'Copied. It is removed from the clipboard in 1 minute.';
+
+  @override
   String get yes => 'Yes';
 
   @override

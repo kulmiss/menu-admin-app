@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/api/api_error.dart';
 import '../../core/cache/swr.dart';
 import '../../core/platform/push.dart';
+import '../../core/platform/secure_screen.dart';
 import '../../core/providers.dart';
 import '../../core/util/json.dart';
 import '../../core/widgets/kit.dart';
@@ -304,82 +305,86 @@ class _TwoFactorScreenState extends ConsumerState<TwoFactorScreen> {
   Widget build(BuildContext context) {
     final l = context.l;
     final me = ref.watch(sessionProvider).me!;
-    return Scaffold(
-      appBar: AppBar(title: Text(l.twoFactor)),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          if (_codes != null) ...[
-            Text(l.recoveryCodes, style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
-            const SizedBox(height: 6),
-            Text(l.recoveryCodesHint),
-            const SizedBox(height: 12),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: SelectableText(_codes!.join('\n'), style: const TextStyle(fontFamily: 'monospace', fontSize: 16, height: 1.6)),
-              ),
-            ),
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: () {
-                Clipboard.setData(ClipboardData(text: _codes!.join('\n')));
-                showSnack(context, l.copied);
-              },
-              icon: const Icon(Icons.copy),
-              label: Text(l.copy),
-            ),
-          ] else if (_setup != null) ...[
-            Text(l.twoFactorScan),
-            const SizedBox(height: 12),
-            Center(
-              child: Container(
-                color: Colors.white,
-                padding: const EdgeInsets.all(12),
-                child: _QrSvg(svg: _setup!.s('svg')),
-              ),
-            ),
-            const SizedBox(height: 12),
-            SelectableText('${l.twoFactorKey}: ${_setup!.s('secret')}', textAlign: TextAlign.center),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _code,
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(6)],
-              decoration: InputDecoration(labelText: l.twoFactorConfirm, errorText: _error),
-            ),
-            const SizedBox(height: 12),
-            FilledButton(onPressed: _confirm, child: Text(l.verify)),
-          ] else ...[
-            ListTile(contentPadding: EdgeInsets.zero, title: Text(l.twoFactor), trailing: Text(me.twoFactorEnabled ? l.twoFactorOn : l.twoFactorOff)),
-            const SizedBox(height: 12),
-            if (!me.twoFactorEnabled)
-              FilledButton(onPressed: _start, child: Text(l.twoFactorTurnOn))
-            else ...[
-              OutlinedButton(
-                onPressed: () async {
-                  final pw = await askPassword(context);
-                  if (pw == null || !context.mounted) return;
-                  final r = await runAction(context, () => ref.read(apiProvider).post('mobile/account/two-factor/recovery-codes', data: {'password': pw}));
-                  if (r != null) setState(() => _codes = [for (final c in (J.data(r)['recovery_codes'] as List)) '$c']);
-                },
-                child: Text(l.newRecoveryCodes),
+    // The key, the QR code and the recovery codes are secrets: no screenshots (M13).
+    return SecureScreen(
+      active: _codes != null || _setup != null,
+      child: Scaffold(
+        appBar: AppBar(title: Text(l.twoFactor)),
+        body: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            if (_codes != null) ...[
+              Text(l.recoveryCodes, style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 6),
+              Text(l.recoveryCodesHint),
+              const SizedBox(height: 12),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: SelectableText(_codes!.join('\n'), style: const TextStyle(fontFamily: 'monospace', fontSize: 16, height: 1.6)),
+                ),
               ),
               const SizedBox(height: 8),
-              if (!me.isSuperAdmin)
-                TextButton(
+              OutlinedButton.icon(
+                onPressed: () async {
+                  await SecureScreens.copySecret(_codes!.join('\n'));
+                  if (context.mounted) showSnack(context, l.copiedSecret);
+                },
+                icon: const Icon(Icons.copy),
+                label: Text(l.copy),
+              ),
+            ] else if (_setup != null) ...[
+              Text(l.twoFactorScan),
+              const SizedBox(height: 12),
+              Center(
+                child: Container(
+                  color: Colors.white,
+                  padding: const EdgeInsets.all(12),
+                  child: _QrSvg(svg: _setup!.s('svg')),
+                ),
+              ),
+              const SizedBox(height: 12),
+              SelectableText('${l.twoFactorKey}: ${_setup!.s('secret')}', textAlign: TextAlign.center),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _code,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(6)],
+                decoration: InputDecoration(labelText: l.twoFactorConfirm, errorText: _error),
+              ),
+              const SizedBox(height: 12),
+              FilledButton(onPressed: _confirm, child: Text(l.verify)),
+            ] else ...[
+              ListTile(contentPadding: EdgeInsets.zero, title: Text(l.twoFactor), trailing: Text(me.twoFactorEnabled ? l.twoFactorOn : l.twoFactorOff)),
+              const SizedBox(height: 12),
+              if (!me.twoFactorEnabled)
+                FilledButton(onPressed: _start, child: Text(l.twoFactorTurnOn))
+              else ...[
+                OutlinedButton(
                   onPressed: () async {
                     final pw = await askPassword(context);
                     if (pw == null || !context.mounted) return;
-                    if (await runOk(context, () => ref.read(apiProvider).delete('mobile/account/two-factor', data: {'password': pw}))) {
-                      await ref.read(sessionProvider.notifier).refreshMe();
-                    }
+                    final r = await runAction(context, () => ref.read(apiProvider).post('mobile/account/two-factor/recovery-codes', data: {'password': pw}));
+                    if (r != null) setState(() => _codes = [for (final c in (J.data(r)['recovery_codes'] as List)) '$c']);
                   },
-                  child: Text(l.twoFactorTurnOff, style: TextStyle(color: context.colors.error)),
+                  child: Text(l.newRecoveryCodes),
                 ),
+                const SizedBox(height: 8),
+                if (!me.isSuperAdmin)
+                  TextButton(
+                    onPressed: () async {
+                      final pw = await askPassword(context);
+                      if (pw == null || !context.mounted) return;
+                      if (await runOk(context, () => ref.read(apiProvider).delete('mobile/account/two-factor', data: {'password': pw}))) {
+                        await ref.read(sessionProvider.notifier).refreshMe();
+                      }
+                    },
+                    child: Text(l.twoFactorTurnOff, style: TextStyle(color: context.colors.error)),
+                  ),
+              ],
             ],
           ],
-        ],
+        ),
       ),
     );
   }
