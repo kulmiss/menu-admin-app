@@ -17,7 +17,7 @@ import 'package:menu_admin/core/providers.dart';
 import '../helpers/fake_api.dart';
 import '../widgets/flows.dart';
 
-Future<void> _fonts() async {
+Future<void> loadScreenshotFonts() async {
   final inter = FontLoader('Inter');
   for (final w in ['Regular', 'Medium', 'SemiBold', 'Bold']) {
     inter.addFont(rootBundle.load('assets/fonts/Inter-$w.ttf'));
@@ -216,7 +216,15 @@ const phone = Size(392.7, 785.5); // 1080 × 2160 at 2.75
 const tablet7 = Size(600, 960); // 1200 × 1920 at 2
 const tablet10 = Size(1280, 800); // 2560 × 1600 at 2 (landscape: two panes)
 
-Future<void> shoot(WidgetTester tester, FakeApi api, String path, String name, Size size, double dpr, {Future<void> Function()? then}) async {
+Future<void> shoot(
+  WidgetTester tester,
+  FakeApi api,
+  String path,
+  String name,
+  Size size,
+  double dpr, {
+  Future<void> Function()? then,
+}) async {
   tester.view.physicalSize = size * dpr;
   tester.view.devicePixelRatio = dpr;
   addTearDown(tester.view.reset);
@@ -236,7 +244,7 @@ Future<void> shoot(WidgetTester tester, FakeApi api, String path, String name, S
 }
 
 void main() {
-  setUpAll(_fonts);
+  setUpAll(loadScreenshotFonts);
   testWidgets('phone 1 dashboard', (t) => shoot(t, demoRestaurant(), '/r/7', 'phone_1_dashboard', phone, 2.75));
   testWidgets('phone 2 menu', (t) => shoot(t, demoRestaurant(), '/r/7/menu', 'phone_2_menu', phone, 2.75));
   testWidgets('phone 3 sold out', (t) => shoot(t, demoRestaurant(), '/r/7/sold-out', 'phone_3_sold_out', phone, 2.75));
