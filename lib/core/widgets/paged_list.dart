@@ -57,9 +57,9 @@ class PagedListState extends ConsumerState<PagedList> {
   }
 
   @override
-  void didUpdateWidget(covariant PagedList old) {
-    super.didUpdateWidget(old);
-    if (old.path != widget.path || old.query.toString() != widget.query.toString()) reset();
+  void didUpdateWidget(covariant PagedList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.path != widget.path || oldWidget.query.toString() != widget.query.toString()) reset();
   }
 
   void reset() => setState(() {

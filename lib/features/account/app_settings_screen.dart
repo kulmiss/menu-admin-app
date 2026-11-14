@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/app_identity.dart';
+import '../../app/theme_mode.dart';
 import '../../core/app_config.dart';
 import '../../core/platform/app_lock.dart';
 import '../../core/platform/firebase.dart';
@@ -52,6 +53,24 @@ class _AppSettingsScreenState extends ConsumerState<AppSettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.only(bottom: 40),
         children: [
+          SectionHeader(l.theme),
+          Group(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: SegmentedButton<ThemeMode>(
+                  showSelectedIcon: false,
+                  segments: [
+                    ButtonSegment(value: ThemeMode.system, label: Text(l.themeSystem)),
+                    ButtonSegment(value: ThemeMode.light, label: Text(l.themeLight)),
+                    ButtonSegment(value: ThemeMode.dark, label: Text(l.themeDark)),
+                  ],
+                  selected: {ref.watch(themeModeProvider)},
+                  onSelectionChanged: (s) => ref.read(themeModeProvider.notifier).set(s.single),
+                ),
+              ),
+            ],
+          ),
           // Super Admin → Mobile app → App features (#193).
           if (config?.appFeature('biometric_lock') ?? true) ...[
             SectionHeader(l.appLock),

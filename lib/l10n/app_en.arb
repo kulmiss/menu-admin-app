@@ -577,6 +577,8 @@
   "inboxEmpty": "No notifications",
   "markAllRead": "Mark all as read",
   "appSettings": "App settings",
+  "themeLight": "Light",
+  "themeDark": "Dark",
   "appLock": "App lock",
   "appLockHint": "Ask for your fingerprint, face or PIN when opening the app.",
   "autoLock": "Lock after",
@@ -599,7 +601,7 @@
   "usageStats": "Anonymous usage statistics",
   "usageStatsHint": "Which screens and features are used, to improve the app. Never your menu content.",
   "theme": "Theme",
-  "themeSystem": "Follow the system",
+  "themeSystem": "Phone",
   "version": "Version {version}",
   "@version": {
     "placeholders": {
