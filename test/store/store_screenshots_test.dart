@@ -175,60 +175,29 @@ FakeApi demoRestaurant() {
 }
 
 FakeApi demoPlatform() => FakeApi()
+  ..json('GET mobile/config', {
+    'data': {'min_version': '1.0.0', 'links': {}},
+  })
   ..json('GET me', meJson(superAdmin: true))
-  ..json('GET platform/insights/overview?days=30', {
+  ..json('GET platform/dashboard', {
     'data': {
-      'currency': 'ETB',
-      'kpis': {
-        'restaurants': {'value': 128, 'previous': 119},
-        'paying': {'value': 74, 'previous': 69},
-        'new_restaurants': {'value': 11, 'previous': 8},
-        'active': {'value': 96, 'previous': 90},
-        'mrr_minor': {'value': 7342000, 'previous': 6810000},
-        'revenue_minor': {'value': 9120000, 'previous': 8030000},
-        'menu_views': {'value': 48210, 'previous': 41100},
-        'qr_scans': {'value': 20114, 'previous': 18900},
-      },
-      'series': [
-        for (var i = 0; i < 30; i++) {'restaurants': 98 + i},
-      ],
+      'restaurants': 128,
+      'states': {'active': 74, 'trial': 31, 'grace': 4, 'read_only': 9, 'suspended': 10},
+      'signups_30d': 11,
+      'views_30d': 48210,
+      'scans_30d': 20114,
     },
   })
-  ..json('GET platform/insights/engagement?days=30', {
+  ..json('GET platform/mobile-app', {
     'data': {
-      'bands': {'healthy': 79, 'at_risk': 31, 'inactive': 18},
+      'maintenance': false,
+      'super_admin_sign_in': true,
+      'restaurant_sign_in': true,
+      'app_features': {'push': true, 'analytics': true, 'crash_reports': true, 'biometric_lock': true},
     },
   })
-  ..json('GET platform/widgets/expiring', {
-    'data': [
-      {'id': 9, 'name': 'Nine Wells Coffee', 'days_left': 19},
-    ],
-  })
-  ..json('GET platform/widgets/signups', {
-    'data': [
-      {'id': 12, 'name': 'Blue Nile Café', 'created_at': '2026-11-13T09:00:00Z', 'signup_state': 'pending'},
-    ],
-  })
-  ..json('GET platform/restaurants?per=50&page=1', {
-    'data': [
-      for (final (id, n, p, b, s) in [
-        (9, 'Nine Wells Coffee', 'Pro', 'at_risk', 62),
-        (7, 'Buna & Bread', 'Plus', 'healthy', 91),
-        (3, 'Lalibela Grill', 'Free', 'inactive', 18),
-        (5, 'Harar House', 'Business', 'healthy', 88),
-        (6, 'Piassa Pastry', 'Plus', 'healthy', 77),
-      ])
-        {
-          'id': id,
-          'name': n,
-          'state': 'active',
-          'plan': {'name': p},
-          'paid_until': '2026-12-03',
-          'health': {'band': b, 'score': s},
-          'tags': [],
-        },
-    ],
-    'meta': {'page': 1, 'pages': 1},
+  ..json('GET platform/settings', {
+    'data': {'signup_open': true},
   });
 
 const phone = Size(392.7, 785.5); // 1080 × 2160 at 2.75
@@ -278,5 +247,4 @@ void main() {
       },
     ),
   );
-  testWidgets('tablet10 restaurants', (t) => shoot(t, demoPlatform(), '/p/restaurants', 'tablet10_2_restaurants', tablet10, 2));
 }

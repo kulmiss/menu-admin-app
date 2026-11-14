@@ -9,16 +9,16 @@ import 'package:menu_admin/app/app.dart';
 
 import '../helpers/fonts.dart';
 import '../helpers/screens.dart';
-import '../store/store_screenshots_test.dart' show demoRestaurant;
+import '../store/store_screenshots_test.dart' show demoPlatform, demoRestaurant;
 
-const screens = {'home': '/r/7', 'menu': '/r/7/menu', 'orders': '/r/7/orders', 'more': '/r/7/more'};
+const screens = {'home': '/r/7', 'menu': '/r/7/menu', 'orders': '/r/7/orders', 'more': '/r/7/more', 'settings': '/account/app', 'super_admin': '/p'};
 
 void main() {
   setUpAll(loadTestFonts);
   for (final s in screens.entries) {
     for (final b in Brightness.values) {
       testWidgets('${s.key} ${b.name}', (tester) async {
-        await openScreen(tester, demoRestaurant(), s.value, b);
+        await openScreen(tester, s.key == 'super_admin' ? demoPlatform() : demoRestaurant(), s.value, b);
         await expectLater(find.byType(MenuAdminApp), matchesGoldenFile('images/screen_${s.key}_${b.name}.png'));
       });
     }
