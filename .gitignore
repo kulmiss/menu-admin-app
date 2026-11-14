@@ -26,3 +26,4 @@ ios/Flutter/flutter_export_environment.sh
 *.p8
 *service-account*.json
 test/**/failures/
+docs/screens/wip/
