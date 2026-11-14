@@ -19,6 +19,7 @@
   "open": "Open",
   "copy": "Copy",
   "copied": "Copied",
+  "copiedSecret": "Copied. It is removed from the clipboard in 1 minute.",
   "yes": "Yes",
   "no": "No",
   "next": "Next",

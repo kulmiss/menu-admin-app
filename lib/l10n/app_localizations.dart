@@ -205,6 +205,12 @@ abstract class L {
   /// **'Copied'**
   String get copied;
 
+  /// No description provided for @copiedSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied. It is removed from the clipboard in 1 minute.'**
+  String get copiedSecret;
+
   /// No description provided for @yes.
   ///
   /// In en, this message translates to:
