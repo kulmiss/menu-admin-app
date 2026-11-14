@@ -35,11 +35,7 @@ class DashboardScreen extends ConsumerWidget {
       title: context.l.navHome,
       actions: [IconButton(tooltip: context.l.openMyMenu, icon: const Icon(Icons.qr_code_2), onPressed: () => showMyMenuSheet(context, ref))],
       body: RefreshIndicator(
-        onRefresh: () async {
-          for (final p in paths) {
-            await ref.refreshPath(p);
-          }
-        },
+        onRefresh: () => ref.refreshPaths(paths),
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
           children: [

@@ -51,11 +51,7 @@ class _PlatformDashboardState extends ConsumerState<PlatformDashboard> {
         IconButton(tooltip: l.inbox, icon: const Icon(Icons.notifications_outlined), onPressed: () => context.push('/inbox')),
       ],
       body: RefreshIndicator(
-        onRefresh: () async {
-          for (final p in paths) {
-            await ref.refreshPath(p);
-          }
-        },
+        onRefresh: () => ref.refreshPaths(paths),
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
           children: [
