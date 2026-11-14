@@ -3,6 +3,8 @@
 @Tags(['compare'])
 library;
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,7 +16,7 @@ import 'package:menu_admin/core/providers.dart';
 import '../helpers/fake_api.dart';
 import '../store/store_screenshots_test.dart' show demoRestaurant, phone, loadScreenshotFonts;
 
-const dir = String.fromEnvironment('COMPARE_DIR', defaultValue: 'before');
+final dir = Platform.environment['COMPARE_DIR'] ?? 'before';
 
 Future<void> shot(WidgetTester tester, String path, String name, Brightness b, {bool signedIn = true}) async {
   tester.view.physicalSize = phone * 2.75;
