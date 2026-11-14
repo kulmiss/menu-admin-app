@@ -13,6 +13,7 @@ class ApiClient {
     required String? Function() token,
     required void Function() onUnauthorized,
     required String Function() appVersion,
+    void Function(String code, String? message)? onGate,
     HttpClientAdapter? adapter,
     List<Duration>? retryDelays,
   }) : dio = Dio(
@@ -26,7 +27,7 @@ class ApiClient {
        ) {
     if (adapter != null) dio.httpClientAdapter = adapter;
     dio.interceptors.addAll([
-      AuthInterceptor(token: token, onUnauthorized: onUnauthorized, appVersion: appVersion),
+      AuthInterceptor(token: token, onUnauthorized: onUnauthorized, appVersion: appVersion, onGate: onGate),
       IdempotencyInterceptor(),
       RetryInterceptor(dio, delays: retryDelays ?? const [Duration(milliseconds: 400), Duration(milliseconds: 1200), Duration(seconds: 3)]),
       ErrorInterceptor(),

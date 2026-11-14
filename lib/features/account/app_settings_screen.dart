@@ -52,67 +52,72 @@ class _AppSettingsScreenState extends ConsumerState<AppSettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.only(bottom: 40),
         children: [
-          SectionHeader(l.appLock),
-          Group(
-            children: [
-              SwitchListTile(
-                title: Text(l.appLock),
-                subtitle: Text(l.appLockHint),
-                value: lock.enabled,
-                onChanged: (v) async {
-                  final n = ref.read(appLockProvider.notifier);
-                  if (v && !lock.hasPin) {
-                    final pin = await _askPin();
-                    if (pin == null) return;
-                    await n.setPin(pin);
-                  }
-                  await n.setEnabled(v);
-                },
-              ),
-              if (lock.enabled) ...[
-                ListTile(
-                  title: Text(l.autoLock),
-                  trailing: DropdownButton<int>(
-                    value: lock.minutes,
-                    underline: const SizedBox.shrink(),
-                    items: [
-                      for (final m in [1, 5, 15, 30]) DropdownMenuItem(value: m, child: Text(l.minutes(m))),
-                    ],
-                    onChanged: (m) => ref.read(appLockProvider.notifier).setMinutes(m!),
-                  ),
-                ),
-                SwitchListTile(title: Text(l.useBiometrics), value: lock.biometrics, onChanged: (v) => ref.read(appLockProvider.notifier).setBiometrics(v)),
-                ListTile(
-                  title: Text(l.changePin),
-                  onTap: () async {
-                    final pin = await _askPin();
-                    if (pin != null) await ref.read(appLockProvider.notifier).setPin(pin);
+          // Super Admin → Mobile app → App features (#193).
+          if (config?.appFeature('biometric_lock') ?? true) ...[
+            SectionHeader(l.appLock),
+            Group(
+              children: [
+                SwitchListTile(
+                  title: Text(l.appLock),
+                  subtitle: Text(l.appLockHint),
+                  value: lock.enabled,
+                  onChanged: (v) async {
+                    final n = ref.read(appLockProvider.notifier);
+                    if (v && !lock.hasPin) {
+                      final pin = await _askPin();
+                      if (pin == null) return;
+                      await n.setPin(pin);
+                    }
+                    await n.setEnabled(v);
                   },
                 ),
+                if (lock.enabled) ...[
+                  ListTile(
+                    title: Text(l.autoLock),
+                    trailing: DropdownButton<int>(
+                      value: lock.minutes,
+                      underline: const SizedBox.shrink(),
+                      items: [
+                        for (final m in [1, 5, 15, 30]) DropdownMenuItem(value: m, child: Text(l.minutes(m))),
+                      ],
+                      onChanged: (m) => ref.read(appLockProvider.notifier).setMinutes(m!),
+                    ),
+                  ),
+                  SwitchListTile(title: Text(l.useBiometrics), value: lock.biometrics, onChanged: (v) => ref.read(appLockProvider.notifier).setBiometrics(v)),
+                  ListTile(
+                    title: Text(l.changePin),
+                    onTap: () async {
+                      final pin = await _askPin();
+                      if (pin != null) await ref.read(appLockProvider.notifier).setPin(pin);
+                    },
+                  ),
+                ],
               ],
-            ],
-          ),
+            ),
+          ],
           SectionHeader(l.privacy),
           Group(
             children: [
-              SwitchListTile(
-                title: Text(l.usageStats),
-                subtitle: Text(l.usageStatsHint),
-                value: analytics.enabled,
-                onChanged: (v) async {
-                  await analytics.setEnabled(v);
-                  setState(() {});
-                },
-              ),
-              SwitchListTile(
-                title: Text(l.crashReports),
-                subtitle: Text(l.crashReportsHint),
-                value: analytics.crashes,
-                onChanged: (v) async {
-                  await analytics.setCrashes(v);
-                  setState(() {});
-                },
-              ),
+              if (config?.appFeature('analytics') ?? true)
+                SwitchListTile(
+                  title: Text(l.usageStats),
+                  subtitle: Text(l.usageStatsHint),
+                  value: analytics.enabled,
+                  onChanged: (v) async {
+                    await analytics.setEnabled(v);
+                    setState(() {});
+                  },
+                ),
+              if (config?.appFeature('crash_reports') ?? true)
+                SwitchListTile(
+                  title: Text(l.crashReports),
+                  subtitle: Text(l.crashReportsHint),
+                  value: analytics.crashes,
+                  onChanged: (v) async {
+                    await analytics.setCrashes(v);
+                    setState(() {});
+                  },
+                ),
               ListTile(
                 title: Text(l.privacy),
                 trailing: const Icon(Icons.open_in_new),

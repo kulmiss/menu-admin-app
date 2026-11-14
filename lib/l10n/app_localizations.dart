@@ -493,6 +493,48 @@ abstract class L {
   /// **'Update required'**
   String get updateRequiredTitle;
 
+  /// No description provided for @updateAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version of the app is ready.'**
+  String get updateAvailable;
+
+  /// No description provided for @maintenanceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Down for maintenance'**
+  String get maintenanceTitle;
+
+  /// No description provided for @maintenanceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'re updating the system. Please try again in a few minutes.'**
+  String get maintenanceBody;
+
+  /// No description provided for @superAdminSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Super Admin sign-in'**
+  String get superAdminSignIn;
+
+  /// No description provided for @appOffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The app is not available'**
+  String get appOffTitle;
+
+  /// No description provided for @appOffBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The app is not available for your account right now. Please use the website.'**
+  String get appOffBody;
+
+  /// No description provided for @openWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the website'**
+  String get openWebsite;
+
   /// No description provided for @updateRequiredBody.
   ///
   /// In en, this message translates to:

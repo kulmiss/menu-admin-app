@@ -22,6 +22,7 @@ final serverProvider = Provider<String>((ref) => Env.apiBaseUrl);
 class TokenHolder {
   String? token;
   void Function()? onUnauthorized;
+  void Function(String code, String? message)? onGate;
 }
 
 final tokenHolderProvider = Provider<TokenHolder>((ref) => TokenHolder());
@@ -32,6 +33,7 @@ final apiProvider = Provider<ApiClient>((ref) {
     baseUrl: ref.watch(serverProvider),
     token: () => holder.token,
     onUnauthorized: () => holder.onUnauthorized?.call(),
+    onGate: (code, message) => holder.onGate?.call(code, message),
     appVersion: () => ref.read(appVersionProvider),
   );
 });

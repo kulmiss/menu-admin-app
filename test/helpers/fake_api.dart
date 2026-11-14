@@ -84,6 +84,7 @@ List<Override> testOverrides(FakeApi api, {MemoryTokenStore? store}) {
         baseUrl: 'https://menu.test',
         token: () => holder.token,
         onUnauthorized: () => holder.onUnauthorized?.call(),
+        onGate: (code, message) => holder.onGate?.call(code, message),
         appVersion: () => '1.0.0+1',
         adapter: api,
         retryDelays: const [Duration.zero],
