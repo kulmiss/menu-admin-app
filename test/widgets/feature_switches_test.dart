@@ -9,19 +9,23 @@ import 'flows.dart';
 const _all = {'insights': true, 'promotions': true, 'price_periods': true, 'branches': true, 'pdf_menu': true};
 
 void main() {
-  testWidgets('sold out on: tab, dashboard card and menu switches are there', (tester) async {
+  testWidgets('sold out on: Home count, quick action and menu switches are there', (tester) async {
     await startApp(tester, restaurantServer(features: {..._all, 'sold_out': true}), token: 'tok');
-    expect(find.text('Sold out'), findsWidgets);
+    expect(find.text('Sold out now'), findsOneWidget);
+    expect(find.text('Mark sold out'), findsOneWidget);
     await tester.tap(find.text('Menu').first);
     await tester.pumpAndSettle();
     expect(find.byType(Switch), findsOneWidget);
   });
 
-  testWidgets('sold out off: no tab, no dashboard card, no switches, marks ignored', (tester) async {
+  testWidgets('sold out off: no Home count, no quick action, no switches, marks ignored', (tester) async {
     final api = restaurantServer(features: {..._all, 'sold_out': false});
     await startApp(tester, api, token: 'tok');
+    expect(find.text('Sold out now'), findsNothing);
+    expect(find.text('Mark sold out'), findsNothing);
+    await tester.tap(find.text('More').first);
+    await tester.pumpAndSettle();
     expect(find.text('Sold out'), findsNothing);
-    expect(api.called('GET', 't/7/dashboard'), isEmpty, reason: 'the sold-out card is not built');
 
     await tester.tap(find.text('Menu').first);
     await tester.pumpAndSettle();
@@ -31,7 +35,7 @@ void main() {
 
   testWidgets('an older server without the key keeps "Sold out" on', (tester) async {
     await startApp(tester, restaurantServer(features: _all), token: 'tok');
-    expect(find.text('Sold out'), findsWidgets);
+    expect(find.text('Mark sold out'), findsOneWidget);
   });
 
   testWidgets('print materials off for everyone: not in More', (tester) async {

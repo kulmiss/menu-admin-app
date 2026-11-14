@@ -80,7 +80,7 @@ class _RestaurantsScreenState extends ConsumerState<RestaurantsScreen> {
           child: PagedList(
             path: 'platform/restaurants',
             query: {..._f, if (_q.isNotEmpty) 'q': _q, 'page': '1'},
-            empty: EmptyState(icon: Icons.search_off, title: l.noMatches),
+            empty: EmptyState(icon: AppIcons.searchX, title: l.noMatches),
             itemBuilder: (context, r, _) => ListTile(
               selected: r.i('id') == _selected,
               leading: CircleAvatar(
@@ -118,7 +118,7 @@ class _RestaurantsScreenState extends ConsumerState<RestaurantsScreen> {
       actions: [
         IconButton(
           tooltip: l.exportCsv,
-          icon: const Icon(Icons.download_outlined),
+          icon: const Icon(AppIcons.download),
           onPressed: () => downloadAndOpen(
             context,
             ref,
@@ -133,7 +133,7 @@ class _RestaurantsScreenState extends ConsumerState<RestaurantsScreen> {
         listWidth: 400,
         list: list,
         detail: _selected == null ? null : RestaurantDetail(key: ValueKey(_selected), id: _selected!),
-        emptyDetail: EmptyState(icon: Icons.storefront_outlined, title: l.restaurants),
+        emptyDetail: EmptyState(icon: AppIcons.store, title: l.restaurants),
       ),
     );
   }
@@ -197,8 +197,8 @@ class _RestaurantDetailState extends ConsumerState<RestaurantDetail> with Single
         title: Text(r?.s('name') ?? ''),
         actions: [
           if (r != null) ...[
-            IconButton(tooltip: l.openMyMenu, icon: const Icon(Icons.open_in_new), onPressed: () => openExternal(context, r.s('url'))),
-            IconButton(tooltip: l.logInAs, icon: const Icon(Icons.login), onPressed: r.sn('deleted_at') != null ? null : () => _logInAs(r)),
+            IconButton(tooltip: l.openMyMenu, icon: const Icon(AppIcons.externalLink), onPressed: () => openExternal(context, r.s('url'))),
+            IconButton(tooltip: l.logInAs, icon: const Icon(AppIcons.logIn), onPressed: r.sn('deleted_at') != null ? null : () => _logInAs(r)),
             _DangerMenu(r: r, path: _path, onChanged: () => ref.invalidate(cachedProvider(_path))),
           ],
         ],
@@ -220,7 +220,11 @@ class _RestaurantDetailState extends ConsumerState<RestaurantDetail> with Single
           : ListenableBuilder(
               listenable: _tabs,
               builder: (_, _) => _tabs.index == 1
-                  ? FloatingActionButton.extended(onPressed: () => recordPayment(context, ref, r), icon: const Icon(Icons.add), label: Text(l.recordPayment))
+                  ? FloatingActionButton.extended(
+                      onPressed: () => recordPayment(context, ref, r),
+                      icon: const Icon(AppIcons.plus),
+                      label: Text(l.recordPayment),
+                    )
                   : const SizedBox.shrink(),
             ),
       body: v.when(
@@ -238,7 +242,7 @@ class _RestaurantDetailState extends ConsumerState<RestaurantDetail> with Single
               children: [
                 for (final m in r.list('members'))
                   ListTile(
-                    leading: const Icon(Icons.person_outline),
+                    leading: const Icon(AppIcons.user),
                     title: Text(m.s('name')),
                     subtitle: Text('${roleLabel(context, m.s('role'))} · ${m.s('email')}'),
                   ),
@@ -521,7 +525,7 @@ class _PaymentsTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l;
     final payments = r.list('payments');
-    if (payments.isEmpty) return EmptyState(icon: Icons.payments_outlined, title: l.payments);
+    if (payments.isEmpty) return EmptyState(icon: AppIcons.banknote, title: l.payments);
     return ListView(
       padding: const EdgeInsets.only(bottom: 96),
       children: [
@@ -551,7 +555,7 @@ class InvoiceTile extends ConsumerWidget {
     final id = invoice.i('id');
     final voided = invoice.s('status') == 'void';
     return ListTile(
-      leading: const Icon(Icons.receipt_long_outlined),
+      leading: const Icon(AppIcons.receipt),
       title: Text('${l.invoice} ${invoice.s('number')}'),
       subtitle: voided ? Text(l.voidInvoice) : null,
       trailing: PopupMenuButton<String>(
@@ -678,14 +682,14 @@ class _CrmTab extends ConsumerWidget {
         ),
         SectionHeader(l.followUp),
         ListTile(
-          leading: const Icon(Icons.event_note_outlined),
+          leading: const Icon(AppIcons.calendarDays),
           title: Text(r.sn('follow_up_on') == null ? l.followUpOn : formatDate(context, r.s('follow_up_on'))),
           subtitle: r.s('follow_up_reason').isEmpty ? null : Text(r.s('follow_up_reason')),
           trailing: r.sn('follow_up_on') == null
               ? null
               : IconButton(
                   tooltip: l.clearFollowUp,
-                  icon: const Icon(Icons.close),
+                  icon: const Icon(AppIcons.x),
                   onPressed: () async {
                     await runOk(context, () => api.put('$path/follow-up', data: {'date': null}));
                     ref.invalidate(cachedProvider(path));
@@ -709,7 +713,7 @@ class _CrmTab extends ConsumerWidget {
               await runOk(context, () => api.post(notesPath, data: {'body': body}));
               ref.invalidate(cachedProvider(notesPath));
             },
-            icon: const Icon(Icons.add),
+            icon: const Icon(AppIcons.plus),
             label: Text(l.addNote),
           ),
         ),
@@ -724,7 +728,7 @@ class _CrmTab extends ConsumerWidget {
                     subtitle: Text('${note.o('author').s('name', note.s('author'))} · ${formatDate(context, note.sn('created_at'), time: true)}'),
                     trailing: IconButton(
                       tooltip: l.delete,
-                      icon: const Icon(Icons.delete_outline),
+                      icon: const Icon(AppIcons.trash2),
                       onPressed: () async {
                         await runOk(context, () => api.delete('platform/notes/${note.i('id')}'));
                         ref.invalidate(cachedProvider(notesPath));

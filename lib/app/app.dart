@@ -4,12 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/platform/push.dart';
-import '../core/providers.dart';
 import '../features/auth/gates.dart';
 import '../l10n/app_localizations.dart';
 import 'app_identity.dart';
 import 'router.dart';
 import 'theme.dart';
+import 'theme_mode.dart';
 
 class MenuAdminApp extends ConsumerStatefulWidget {
   const MenuAdminApp({super.key});
@@ -51,14 +51,13 @@ class _MenuAdminAppState extends ConsumerState<MenuAdminApp> {
   @override
   Widget build(BuildContext context) {
     final GoRouter router = ref.watch(routerProvider);
-    final accent = accentFor(parseHex(ref.watch(tenantProvider.select((t) => t?.json['primary_color'] as String?))));
     return MaterialApp.router(
       title: AppIdentity.name,
       debugShowCheckedModeBanner: false,
       scaffoldMessengerKey: _messengerKey,
-      theme: buildTheme(Brightness.light, accent: accent),
+      theme: buildTheme(Brightness.light),
       darkTheme: buildTheme(Brightness.dark),
-      themeMode: ThemeMode.system,
+      themeMode: ref.watch(themeModeProvider),
       themeAnimationDuration: MediaQuery.maybeDisableAnimationsOf(context) ?? false ? Duration.zero : const Duration(milliseconds: 200),
       localizationsDelegates: const [
         L.delegate,
@@ -68,7 +67,8 @@ class _MenuAdminAppState extends ConsumerState<MenuAdminApp> {
       ],
       supportedLocales: L.supportedLocales,
       routerConfig: router,
-      builder: (context, child) => AppGates(child: child ?? const SizedBox.shrink()),
+      // Text grows with the phone setting, up to 130 % so layouts hold.
+      builder: (context, child) => MediaQuery.withClampedTextScaling(maxScaleFactor: 1.3, child: AppGates(child: child ?? const SizedBox.shrink())),
     );
   }
 }

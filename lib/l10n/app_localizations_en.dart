@@ -273,6 +273,64 @@ class LEn extends L {
   String get navMenu => 'Menu';
 
   @override
+  String get navOrders => 'Orders';
+
+  @override
+  String homeTodaySubtitle(Object date) {
+    return 'Today · $date';
+  }
+
+  @override
+  String get soldOutNow => 'Sold out now';
+
+  @override
+  String get quickActions => 'Quick actions';
+
+  @override
+  String get actionChangePrice => 'Change a price';
+
+  @override
+  String get actionHideDish => 'Hide or show a dish';
+
+  @override
+  String get actionAddDish => 'Add dish with photo';
+
+  @override
+  String get actionShareMenu => 'Share menu link / QR';
+
+  @override
+  String get actionSoldOut => 'Mark sold out';
+
+  @override
+  String get manageSection => 'Manage';
+
+  @override
+  String get ordersOff => '“My order” is off. Guests can\'t build a list to show the waiter.';
+
+  @override
+  String get ordersTurnOn => 'Turn on in Appearance';
+
+  @override
+  String get ordersEmpty => 'No lists shown yet. They appear here when guests use “My order”.';
+
+  @override
+  String get listsShown => 'Lists shown';
+
+  @override
+  String get averageList => 'Average list';
+
+  @override
+  String get days7 => '7 days';
+
+  @override
+  String get days30 => '30 days';
+
+  @override
+  String weekViews(int count) {
+    return '$count views this week';
+  }
+
+  @override
   String get navSoldOut => 'Sold out';
 
   @override
@@ -1270,12 +1328,6 @@ class LEn extends L {
   String get insights => 'Insights';
 
   @override
-  String get days7 => '7 days';
-
-  @override
-  String get days30 => '30 days';
-
-  @override
   String get days90 => '90 days';
 
   @override
@@ -1556,6 +1608,12 @@ class LEn extends L {
   String get appSettings => 'App settings';
 
   @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
   String get appLock => 'App lock';
 
   @override
@@ -1629,7 +1687,7 @@ class LEn extends L {
   String get theme => 'Theme';
 
   @override
-  String get themeSystem => 'Follow the system';
+  String get themeSystem => 'Phone';
 
   @override
   String version(Object version) {

@@ -51,14 +51,14 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
         if (wide && can.manageMenu && menu != null && !_reorder)
           TextButton.icon(
             onPressed: () => _openDish(context, tenant.id, null, menuId: menuId),
-            icon: const Icon(Icons.add),
+            icon: const Icon(AppIcons.plus),
             label: Text(context.l.dish),
           ),
-        IconButton(tooltip: context.l.allDishes, icon: const Icon(Icons.table_rows_outlined), onPressed: () => context.push('/r/${tenant.id}/all-dishes')),
+        IconButton(tooltip: context.l.allDishes, icon: const Icon(AppIcons.rows3), onPressed: () => context.push('/r/${tenant.id}/all-dishes')),
         if (can.manageMenu && menu != null)
           IconButton(
             tooltip: _reorder ? context.l.reorderDone : context.l.reorder,
-            icon: Icon(_reorder ? Icons.check : Icons.swap_vert),
+            icon: Icon(_reorder ? AppIcons.check : AppIcons.arrowUpDown),
             onPressed: () => setState(() => _reorder = !_reorder),
           ),
         if (can.manageMenu) MenuActions(menu: menu, onChanged: (id) => setState(() => _menuId = id)),
@@ -66,7 +66,7 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
       fab: can.manageMenu && menu != null && !_reorder && !wide
           ? FloatingActionButton.extended(
               onPressed: () => _openDish(context, tenant.id, null, menuId: menuId),
-              icon: const Icon(Icons.add),
+              icon: const Icon(AppIcons.plus),
               label: Text(context.l.dish),
             )
           : null,
@@ -77,7 +77,7 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
         data: (_) {
           if (list.isEmpty) {
             return EmptyState(
-              icon: Icons.restaurant_menu,
+              icon: AppIcons.utensils,
               title: context.l.noMenus,
               body: context.l.noMenusBody,
               action: can.manageMenu
@@ -125,7 +125,7 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
             detail: _selectedDish == null
                 ? null
                 : DishEditor(key: ValueKey(_selectedDish), dishId: _selectedDish, embedded: true, onClosed: () => setState(() => _selectedDish = null)),
-            emptyDetail: EmptyState(icon: Icons.touch_app_outlined, title: context.l.edit),
+            emptyDetail: EmptyState(icon: AppIcons.pointer, title: context.l.edit),
           );
         },
       ),
@@ -159,7 +159,7 @@ class MenuTree extends ConsumerWidget {
           return ListView(
             children: [
               EmptyState(
-                icon: Icons.category_outlined,
+                icon: AppIcons.shapes,
                 title: context.l.noCategories,
                 body: context.l.noCategoriesBody,
                 action: can.manageMenu ? FilledButton(onPressed: () => createCategory(context, ref, menuId), child: Text(context.l.newCategory)) : null,
@@ -177,7 +177,7 @@ class MenuTree extends ConsumerWidget {
                 padding: const EdgeInsets.all(16),
                 child: OutlinedButton.icon(
                   onPressed: () => createCategory(context, ref, menuId),
-                  icon: const Icon(Icons.add),
+                  icon: const Icon(AppIcons.plus),
                   label: Text(context.l.newCategory),
                 ),
               );
@@ -325,7 +325,7 @@ class _ReorderCategoriesState extends ConsumerState<_ReorderCategories> {
     },
     itemBuilder: (context, i) => ListTile(
       key: ValueKey(_cats[i].i('id')),
-      leading: const Icon(Icons.drag_indicator),
+      leading: const Icon(AppIcons.gripVertical),
       title: Text(_cats[i].t('name')),
       subtitle: Text('${_cats[i].list('items').length} ${context.l.dishes.toLowerCase()}'),
       trailing: TextButton(
@@ -384,7 +384,7 @@ class _ReorderDishesState extends ConsumerState<_ReorderDishes> {
         key: ValueKey(_items[i].i('id')),
         leading: NetImage(_items[i].photo('media'), size: 40),
         title: Text(_items[i].t('name')),
-        trailing: const Icon(Icons.drag_indicator),
+        trailing: const Icon(AppIcons.gripVertical),
       ),
     ),
   );

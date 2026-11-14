@@ -3,9 +3,6 @@
 @Tags(['store'])
 library;
 
-import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,17 +13,7 @@ import 'package:menu_admin/core/providers.dart';
 
 import '../helpers/fake_api.dart';
 import '../widgets/flows.dart';
-
-Future<void> _fonts() async {
-  final inter = FontLoader('Inter');
-  for (final w in ['Regular', 'Medium', 'SemiBold', 'Bold']) {
-    inter.addFont(rootBundle.load('assets/fonts/Inter-$w.ttf'));
-  }
-  await inter.load();
-  final root = Platform.environment['FLUTTER_ROOT'] ?? '/opt/sdk/flutter';
-  final icons = File('$root/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
-  await (FontLoader('MaterialIcons')..addFont(Future.value(ByteData.sublistView(icons.readAsBytesSync())))).load();
-}
+import '../helpers/fonts.dart';
 
 Map<String, dynamic> item(int id, String name, String cat, int price, {bool sold = false}) => {
   'id': id,
@@ -57,9 +44,41 @@ FakeApi demoRestaurant() {
     item(53, 'Ful medames', 'Breakfast', 15000),
     item(54, 'Shiro tegabino', 'Breakfast', 17000, sold: true),
   ];
-  return restaurantServer()
+  return restaurantServer(features: {'insights': true, 'promotions': true, 'price_periods': true, 'branches': true, 'pdf_menu': true, 'order_list': true})
+    ..json('GET t/7/widgets/orders', {
+      'data': {
+        'enabled': true,
+        'currency': 'ETB',
+        'periods': {
+          for (final (d, shown) in [('7', 64), ('30', 241)])
+            d: {
+              'lists_shown': shown,
+              'average_minor': 48500,
+              'top': [
+                {
+                  'id': 41,
+                  'name': {'en': 'Spris'},
+                  'added': shown ~/ 2,
+                },
+                {
+                  'id': 51,
+                  'name': {'en': 'Firfir'},
+                  'added': shown ~/ 3,
+                },
+                {
+                  'id': 52,
+                  'name': {'en': 'Chechebsa'},
+                  'added': shown ~/ 4,
+                },
+              ],
+            },
+        },
+      },
+    })
     ..json('GET t/7/dashboard', {
       'data': {
+        'today': {'views': 214, 'scans': 107},
+        'yesterday': {'views': 176, 'scans': 88},
         'sold_out': [
           {'id': 43},
           {'id': 54},
@@ -236,7 +255,7 @@ Future<void> shoot(WidgetTester tester, FakeApi api, String path, String name, S
 }
 
 void main() {
-  setUpAll(_fonts);
+  setUpAll(loadTestFonts);
   testWidgets('phone 1 dashboard', (t) => shoot(t, demoRestaurant(), '/r/7', 'phone_1_dashboard', phone, 2.75));
   testWidgets('phone 2 menu', (t) => shoot(t, demoRestaurant(), '/r/7/menu', 'phone_2_menu', phone, 2.75));
   testWidgets('phone 3 sold out', (t) => shoot(t, demoRestaurant(), '/r/7/sold-out', 'phone_3_sold_out', phone, 2.75));

@@ -38,14 +38,14 @@ class QrScreen extends ConsumerWidget {
         actions: [
           IconButton(
             tooltip: l.menuPdf,
-            icon: const Icon(Icons.picture_as_pdf_outlined),
+            icon: const Icon(AppIcons.fileText),
             onPressed: () =>
                 t.feature('pdf_menu') ? downloadAndOpen(context, ref, tenantPath(t.id, 'menu-pdf'), '${t.slug}-menu.pdf') : showUpgradeSheet(context),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        icon: const Icon(Icons.add),
+        icon: const Icon(AppIcons.plus),
         label: Text(l.newQr),
         onPressed: () async {
           final label = await showDialog<String>(
@@ -116,7 +116,7 @@ class QrScreen extends ConsumerWidget {
                       const Spacer(),
                       PopupMenuButton<String>(
                         tooltip: l.share,
-                        icon: const Icon(Icons.ios_share),
+                        icon: const Icon(AppIcons.share),
                         onSelected: (v) async {
                           if (v == 'delete') {
                             if (await confirm(context, title: l.confirmDeleteTitle(name), action: l.delete, danger: true) && context.mounted) {
@@ -248,7 +248,7 @@ class _PrintScreenState extends ConsumerState<PrintScreen> {
                       if (_bleed) 'bleed': '1',
                     },
                   ),
-            icon: const Icon(Icons.picture_as_pdf_outlined),
+            icon: const Icon(AppIcons.fileText),
             label: Text(l.printPdf),
           ),
           SectionHeader(l.socialImages),
