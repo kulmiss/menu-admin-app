@@ -3043,6 +3043,24 @@ abstract class L {
   /// **'Wrong PIN'**
   String get pinWrong;
 
+  /// No description provided for @pinWait.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many wrong PINs. Try again in {seconds} s.'**
+  String pinWait(int seconds);
+
+  /// No description provided for @pinTriesLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 try left before the app signs out} other{{count} tries left before the app signs out}}'**
+  String pinTriesLeft(int count);
+
+  /// No description provided for @pinSignedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many wrong PINs, so the app signed out. Sign in again with your password.'**
+  String get pinSignedOut;
+
   /// No description provided for @unlock.
   ///
   /// In en, this message translates to:
