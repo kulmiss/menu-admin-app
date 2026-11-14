@@ -66,3 +66,9 @@ When a release must replace older ones (API change), set **Super Admin → Setti
 
 ## 7. iOS (later)
 Same code. On a Mac with Xcode: `flutter build ipa --dart-define=API_BASE_URL=https://YOUR-DOMAIN`. The bundle ID is `com.kulmis.menuadmin`. You need an Apple Developer account (paid) and an APNs key for pushes (docs/firebase.md §3).
+
+## Signing check (SECURITY_REPORT.md L10)
+A release build (`flutter build appbundle` / `apk --release`) now **stops** when `android/key.properties`
+is missing, instead of silently signing with the debug key (which Play would reject, or worse, which
+someone else could reproduce). Only CI's size check sets `ALLOW_DEBUG_SIGNING=true`. For a local test
+build without the key: `ALLOW_DEBUG_SIGNING=true flutter build apk --release`.
