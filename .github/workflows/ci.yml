@@ -2,9 +2,9 @@
 # one test job, an APK size check, cached SDK + pub, skipped for docs-only changes.
 name: CI
 
+# Pull requests into any branch (stacked PRs) are checked; private repo, so kept lean (owner, 2026-11-14).
 on:
   pull_request:
-    branches: [develop, main]
     paths-ignore: ['**.md', 'docs/**', 'store/**', 'assets/icon/concepts/**']
   push:
     branches: [develop]
@@ -24,8 +24,28 @@ jobs:
   test:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    outputs:
+      android: ${{ steps.f.outputs.android }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - id: f
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            android:
+              - 'android/**'
+              - 'pubspec.*'
+              - 'assets/**'
+              - '.github/workflows/ci.yml'
+      # Secret scan of the new commits only (free gitleaks binary; push protection isn't free on private repos).
+      - name: Secret scan (gitleaks)
+        run: |
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz | tar -xz gitleaks
+          if [ "${{ github.event_name }}" = pull_request ]; then range="${{ github.event.pull_request.base.sha }}..${{ github.sha }}"; else range="${{ github.event.before }}..${{ github.sha }}"; fi
+          case "$range" in 0000000*) range="-1";; esac
+          ./gitleaks git --no-banner --redact --log-opts="$range" .
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
@@ -42,13 +62,16 @@ jobs:
         run: flutter analyze --no-fatal-infos
       - name: Unit, widget and golden tests
         run: flutter test --reporter=github
+      - name: Outdated packages (report only)
+        run: dart pub outdated --no-dev-dependencies --no-dependency-overrides || true
 
   android-size:
     # Release build of one ABI to catch Gradle/R8 problems and watch the size budget (< 20 MB).
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     needs: test
-    if: github.event_name == 'pull_request'
+    # Only when the Android build itself can change (Gradle, R8, packages, assets).
+    if: github.event_name == 'pull_request' && needs.test.outputs.android == 'true'
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-java@v5
