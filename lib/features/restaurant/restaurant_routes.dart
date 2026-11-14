@@ -54,7 +54,7 @@ List<RouteBase> restaurantRoutes(Ref ref, GlobalKey<NavigatorState> rootKey) => 
           items: [
             NavItem(l.navHome, Icons.home_outlined, Icons.home, '/r/$t'),
             NavItem(l.navMenu, Icons.restaurant_menu_outlined, Icons.restaurant_menu, '/r/$t/menu'),
-            NavItem(l.navSoldOut, Icons.do_not_disturb_on_outlined, Icons.do_not_disturb_on, '/r/$t/sold-out'),
+            if (can.soldOut) NavItem(l.navSoldOut, Icons.do_not_disturb_on_outlined, Icons.do_not_disturb_on, '/r/$t/sold-out'),
             if (can.viewInsights) NavItem(l.navInsights, Icons.insights_outlined, Icons.insights, '/r/$t/insights'),
             NavItem(l.navMore, Icons.more_horiz, Icons.more_horiz, '/r/$t/more'),
           ],

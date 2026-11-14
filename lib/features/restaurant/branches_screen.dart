@@ -276,7 +276,7 @@ class _BranchPricesState extends ConsumerState<_BranchPrices> {
             itemBuilder: (context, i) {
               final d = dishes[i];
               final r = _rows![d.i('id')];
-              final hidden = r?['is_hidden'] == true, sold = r?['is_sold_out'] == true;
+              final hidden = r?['is_hidden'] == true, sold = can.soldOut && r?['is_sold_out'] == true;
               final price = r?['price_minor'] as int?;
               return ExpansionTile(
                 title: Text(d.t('name')),
@@ -290,15 +290,16 @@ class _BranchPricesState extends ConsumerState<_BranchPrices> {
                 ),
                 childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                 children: [
-                  SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(l.soldOutHere),
-                    value: sold,
-                    onChanged: (v) => setState(() {
-                      _row(d.i('id'))['is_sold_out'] = v ? true : null;
-                      _dirty = true;
-                    }),
-                  ),
+                  if (can.soldOut)
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(l.soldOutHere),
+                      value: sold,
+                      onChanged: (v) => setState(() {
+                        _row(d.i('id'))['is_sold_out'] = v ? true : null;
+                        _dirty = true;
+                      }),
+                    ),
                   if (can.manageMenu)
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,

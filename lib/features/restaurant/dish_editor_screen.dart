@@ -194,7 +194,7 @@ class _DishEditorState extends ConsumerState<DishEditor> {
       'photo_ids': [for (final p in _photos) p['id']],
       'show_photo': _showPhoto,
       'is_visible': _visible,
-      'is_sold_out': _soldOut,
+      if (ref.read(canProvider).soldOut) 'is_sold_out': _soldOut,
       'is_new': _isNew,
       'is_popular': _popular,
     };
@@ -467,7 +467,7 @@ class _DishEditorState extends ConsumerState<DishEditor> {
               for (final (label, value, set, hint) in [
                 (l.showPhoto, _showPhoto, (bool v) => _showPhoto = v, _showPhoto ? null : l.showPhotoHint),
                 (l.visible, _visible, (bool v) => _visible = v, null),
-                (l.soldOut, _soldOut, (bool v) => _soldOut = v, null),
+                if (can.soldOut) (l.soldOut, _soldOut, (bool v) => _soldOut = v, null),
                 (l.markNew, _isNew, (bool v) => _isNew = v, null),
                 (l.markPopular, _popular, (bool v) => _popular = v, null),
               ])

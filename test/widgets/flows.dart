@@ -30,12 +30,12 @@ Map<String, dynamic> dish({bool soldOut = false}) => {
 };
 
 /// A fake restaurant server with enough answers for the main screens.
-FakeApi restaurantServer({String role = 'owner'}) {
+FakeApi restaurantServer({String role = 'owner', Map<String, bool>? features}) {
   final api = FakeApi()
     ..json('GET mobile/config', {
       'data': {'min_version': '1.0.0', 'links': {}},
     })
-    ..json('GET me', meJson(role: role))
+    ..json('GET me', meJson(role: role, features: features))
     ..json('GET t/7/dashboard', {
       'data': {'today': {}, 'yesterday': {}, 'sold_out': []},
     })

@@ -748,6 +748,12 @@ class LEn extends L {
   String get soldOutEmptyBody => 'Tap “Sold out” on a dish when it runs out. Guests see it within seconds.';
 
   @override
+  String get soldOutOffTitle => '“Sold out” is turned off';
+
+  @override
+  String get soldOutOffBody => 'Your menu shows every dish as available. Existing marks are kept and come back if it is turned on again.';
+
+  @override
   String get soldOutBranchNote => 'Sold out for every branch. For one branch only, use Branches › Prices and availability.';
 
   @override

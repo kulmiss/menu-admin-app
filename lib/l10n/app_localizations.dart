@@ -1507,6 +1507,18 @@ abstract class L {
   /// **'Tap “Sold out” on a dish when it runs out. Guests see it within seconds.'**
   String get soldOutEmptyBody;
 
+  /// No description provided for @soldOutOffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'“Sold out” is turned off'**
+  String get soldOutOffTitle;
+
+  /// No description provided for @soldOutOffBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your menu shows every dish as available. Existing marks are kept and come back if it is turned on again.'**
+  String get soldOutOffBody;
+
   /// No description provided for @soldOutBranchNote.
   ///
   /// In en, this message translates to:

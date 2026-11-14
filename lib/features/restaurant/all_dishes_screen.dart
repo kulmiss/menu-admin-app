@@ -119,7 +119,7 @@ class _AllDishesScreenState extends ConsumerState<AllDishesScreen> {
     final selecting = _selected.isNotEmpty;
     final filters = {
       null: l.filterAll,
-      'sold_out': l.filterSoldOut,
+      if (can.soldOut) 'sold_out': l.filterSoldOut,
       'hidden': l.filterHidden,
       'no_photo': l.filterNoPhoto,
       'new': l.filterNew,
@@ -168,8 +168,10 @@ class _AllDishesScreenState extends ConsumerState<AllDishesScreen> {
                 }
               },
               itemBuilder: (c) => [
-                PopupMenuItem(value: 'sold_out', child: Text(l.bulkSoldOut)),
-                PopupMenuItem(value: 'available', child: Text(l.bulkAvailable)),
+                if (can.toggleSoldOut) ...[
+                  PopupMenuItem(value: 'sold_out', child: Text(l.bulkSoldOut)),
+                  PopupMenuItem(value: 'available', child: Text(l.bulkAvailable)),
+                ],
                 if (can.manageMenu) ...[
                   PopupMenuItem(value: 'hide', child: Text(l.bulkHide)),
                   PopupMenuItem(value: 'show', child: Text(l.bulkShow)),
@@ -216,7 +218,7 @@ class _AllDishesScreenState extends ConsumerState<AllDishesScreen> {
                 final price = row.iN('price_minor') != null
                     ? formatMoney(row.i('price_minor'), t.currency)
                     : (row.iN('from_minor') != null ? l.priceFrom(formatMoney(row.i('from_minor'), t.currency)) : '');
-                final sold = ref.watch(soldOutProvider)[id] ?? row.b('is_sold_out');
+                final sold = can.soldOut && (ref.watch(soldOutProvider)[id] ?? row.b('is_sold_out'));
                 return ListTile(
                   selected: sel,
                   leading: selecting

@@ -201,7 +201,7 @@ class MenuTree extends ConsumerWidget {
                     item: it,
                     currency: tenant.currency,
                     selected: it.i('id') == selectedDish,
-                    soldOut: overrides[it.i('id')] ?? it.b('is_sold_out'),
+                    soldOut: can.soldOut && (overrides[it.i('id')] ?? it.b('is_sold_out')),
                     onTap: () => onDish(it.i('id')),
                     onSoldOut: can.toggleSoldOut ? (v) => ref.read(soldOutProvider.notifier).set(context, it.i('id'), v) : null,
                   ),
