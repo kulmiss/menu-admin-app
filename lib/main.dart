@@ -49,18 +49,30 @@ Future<void> main() async {
   // After the first frame: Firebase, push, start-up settings, in-app update.
   WidgetsBinding.instance.addPostFrameCallback((_) async {
     container.listen(cachedProvider('mobile/config'), (_, _) {});
+    // Saved copy (or a quick network answer); never holds anything up for long.
+    try {
+      await container.read(cachedProvider('mobile/config').future).timeout(const Duration(seconds: 3));
+    } catch (_) {}
+    AppConfig? config() => container.read(appConfigProvider);
+    // Super Admin → Mobile app → App features can switch these off for everyone (#193).
     final telemetry = container.read(analyticsProvider);
-    await FirebaseState.init(analytics: telemetry.enabled, crashes: telemetry.crashes);
+    await FirebaseState.init(
+      analytics: telemetry.enabled && (config()?.appFeature('analytics') ?? true),
+      crashes: telemetry.crashes && (config()?.appFeature('crash_reports') ?? true),
+    );
     final push = container.read(pushServiceProvider);
-    void startPush() => unawaited(push.start());
+    void startPush() {
+      if (config()?.appFeature('push') ?? true) unawaited(push.start());
+    }
+
     if (container.read(sessionProvider).status == SessionStatus.signedIn) startPush();
     container.listen(sessionProvider.select((s) => s.status), (prev, next) {
       if (next == SessionStatus.signedIn && prev != SessionStatus.signedIn) startPush();
     });
     final review = ReviewPrompt(store);
     await review.recordSession();
-    final config = container.read(appConfigProvider);
-    final mustUpdate = config != null && compareVersions(info.version, config.minVersion) < 0;
+    final c = config();
+    final mustUpdate = c != null && compareVersions(info.version, c.minVersion) < 0;
     unawaited(checkPlayUpdate(mustUpdate: mustUpdate));
   });
 }

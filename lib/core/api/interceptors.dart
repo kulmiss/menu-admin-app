@@ -7,6 +7,9 @@ import 'api_error.dart';
 
 const _mutating = {'POST', 'PUT', 'PATCH', 'DELETE'};
 
+/// Answers from the server's MobileAppGate (backend QUESTIONS #193).
+const gateCodes = {'mobile.update_required', 'mobile.maintenance', 'mobile.app_off'};
+
 /// A random URL-safe key of 32 characters (server accepts 8–100 of [A-Za-z0-9_-]).
 String newIdempotencyKey([Random? random]) {
   final r = random ?? Random.secure();
@@ -16,11 +19,14 @@ String newIdempotencyKey([Random? random]) {
 
 /// Bearer token, JSON and the app version on every request; 401 → signed out.
 class AuthInterceptor extends Interceptor {
-  AuthInterceptor({required this.token, required this.onUnauthorized, required this.appVersion});
+  AuthInterceptor({required this.token, required this.onUnauthorized, required this.appVersion, this.onGate});
 
   final String? Function() token;
   final void Function() onUnauthorized;
   final String Function() appVersion;
+
+  /// Super Admin → Mobile app said no (forced update, maintenance, app off).
+  final void Function(String code, String? message)? onGate;
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
@@ -34,6 +40,9 @@ class AuthInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (err.response?.statusCode == 401 && err.requestOptions.extra['noAuth'] != true) onUnauthorized();
+    final data = err.response?.data;
+    final code = data is Map ? data['code'] : null;
+    if (code is String && gateCodes.contains(code)) onGate?.call(code, data['message'] as String?);
     handler.next(err);
   }
 }
@@ -66,7 +75,12 @@ class RetryInterceptor extends Interceptor {
     final code = (e.response?.data is Map) ? (e.response!.data as Map)['code'] : null;
     return switch (e.type) {
       DioExceptionType.connectionTimeout || DioExceptionType.receiveTimeout || DioExceptionType.sendTimeout || DioExceptionType.connectionError => true,
-      DioExceptionType.badResponse => status == 502 || status == 503 || status == 504 || status == 429 || (status == 409 && code == 'idempotency.in_progress'),
+      DioExceptionType.badResponse =>
+        status == 502 ||
+            (status == 503 && code != 'mobile.maintenance') ||
+            status == 504 ||
+            status == 429 ||
+            (status == 409 && code == 'idempotency.in_progress'),
       _ => false,
     };
   }

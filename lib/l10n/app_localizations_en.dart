@@ -217,6 +217,27 @@ class LEn extends L {
   String get updateRequiredTitle => 'Update required';
 
   @override
+  String get updateAvailable => 'A new version of the app is ready.';
+
+  @override
+  String get maintenanceTitle => 'Down for maintenance';
+
+  @override
+  String get maintenanceBody => 'We\'re updating the system. Please try again in a few minutes.';
+
+  @override
+  String get superAdminSignIn => 'Super Admin sign-in';
+
+  @override
+  String get appOffTitle => 'The app is not available';
+
+  @override
+  String get appOffBody => 'The app is not available for your account right now. Please use the website.';
+
+  @override
+  String get openWebsite => 'Open the website';
+
+  @override
   String get updateRequiredBody => 'This version of the app is too old. Please update to keep using it.';
 
   @override

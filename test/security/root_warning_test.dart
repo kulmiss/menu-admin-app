@@ -21,7 +21,7 @@ void main() {
     var closed = false;
     await tester.pumpWidget(testApp(RootWarning(onClose: () => closed = true)));
     expect(find.textContaining('rooted or jailbroken'), findsOneWidget);
-    await tester.tap(find.byTooltip('Close'));
+    await tester.tap(find.bySemanticsLabel('Close'));
     expect(closed, isTrue);
   });
 }
