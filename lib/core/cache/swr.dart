@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../api/api_error.dart';
@@ -28,7 +29,12 @@ final cacheKeepAliveProvider = Provider<Duration>((ref) => const Duration(minute
 
 /// Stale-while-revalidate read of a GET path: the saved answer at once (if
 /// any), then the network answer. Errors keep the saved answer on screen.
-final cachedProvider = StreamProvider.autoDispose.family<Cached<dynamic>, String>((ref, path) async* {
+///
+/// Not an `async*` body: that starts a microtask later, so a screen closed at
+/// once made it call `ref.watch` on a disposed Ref. All dependencies are read
+/// here, synchronously; after each `await` the work stops if the provider was
+/// disposed, and disposing cancels the request.
+final cachedProvider = StreamProvider.autoDispose.family<Cached<dynamic>, String>((ref, path) {
   final db = ref.watch(cacheDbProvider);
   final scope = ref.watch(sessionProvider.select((s) => s.scope));
   final api = ref.watch(apiProvider);
@@ -38,22 +44,47 @@ final cachedProvider = StreamProvider.autoDispose.family<Cached<dynamic>, String
   Timer? timer;
   ref.onCancel(() => keep == Duration.zero ? link.close() : timer = Timer(keep, link.close));
   ref.onResume(() => timer?.cancel());
-  ref.onDispose(() => timer?.cancel());
 
-  final saved = await db.read(scope, path);
-  Cached<dynamic>? last;
-  if (saved != null) {
-    last = Cached<dynamic>(jsonDecode(saved.json), fetchedAt: saved.fetchedAt, fromCache: true);
-    yield last;
+  final cancel = CancelToken();
+  final out = StreamController<Cached<dynamic>>();
+  var disposed = false;
+  ref.onDispose(() {
+    disposed = true;
+    timer?.cancel();
+    cancel.cancel('provider disposed');
+    unawaited(out.close());
+  });
+  bool gone() => disposed || !ref.mounted;
+
+  Future<void> load() async {
+    Cached<dynamic>? last;
+    try {
+      final saved = await db.read(scope, path);
+      if (gone()) return;
+      if (saved != null) {
+        last = Cached<dynamic>(jsonDecode(saved.json), fetchedAt: saved.fetchedAt, fromCache: true);
+        out.add(last);
+      }
+      final data = await api.get(path, cancelToken: cancel);
+      if (gone()) return;
+      unawaited(db.write(scope, path, jsonEncode(data)));
+      out.add(Cached<dynamic>(data, fetchedAt: DateTime.now()));
+    } on ApiError catch (e, st) {
+      if (gone()) return;
+      if (last == null) {
+        out.addError(e, st);
+      } else {
+        out.add(last.copyWith(error: e));
+      }
+    } catch (e, st) {
+      if (!gone()) out.addError(e, st);
+    } finally {
+      if (!gone()) unawaited(out.close());
+    }
   }
-  try {
-    final data = await api.get(path);
-    unawaited(db.write(scope, path, jsonEncode(data)));
-    yield Cached<dynamic>(data, fetchedAt: DateTime.now());
-  } on ApiError catch (e) {
-    if (last == null) rethrow;
-    yield last.copyWith(error: e);
-  }
+
+  unawaited(load());
+  return out.stream;
 });
 
 /// Helpers for screens.
