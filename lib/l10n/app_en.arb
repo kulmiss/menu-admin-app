@@ -105,6 +105,36 @@
   "signOutEverywhere": "Sign out on all devices",
   "navHome": "Home",
   "navMenu": "Menu",
+  "navOrders": "Orders",
+  "homeTodaySubtitle": "Today · {date}",
+  "@homeTodaySubtitle": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "soldOutNow": "Sold out now",
+  "quickActions": "Quick actions",
+  "actionChangePrice": "Change a price",
+  "actionHideDish": "Hide or show a dish",
+  "actionAddDish": "Add dish with photo",
+  "actionShareMenu": "Share menu link / QR",
+  "actionSoldOut": "Mark sold out",
+  "manageSection": "Manage",
+  "ordersOff": "“My order” is off. Guests can't build a list to show the waiter.",
+  "ordersTurnOn": "Turn on in Appearance",
+  "ordersEmpty": "No lists shown yet. They appear here when guests use “My order”.",
+  "listsShown": "Lists shown",
+  "averageList": "Average list",
+  "days7": "7 days",
+  "days30": "30 days",
+  "weekViews": "{count} views this week",
+  "@weekViews": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "navSoldOut": "Sold out",
   "navInsights": "Insights",
   "navMore": "More",

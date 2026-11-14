@@ -44,9 +44,41 @@ FakeApi demoRestaurant() {
     item(53, 'Ful medames', 'Breakfast', 15000),
     item(54, 'Shiro tegabino', 'Breakfast', 17000, sold: true),
   ];
-  return restaurantServer()
+  return restaurantServer(features: {'insights': true, 'promotions': true, 'price_periods': true, 'branches': true, 'pdf_menu': true, 'order_list': true})
+    ..json('GET t/7/widgets/orders', {
+      'data': {
+        'enabled': true,
+        'currency': 'ETB',
+        'periods': {
+          for (final (d, shown) in [('7', 64), ('30', 241)])
+            d: {
+              'lists_shown': shown,
+              'average_minor': 48500,
+              'top': [
+                {
+                  'id': 41,
+                  'name': {'en': 'Spris'},
+                  'added': shown ~/ 2,
+                },
+                {
+                  'id': 51,
+                  'name': {'en': 'Firfir'},
+                  'added': shown ~/ 3,
+                },
+                {
+                  'id': 52,
+                  'name': {'en': 'Chechebsa'},
+                  'added': shown ~/ 4,
+                },
+              ],
+            },
+        },
+      },
+    })
     ..json('GET t/7/dashboard', {
       'data': {
+        'today': {'views': 214, 'scans': 107},
+        'yesterday': {'views': 176, 'scans': 88},
         'sold_out': [
           {'id': 43},
           {'id': 54},

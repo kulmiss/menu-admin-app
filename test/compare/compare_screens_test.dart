@@ -6,39 +6,17 @@ library;
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:menu_admin/app/app.dart';
-import 'package:menu_admin/app/router.dart';
-import 'package:menu_admin/core/auth/token_store.dart';
-import 'package:menu_admin/core/providers.dart';
 
-import '../helpers/fake_api.dart';
-import '../store/store_screenshots_test.dart' show demoRestaurant, phone;
 import '../helpers/fonts.dart';
+import '../helpers/screens.dart';
+import '../store/store_screenshots_test.dart' show demoRestaurant;
 
 final dir = Platform.environment['COMPARE_DIR'] ?? 'before';
 
 Future<void> shot(WidgetTester tester, String path, String name, Brightness b, {bool signedIn = true}) async {
-  tester.view.physicalSize = phone * 2.75;
-  tester.view.devicePixelRatio = 2.75;
-  tester.platformDispatcher.platformBrightnessTestValue = b;
-  addTearDown(tester.view.reset);
-  addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
-  final store = MemoryTokenStore();
-  if (signedIn) store.values[TokenKeys.token] = 'tok';
-  final c = ProviderContainer(
-    overrides: testOverrides(demoRestaurant(), store: store),
-    retry: noRetry,
-  );
-  addTearDown(c.dispose);
-  await tester.runAsync(() => c.read(sessionProvider.notifier).restore());
-  await tester.pumpWidget(UncontrolledProviderScope(container: c, child: const MenuAdminApp()));
-  await tester.pumpAndSettle();
-  if (signedIn) {
-    c.read(routerProvider).go(path);
-    await tester.pumpAndSettle();
-  }
+  await openScreen(tester, demoRestaurant(), path, b, signedIn: signedIn);
   await expectLater(find.byType(MenuAdminApp), matchesGoldenFile('../../docs/screens/$dir/${name}_${b.name}.png'));
 }
 

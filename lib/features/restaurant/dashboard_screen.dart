@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
+import '../../core/auth/permissions.dart';
 import '../../core/cache/swr.dart';
 import '../../core/providers.dart';
 import '../../core/util/files.dart';
@@ -12,8 +14,9 @@ import '../../core/widgets/auth_image.dart';
 import '../../core/widgets/kit.dart';
 import 'restaurant_scaffold.dart';
 
-/// Restaurant dashboard: the same widgets as the web admin (sold out, setup,
-/// views/scans, missing photos, "My order", plan and usage, platform news).
+/// Restaurant Home (redesign 2026-11): today's numbers, the quick actions a
+/// restaurant admin uses most, then the web admin's widgets (setup, 7-day
+/// trend, missing photos, plan, platform news) and shortcuts.
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
@@ -21,40 +24,205 @@ class DashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tenant = ref.watch(tenantProvider)!;
     final can = ref.watch(canProvider);
+    final l = context.l;
     final t = tenantPath(tenant.id);
     final paths = [
       '${t}dashboard',
       '${t}widgets/trend',
       if (can.manageRestaurant) '${t}widgets/setup',
       if (can.manageMenu) '${t}widgets/missing-photos',
-      if (can.manageRestaurant) '${t}widgets/orders',
       if (can.viewBilling) '${t}widgets/plan',
       '${t}announcements',
     ];
-    return RestaurantScaffold(
-      title: context.l.navHome,
-      actions: [IconButton(tooltip: context.l.openMyMenu, icon: const Icon(AppIcons.qrCode), onPressed: () => showMyMenuSheet(context, ref))],
-      body: RefreshIndicator(
-        onRefresh: () => ref.refreshPaths(paths),
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-          children: [
-            // Owners and Managers without two-step sign-in: strongly encouraged (owner, 2026-11-14; M17).
-            if (can.manageRestaurant) const TwoFactorCard(),
-            if (can.soldOut) ...[_SoldOutCard(path: '${t}dashboard', tenantId: tenant.id), const SizedBox(height: 12)],
-            if (can.manageRestaurant) ...[_SetupCard(path: '${t}widgets/setup', tenantId: tenant.id), const SizedBox(height: 12)],
-            _TrendCard(path: '${t}widgets/trend'),
-            const SizedBox(height: 12),
-            if (can.manageMenu) _MissingPhotos(path: '${t}widgets/missing-photos', tenantId: tenant.id),
-            if (can.manageRestaurant) _Orders(path: '${t}widgets/orders', currency: tenant.currency),
-            if (can.viewBilling) _PlanCard(path: '${t}widgets/plan', tenantId: tenant.id),
-            _News(path: '${t}announcements', tenantId: tenant.id),
-          ],
+    final date = DateFormat.MMMEd(Localizations.localeOf(context).toString()).format(ref.watch(todayProvider));
+    return RestaurantScaffold.large(
+      title: tenant.name,
+      subtitle: l.homeTodaySubtitle(date),
+      actions: [IconButton(tooltip: l.actionShareMenu, icon: const Icon(AppIcons.share2), onPressed: () => showMyMenuSheet(context, ref))],
+      onRefresh: () => ref.refreshPaths(paths),
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppTokens.pad),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Owners and Managers without two-step sign-in: strongly encouraged (owner, 2026-11-14; M17).
+              if (can.manageRestaurant) const TwoFactorCard(),
+              _TodayCard(path: '${t}dashboard', tenantId: tenant.id),
+              const SizedBox(height: 12),
+              const QuickActions(),
+              const SizedBox(height: 12),
+              if (can.manageRestaurant) _SetupCard(path: '${t}widgets/setup', tenantId: tenant.id),
+              _TrendCard(path: '${t}widgets/trend'),
+              if (can.manageMenu) _MissingPhotos(path: '${t}widgets/missing-photos', tenantId: tenant.id),
+              if (can.viewBilling) _PlanCard(path: '${t}widgets/plan', tenantId: tenant.id),
+              _News(path: '${t}announcements', tenantId: tenant.id),
+            ],
+          ),
         ),
+        const _ManageList(),
+      ],
+    );
+  }
+}
+
+/// "Today" on Home (a provider so goldens can fix the date).
+final todayProvider = Provider<DateTime>((ref) => DateTime.now());
+
+/// Today's views, QR scans and sold-out count, with yesterday for comparison.
+class _TodayCard extends ConsumerWidget {
+  const _TodayCard({required this.path, required this.tenantId});
+  final String path;
+  final int tenantId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final can = ref.watch(canProvider);
+    final v = ref.watch(cachedProvider(path));
+    final d = v.value == null ? null : J.data(v.value!.data);
+    final t = context.tokens;
+    final l = context.l;
+    Widget stat(String label, int? value, {String? hint, VoidCallback? onTap, Color? color}) => Expanded(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppTokens.radiusMd),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: TextStyle(fontSize: 13, color: t.mutedForeground), maxLines: 2),
+              const SizedBox(height: 4),
+              value == null
+                  ? const SkeletonBox(width: 48, height: 28)
+                  : Text(
+                      '$value',
+                      style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700, letterSpacing: -0.5, color: color ?? t.foreground),
+                    ),
+              if (hint != null) Text(hint, style: TextStyle(fontSize: 12, color: t.mutedForeground)),
+            ],
+          ),
+        ),
+      ),
+    );
+    final insights = can.viewInsights ? () => context.push('/r/$tenantId/insights') : null;
+    final soldOut = d?.list('sold_out').length;
+    return AppCard(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          stat(l.viewsToday, d?.o('today').i('views'), hint: d == null ? null : l.vsYesterday(d.o('yesterday').i('views')), onTap: insights),
+          stat(l.scansToday, d?.o('today').i('scans'), hint: d == null ? null : l.vsYesterday(d.o('yesterday').i('scans')), onTap: insights),
+          if (can.soldOut) stat(l.soldOutNow, soldOut, color: (soldOut ?? 0) > 0 ? t.destructive : null, onTap: () => context.push('/r/$tenantId/sold-out')),
+        ],
       ),
     );
   }
 }
+
+/// The top jobs, one tap each (redesign 2026-11): change a price, hide/show a
+/// dish, add a dish with a photo, share the menu, sold out, promotions.
+class QuickActions extends ConsumerWidget {
+  const QuickActions({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tenant = ref.watch(tenantProvider)!;
+    final can = ref.watch(canProvider);
+    final l = context.l;
+    final id = tenant.id;
+    final actions = <(IconData, String, VoidCallback)>[
+      if (can.editPrices) (AppIcons.tag, l.actionChangePrice, () => context.push('/r/$id/all-dishes')),
+      if (can.manageMenu) (AppIcons.eyeOff, l.actionHideDish, () => context.push('/r/$id/all-dishes')),
+      if (can.manageMenu && can.writable) (AppIcons.imagePlus, l.actionAddDish, () => context.push('/r/$id/dishes/new')),
+      (AppIcons.qrCode, l.actionShareMenu, () => showMyMenuSheet(context, ref)),
+      if (can.toggleSoldOut) (AppIcons.circleMinus, l.actionSoldOut, () => context.push('/r/$id/sold-out')),
+      if (can.manageRestaurant && can.featureOn('promotions')) (AppIcons.megaphone, l.promotions, () => context.push('/r/$id/promotions')),
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8, top: 4),
+          child: Semantics(
+            header: true,
+            child: Text(l.quickActions, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+          ),
+        ),
+        LayoutBuilder(
+          builder: (context, c) {
+            final cols = c.maxWidth >= 600 ? 3 : 2;
+            final w = (c.maxWidth - 8 * (cols - 1)) / cols;
+            return Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final (icon, label, onTap) in actions)
+                  SizedBox(
+                    width: w,
+                    child: AppCard(
+                      padding: const EdgeInsets.all(12),
+                      onTap: onTap,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(minHeight: 48),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(color: context.tokens.muted, borderRadius: BorderRadius.circular(AppTokens.radiusMd)),
+                              child: Icon(icon, size: 18),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(label, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+/// Shortcuts to the rest: menu, My order, branches, QR codes, settings.
+class _ManageList extends ConsumerWidget {
+  const _ManageList();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tenant = ref.watch(tenantProvider)!;
+    final can = ref.watch(canProvider);
+    final l = context.l;
+    final id = tenant.id;
+    ListTile tile(IconData icon, String title, VoidCallback onTap) =>
+        ListTile(leading: Icon(icon), title: Text(title), trailing: const Icon(AppIcons.chevronRight, size: 18), onTap: onTap);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SectionHeader(l.manageSection),
+        Group(
+          children: [
+            tile(AppIcons.utensils, l.navMenu, () => context.go('/r/$id/menu')),
+            if (ordersTabOn(can)) tile(AppIcons.clipboardList, l.myOrderTitle, () => context.go('/r/$id/orders')),
+            if (can.manageRestaurant) tile(AppIcons.store, l.branches, () => context.push('/r/$id/branches')),
+            if (can.manageRestaurant) tile(AppIcons.qrCode, l.qrCodes, () => context.push('/r/$id/qr')),
+            tile(AppIcons.settings, l.settings, () => context.push('/account/app')),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// "Orders" tab: only when the plan has "My order" lists (QUESTIONS: order_list).
+bool ordersTabOn(Can can) => can.manageRestaurant && can.feature('order_list');
 
 /// A widget card that loads its own answer and hides itself on errors
 /// (one failing widget never blanks the dashboard).
@@ -80,43 +248,6 @@ class _WidgetCard extends ConsumerWidget {
         final w = builder(context, J.data(c.data));
         return w == null ? const SizedBox.shrink() : Padding(padding: const EdgeInsets.only(bottom: 12), child: w);
       },
-    );
-  }
-}
-
-class _SoldOutCard extends ConsumerWidget {
-  const _SoldOutCard({required this.path, required this.tenantId});
-  final String path;
-  final int tenantId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final c = ref.watch(cachedProvider(path)).value;
-    final count = c == null ? null : J.data(c.data).list('sold_out').length;
-    final t = context.tokens;
-    return Material(
-      color: t.secondary,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: () => context.go('/r/$tenantId/sold-out'),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          child: Row(
-            children: [
-              Icon(AppIcons.circleMinus, color: t.secondaryForeground),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  count == null || count == 0 ? context.l.dashSoldOutNone : context.l.dashSoldOut(count),
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: t.secondaryForeground),
-                ),
-              ),
-              Text(context.l.manage, style: TextStyle(color: t.mutedForeground)),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
@@ -198,22 +329,9 @@ class _TrendCard extends ConsumerWidget {
     builder: (context, d) {
       final days = d.list('days');
       final week = days.fold<int>(0, (a, x) => a + x.i('views'));
-      final weekScans = days.fold<int>(0, (a, x) => a + x.i('scans'));
       final max = days.fold<int>(1, (a, x) => x.i('views') > a ? x.i('views') : a);
       return Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: StatTile(label: context.l.viewsWeek, value: '$week', hint: context.l.vsYesterday(d.o('yesterday').i('views'))),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: StatTile(label: context.l.scansWeek, value: '$weekScans', hint: context.l.vsYesterday(d.o('yesterday').i('scans'))),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -225,7 +343,7 @@ class _TrendCard extends ConsumerWidget {
                       Expanded(
                         child: Text(context.l.viewsChart, style: const TextStyle(fontWeight: FontWeight.w600)),
                       ),
-                      Text(context.l.last7days, style: TextStyle(fontSize: 13, color: context.colors.onSurfaceVariant)),
+                      Text(context.l.weekViews(week), style: TextStyle(fontSize: 13, color: context.colors.onSurfaceVariant)),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -301,50 +419,6 @@ class _MissingPhotos extends ConsumerWidget {
                   padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
                   child: Text(context.l.missingPhotosMore(d.i('total')), style: TextStyle(color: context.colors.onSurfaceVariant, fontSize: 13)),
                 ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
-
-class _Orders extends ConsumerWidget {
-  const _Orders({required this.path, required this.currency});
-  final String path;
-  final String currency;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) => _WidgetCard(
-    path: path,
-    builder: (context, d) {
-      if (!d.b('enabled')) return null;
-      final p = d.o('periods').o('30');
-      if (p.i('lists_shown') == 0 && p.list('top').isEmpty) return null;
-      return Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(context.l.myOrderTitle, style: const TextStyle(fontWeight: FontWeight.w600)),
-              const SizedBox(height: 4),
-              Text(context.l.myOrderShown(p.i('lists_shown')), style: TextStyle(color: context.colors.onSurfaceVariant)),
-              if (p.iN('average_minor') != null) Text(context.l.myOrderAverage(formatMoney(p.i('average_minor'), d.s('currency', currency)))),
-              if (p.list('top').isNotEmpty) ...[
-                const SizedBox(height: 10),
-                Text(context.l.myOrderTop, style: TextStyle(fontSize: 12, color: context.colors.onSurfaceVariant)),
-                for (final x in p.list('top').take(3))
-                  Padding(
-                    padding: const EdgeInsets.only(top: 6),
-                    child: Row(
-                      children: [
-                        Expanded(child: Text(x.t('name'))),
-                        Text('${x.i('added')}'),
-                      ],
-                    ),
-                  ),
-              ],
             ],
           ),
         ),

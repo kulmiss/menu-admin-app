@@ -14,6 +14,7 @@ import 'package:menu_admin/core/cache/cache_db.dart';
 import 'package:menu_admin/core/cache/swr.dart';
 import 'package:menu_admin/core/providers.dart';
 import 'package:menu_admin/l10n/app_localizations.dart';
+import 'package:menu_admin/features/restaurant/dashboard_screen.dart' show todayProvider;
 
 /// One recorded request.
 class Call {
@@ -90,6 +91,7 @@ List<Override> testOverrides(FakeApi api, {MemoryTokenStore? store}) {
         retryDelays: const [Duration.zero],
       );
     }),
+    todayProvider.overrideWithValue(DateTime(2026, 11, 14, 9)),
   ];
 }
 
