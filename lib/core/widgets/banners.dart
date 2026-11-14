@@ -1,6 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../providers.dart';
 import 'kit.dart';
@@ -32,6 +33,14 @@ class TopBanners extends ConsumerWidget {
             onPressed: () => ref.read(sessionProvider.notifier).stopImpersonation(),
             child: Text(context.l.backToPlatform),
           ),
+        ),
+      // Password on the common/leaked list: a nudge, never forced (owner, 2026-11-14; M3).
+      if (session.me?.passwordWeak == true && !session.impersonating)
+        _Bar(
+          color: const Color(0xFFFDE68A),
+          icon: Icons.key,
+          text: context.l.passwordWeakBanner,
+          action: TextButton(onPressed: () => GoRouter.of(context).push('/account/password'), child: Text(context.l.passwordWeakAction)),
         ),
       if (!online) _Bar(color: context.colors.secondary, icon: Icons.wifi_off, text: context.l.offlineBanner),
       if (tenant != null && !tenant.allowsWrites) _Bar(color: const Color(0xFFB45309), icon: Icons.lock_clock, text: context.l.readOnlyBanner),

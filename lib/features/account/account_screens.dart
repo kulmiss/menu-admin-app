@@ -18,7 +18,10 @@ List<RouteBase> accountRoutes() => [
     builder: (_, _) => const ProfileScreen(),
     routes: [
       GoRoute(path: 'password', builder: (_, _) => const PasswordScreen()),
-      GoRoute(path: 'two-factor', builder: (_, _) => const TwoFactorScreen()),
+      GoRoute(
+        path: 'two-factor',
+        builder: (_, state) => TwoFactorScreen(startSetup: state.uri.queryParameters['setup'] == '1'),
+      ),
       GoRoute(path: 'devices', builder: (_, _) => const DevicesScreen()),
       GoRoute(path: 'notifications', builder: (_, _) => const NotificationSettingsScreen()),
       GoRoute(path: 'app', builder: (_, _) => const AppSettingsScreen()),
@@ -61,7 +64,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 TextField(
                   controller: _email,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(labelText: l.email, errorText: _errors['email']?.first),
+                  decoration: InputDecoration(
+                    labelText: l.email,
+                    errorText: _errors['email']?.first ?? _errors['current_password']?.first,
+                    helperText: me.pendingEmail != null ? l.emailPending(me.pendingEmail!) : null,
+                    helperMaxLines: 3,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 Align(
@@ -75,10 +83,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               _errors = {};
                             });
                             try {
-                              final changed = _email.text.trim().toLowerCase() != me.email.toLowerCase();
-                              await ref.read(apiProvider).put('mobile/account/profile', data: {'name': _name.text.trim(), 'email': _email.text.trim()});
+                              final newEmail = _email.text.trim();
+                              final changed = newEmail.toLowerCase() != me.email.toLowerCase();
+                              // A new e-mail needs the current password; the address changes after its link (H3).
+                              String? password;
+                              if (changed) {
+                                password = await askPassword(context);
+                                if (password == null) return;
+                              }
+                              await ref
+                                  .read(apiProvider)
+                                  .put('mobile/account/profile', data: {'name': _name.text.trim(), 'email': newEmail, 'current_password': ?password});
                               await ref.read(sessionProvider.notifier).refreshMe();
-                              if (context.mounted) showSnack(context, changed ? l.emailChangedVerify : l.saved);
+                              if (changed) _email.text = me.email;
+                              if (context.mounted) showSnack(context, changed ? l.emailChangeSent(newEmail) : l.saved);
                             } catch (e) {
                               if (!context.mounted) return;
                               setState(() => _errors = ApiError.from(e).fieldErrors);
@@ -264,7 +282,10 @@ Future<String?> askPassword(BuildContext context) async {
 
 /// Two-step sign-in: turn on (QR + key, then a code), recovery codes, turn off.
 class TwoFactorScreen extends ConsumerStatefulWidget {
-  const TwoFactorScreen({super.key});
+  const TwoFactorScreen({super.key, this.startSetup = false});
+
+  /// One tap from the dashboard card: ask for the password at once (M17).
+  final bool startSetup;
   @override
   ConsumerState<TwoFactorScreen> createState() => _TwoFactorScreenState();
 }
@@ -274,6 +295,17 @@ class _TwoFactorScreenState extends ConsumerState<TwoFactorScreen> {
   List<String>? _codes;
   final _code = TextEditingController();
   String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    final me = ref.read(sessionProvider).me;
+    if ((widget.startSetup || (me?.twoFactorRequired ?? false)) && !(me?.twoFactorEnabled ?? true)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _start();
+      });
+    }
+  }
 
   Future<void> _start() async {
     final pw = await askPassword(context);
@@ -355,6 +387,13 @@ class _TwoFactorScreenState extends ConsumerState<TwoFactorScreen> {
               const SizedBox(height: 12),
               FilledButton(onPressed: _confirm, child: Text(l.verify)),
             ] else ...[
+              if (me.twoFactorRequired) ...[
+                Card(
+                  color: context.colors.errorContainer,
+                  child: Padding(padding: const EdgeInsets.all(12), child: Text(l.twoFactorRequiredText)),
+                ),
+                const SizedBox(height: 8),
+              ],
               ListTile(contentPadding: EdgeInsets.zero, title: Text(l.twoFactor), trailing: Text(me.twoFactorEnabled ? l.twoFactorOn : l.twoFactorOff)),
               const SizedBox(height: 12),
               if (!me.twoFactorEnabled)

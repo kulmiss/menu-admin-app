@@ -47,6 +47,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Signed in.
       if (loc == '/splash' || loc == '/sign-in' || loc == '/') return homeFor(s);
       final me = s.me;
+      // Two-factor is required for Owners and not on yet: only the account screens (M17).
+      if ((me?.twoFactorRequired ?? false) && !s.impersonating && !loc.startsWith('/account')) return '/account/two-factor';
       if (loc.startsWith('/p') && !(me?.isSuperAdmin ?? false)) return homeFor(s);
       if (loc.startsWith('/p') && s.impersonating) return homeFor(s);
       final tid = tenantOfPath(loc);

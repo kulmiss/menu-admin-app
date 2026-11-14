@@ -1477,6 +1477,34 @@ class LEn extends L {
   String get emailChangedVerify => 'Check your inbox to confirm the new e-mail.';
 
   @override
+  String emailChangeSent(String email) {
+    return 'We sent a link to $email. Your address changes when you click it.';
+  }
+
+  @override
+  String emailPending(String email) {
+    return 'Waiting for confirmation: $email. Click the link we sent there (valid for 1 hour).';
+  }
+
+  @override
+  String get passwordWeakBanner => 'Your password is on a list of common or leaked passwords.';
+
+  @override
+  String get passwordWeakAction => 'Change it';
+
+  @override
+  String get twoFactorCardTitle => 'Protect your restaurant with two-step sign-in';
+
+  @override
+  String get twoFactorCardText => 'A 6-digit code from your phone at sign-in, so a stolen password alone can\'t open your menu, prices or team.';
+
+  @override
+  String get twoFactorCardAction => 'Turn it on';
+
+  @override
+  String get twoFactorRequiredText => 'Your platform requires two-step sign-in for restaurant owners. Turn it on to continue.';
+
+  @override
   String get notificationSettings => 'Notifications';
 
   @override
