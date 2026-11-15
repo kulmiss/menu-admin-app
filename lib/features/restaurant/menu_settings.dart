@@ -230,7 +230,7 @@ class _ScheduleSheetState extends ConsumerState<ScheduleSheet> {
                           TextButton(onPressed: () => _pickTime(i, 'starts_at'), child: Text(_rows[i]['starts_at'] as String)),
                           const Text('–'),
                           TextButton(onPressed: () => _pickTime(i, 'ends_at'), child: Text(_rows[i]['ends_at'] as String)),
-                          IconButton(tooltip: context.l.delete, onPressed: () => setState(() => _rows.removeAt(i)), icon: const Icon(Icons.close)),
+                          IconButton(tooltip: context.l.delete, onPressed: () => setState(() => _rows.removeAt(i)), icon: const Icon(AppIcons.x)),
                         ],
                       ),
                   ],
@@ -238,7 +238,7 @@ class _ScheduleSheetState extends ConsumerState<ScheduleSheet> {
               ),
               TextButton.icon(
                 onPressed: () => setState(() => _rows.add({'weekday': 1, 'starts_at': '08:00', 'ends_at': '11:00'})),
-                icon: const Icon(Icons.add),
+                icon: const Icon(AppIcons.plus),
                 label: Text(context.l.addTime),
               ),
             ],

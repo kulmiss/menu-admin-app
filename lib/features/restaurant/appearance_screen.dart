@@ -153,8 +153,8 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
               IconButton(
                 tooltip: l.livePreview,
                 isSelected: _preview,
-                icon: const Icon(Icons.visibility_outlined),
-                selectedIcon: const Icon(Icons.edit_outlined),
+                icon: const Icon(AppIcons.eye),
+                selectedIcon: const Icon(AppIcons.pencil),
                 onPressed: () => setState(() => _preview = !_preview),
               ),
             Padding(
@@ -211,7 +211,7 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
             for (final s in ['editorial', 'grid', 'bistro', 'minimal'])
               ChoiceChip(
                 label: Text(_styleLabel(s)),
-                avatar: styles.contains(s) ? null : const Icon(Icons.lock_outline, size: 16),
+                avatar: styles.contains(s) ? null : const Icon(AppIcons.lock, size: 16),
                 selected: _v!['style'] == s,
                 onSelected: (_) => styles.contains(s) ? setState(() => _v!['style'] = s) : showUpgradeSheet(context),
               ),
@@ -284,6 +284,7 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
         ),
         if (_upload != null) LinearProgressIndicator(value: _upload),
         DropdownButtonFormField<String?>(
+          isExpanded: true,
           initialValue: _v!['banner_text'] as String?,
           decoration: InputDecoration(labelText: l.bannerText),
           items: [
@@ -310,13 +311,24 @@ class _ImageRow extends StatelessWidget {
   final bool wide;
   final bool busy;
 
+  // The buttons wrap under each other when the row is narrow (small phones,
+  // big text): the wide cover image plus two buttons overflowed on a 360 dp phone.
   @override
   Widget build(BuildContext context) => Row(
     children: [
       NetImage(url, width: wide ? 160 : 72, height: 72),
       const SizedBox(width: 12),
-      OutlinedButton(onPressed: busy ? null : onPick, child: Text(context.l.change)),
-      if (url != null) TextButton(onPressed: busy ? null : onRemove, child: Text(context.l.remove)),
+      Expanded(
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 4,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            OutlinedButton(onPressed: busy ? null : onPick, child: Text(context.l.change)),
+            if (url != null) TextButton(onPressed: busy ? null : onRemove, child: Text(context.l.remove)),
+          ],
+        ),
+      ),
     ],
   );
 }

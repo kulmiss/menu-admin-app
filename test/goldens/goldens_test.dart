@@ -4,9 +4,6 @@
 @Tags(['golden'])
 library;
 
-import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,24 +14,12 @@ import 'package:menu_admin/features/restaurant/sold_out_screen.dart';
 
 import '../helpers/fake_api.dart';
 import '../widgets/flows.dart';
-
-Future<void> _loadFonts() async {
-  final inter = FontLoader('Inter');
-  for (final w in ['Regular', 'Medium', 'SemiBold', 'Bold']) {
-    inter.addFont(rootBundle.load('assets/fonts/Inter-$w.ttf'));
-  }
-  await inter.load();
-  final root = Platform.environment['FLUTTER_ROOT'] ?? '/opt/sdk/flutter';
-  final icons = File('$root/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
-  if (icons.existsSync()) {
-    await (FontLoader('MaterialIcons')..addFont(Future.value(ByteData.sublistView(icons.readAsBytesSync())))).load();
-  }
-}
+import '../helpers/fonts.dart';
 
 const sizes = {'phone': Size(390, 844), 'tablet': Size(1024, 1366)};
 
 void main() {
-  setUpAll(_loadFonts);
+  setUpAll(loadTestFonts);
 
   for (final size in sizes.entries) {
     for (final b in Brightness.values) {

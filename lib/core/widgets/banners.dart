@@ -26,7 +26,7 @@ class TopBanners extends ConsumerWidget {
       if (session.impersonating)
         _Bar(
           color: const Color(0xFFB91C1C),
-          icon: Icons.visibility_outlined,
+          icon: AppIcons.eye,
           text: context.l.viewingAs(session.me?.impersonation?.tenantName ?? tenant?.name ?? ''),
           action: TextButton(
             style: TextButton.styleFrom(foregroundColor: Colors.white),
@@ -38,12 +38,12 @@ class TopBanners extends ConsumerWidget {
       if (session.me?.passwordWeak == true && !session.impersonating)
         _Bar(
           color: const Color(0xFFFDE68A),
-          icon: Icons.key,
+          icon: AppIcons.keyRound,
           text: context.l.passwordWeakBanner,
           action: TextButton(onPressed: () => GoRouter.of(context).push('/account/password'), child: Text(context.l.passwordWeakAction)),
         ),
-      if (!online) _Bar(color: context.colors.secondary, icon: Icons.wifi_off, text: context.l.offlineBanner),
-      if (tenant != null && !tenant.allowsWrites) _Bar(color: const Color(0xFFB45309), icon: Icons.lock_clock, text: context.l.readOnlyBanner),
+      if (!online) _Bar(color: context.colors.secondary, icon: AppIcons.wifiOff, text: context.l.offlineBanner),
+      if (tenant != null && !tenant.allowsWrites) _Bar(color: const Color(0xFFB45309), icon: AppIcons.lockKeyhole, text: context.l.readOnlyBanner),
     ];
     if (children.isEmpty) return const SizedBox.shrink();
     return Column(mainAxisSize: MainAxisSize.min, children: children);

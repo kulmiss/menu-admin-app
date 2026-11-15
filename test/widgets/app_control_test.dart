@@ -7,6 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 import '../helpers/fake_api.dart';
 import 'flows.dart';
 
+import 'package:menu_admin/app/icons.dart';
+
 void config(FakeApi api, Map<String, dynamic> extra) => api.json('GET mobile/config', {
   'data': {
     'versions': {'min': '1.0.0', 'latest': '1.0.0'},
@@ -101,10 +103,10 @@ void main() {
     expect(find.text('New menu styles are here'), findsOneWidget);
     expect(find.text('Home'), findsWidgets);
 
-    await tester.tap(find.descendant(of: find.byKey(const Key('update-prompt')), matching: find.byIcon(Icons.close)));
+    await tester.tap(find.descendant(of: find.byKey(const Key('update-prompt')), matching: find.byIcon(AppIcons.x)));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('update-prompt')), findsNothing);
-    await tester.tap(find.descendant(of: find.byKey(const Key('app-banner')), matching: find.byIcon(Icons.close)));
+    await tester.tap(find.descendant(of: find.byKey(const Key('app-banner')), matching: find.byIcon(AppIcons.x)));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('app-banner')), findsNothing);
   });

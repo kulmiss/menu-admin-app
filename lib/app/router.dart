@@ -66,7 +66,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     ],
     errorBuilder: (context, state) => Scaffold(
       appBar: AppBar(),
-      body: EmptyState(icon: Icons.link_off, title: context.l.errorNotFound),
+      body: EmptyState(icon: AppIcons.link2Off, title: context.l.errorNotFound),
     ),
   );
 });

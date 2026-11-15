@@ -57,9 +57,9 @@ class PagedListState extends ConsumerState<PagedList> {
   }
 
   @override
-  void didUpdateWidget(covariant PagedList old) {
-    super.didUpdateWidget(old);
-    if (old.path != widget.path || old.query.toString() != widget.query.toString()) reset();
+  void didUpdateWidget(covariant PagedList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.path != widget.path || oldWidget.query.toString() != widget.query.toString()) reset();
   }
 
   void reset() => setState(() {
@@ -184,7 +184,7 @@ class _SearchFieldState extends State<SearchField> {
     autofocus: widget.autofocus,
     textInputAction: TextInputAction.search,
     decoration: InputDecoration(
-      prefixIcon: const Icon(Icons.search),
+      prefixIcon: const Icon(AppIcons.search),
       hintText: widget.hint ?? context.l.search,
       isDense: true,
       suffixIcon: ListenableBuilder(
@@ -193,7 +193,7 @@ class _SearchFieldState extends State<SearchField> {
             ? const SizedBox.shrink()
             : IconButton(
                 tooltip: context.l.close,
-                icon: const Icon(Icons.close),
+                icon: const Icon(AppIcons.x),
                 onPressed: () {
                   _c.clear();
                   widget.onChanged('');

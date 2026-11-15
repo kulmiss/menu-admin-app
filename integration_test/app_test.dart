@@ -9,5 +9,5 @@ void main() {
   testWidgets('login + two-factor', loginWithTwoFactor);
   testWidgets('sold-out toggle', toggleSoldOut);
   testWidgets('edit a dish', editDish);
-  testWidgets('record a payment', recordPaymentFlow);
+  testWidgets('Super Admin switch', superAdminSwitchFlow);
 }

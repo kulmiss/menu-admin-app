@@ -16,6 +16,7 @@ import 'info_screen.dart';
 import 'insights_screen.dart';
 import 'menu_screen.dart';
 import 'more_screen.dart';
+import 'orders_screen.dart';
 import 'promotions_screen.dart';
 import 'qr_screen.dart';
 import 'sold_out_screen.dart';
@@ -52,11 +53,10 @@ List<RouteBase> restaurantRoutes(Ref ref, GlobalKey<NavigatorState> rootKey) => 
         child: ModeShell(
           location: state.uri.path,
           items: [
-            NavItem(l.navHome, Icons.home_outlined, Icons.home, '/r/$t'),
-            NavItem(l.navMenu, Icons.restaurant_menu_outlined, Icons.restaurant_menu, '/r/$t/menu'),
-            if (can.soldOut) NavItem(l.navSoldOut, Icons.do_not_disturb_on_outlined, Icons.do_not_disturb_on, '/r/$t/sold-out'),
-            if (can.viewInsights) NavItem(l.navInsights, Icons.insights_outlined, Icons.insights, '/r/$t/insights'),
-            NavItem(l.navMore, Icons.more_horiz, Icons.more_horiz, '/r/$t/more'),
+            NavItem(l.navHome, AppIcons.house, AppIcons.house, '/r/$t'),
+            NavItem(l.navMenu, AppIcons.utensils, AppIcons.utensils, '/r/$t/menu'),
+            if (ordersTabOn(can)) NavItem(l.navOrders, AppIcons.clipboardList, AppIcons.clipboardList, '/r/$t/orders'),
+            NavItem(l.navMore, AppIcons.ellipsis, AppIcons.ellipsis, '/r/$t/more'),
           ],
           child: child,
         ),
@@ -69,8 +69,7 @@ List<RouteBase> restaurantRoutes(Ref ref, GlobalKey<NavigatorState> rootKey) => 
         path: '/r/:tid/menu',
         builder: (_, s) => MenuScreen(menuId: int.tryParse(s.uri.queryParameters['menu'] ?? '')),
       ),
-      GoRoute(path: '/r/:tid/sold-out', builder: (_, _) => const SoldOutScreen()),
-      GoRoute(path: '/r/:tid/insights', builder: (_, _) => const InsightsScreen()),
+      GoRoute(path: '/r/:tid/orders', builder: (_, _) => const OrdersScreen()),
       GoRoute(path: '/r/:tid/more', builder: (_, _) => const MoreScreen()),
     ],
   ),
@@ -80,7 +79,11 @@ List<RouteBase> restaurantRoutes(Ref ref, GlobalKey<NavigatorState> rootKey) => 
     parentNavigatorKey: rootKey,
     builder: (_, s) => _TenantGuard(
       tenantId: _tid(s),
-      child: DishEditorScreen(menuId: int.tryParse(s.uri.queryParameters['menu'] ?? ''), categoryId: int.tryParse(s.uri.queryParameters['category'] ?? '')),
+      child: DishEditorScreen(
+        menuId: int.tryParse(s.uri.queryParameters['menu'] ?? ''),
+        categoryId: int.tryParse(s.uri.queryParameters['category'] ?? ''),
+        autoPhoto: s.uri.queryParameters['photo'] == '1',
+      ),
     ),
   ),
   GoRoute(
@@ -93,6 +96,8 @@ List<RouteBase> restaurantRoutes(Ref ref, GlobalKey<NavigatorState> rootKey) => 
   ),
   for (final (path, builder) in <(String, Widget Function(GoRouterState))>[
     ('all-dishes', (_) => const AllDishesScreen()),
+    ('sold-out', (_) => const SoldOutScreen()),
+    ('insights', (_) => const InsightsScreen()),
     ('branches', (_) => const BranchesScreen()),
     ('branches/:bid', (s) => BranchDetailScreen(branchId: int.parse(s.pathParameters['bid']!))),
     ('qr', (_) => const QrScreen()),

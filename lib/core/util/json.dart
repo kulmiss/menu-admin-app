@@ -14,6 +14,7 @@ extension type J(Map<String, dynamic> m) {
   int? iN(String k) => (m[k] is num) ? (m[k] as num).toInt() : int.tryParse('${m[k] ?? ''}');
   double d(String k, [double fallback = 0]) => (m[k] is num) ? (m[k] as num).toDouble() : double.tryParse('${m[k]}') ?? fallback;
   bool b(String k, [bool fallback = false]) => m[k] is bool ? m[k] as bool : (m[k] == 1 || m[k] == '1' ? true : fallback);
+  bool? bN(String k) => m[k] == null ? null : b(k);
   J o(String k) => J.of(m[k]);
   bool has(String k) => m[k] != null;
   List<J> list(String k) => [for (final e in (m[k] is List ? m[k] as List : const [])) J.of(e)];

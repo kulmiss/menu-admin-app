@@ -9,16 +9,16 @@ import '../../core/widgets/kit.dart';
 import '../../core/widgets/paged_list.dart';
 
 IconData notificationIcon(String type) => switch (type) {
-  'plan_expiring' || 'plan_expired' => Icons.event_busy_outlined,
-  'monthly_report' => Icons.insights_outlined,
-  'invitation_accepted' => Icons.group_add_outlined,
-  'platform_announcement' => Icons.campaign_outlined,
-  'signup_new' || 'signup_pending' => Icons.storefront_outlined,
-  'payment_recorded' => Icons.payments_outlined,
-  'backup_failed' => Icons.backup_outlined,
-  'health_warning' => Icons.monitor_heart_outlined,
-  'followups_due' => Icons.event_note_outlined,
-  _ => Icons.notifications_outlined,
+  'plan_expiring' || 'plan_expired' => AppIcons.calendarX,
+  'monthly_report' => AppIcons.chartLine,
+  'invitation_accepted' => AppIcons.userRoundPlus,
+  'platform_announcement' => AppIcons.megaphone,
+  'signup_new' || 'signup_pending' => AppIcons.store,
+  'payment_recorded' => AppIcons.banknote,
+  'backup_failed' => AppIcons.cloudUpload,
+  'health_warning' => AppIcons.activity,
+  'followups_due' => AppIcons.calendarDays,
+  _ => AppIcons.bell,
 };
 
 /// The notification inbox (last 90 days, from the server).
@@ -44,7 +44,7 @@ class InboxScreen extends ConsumerWidget {
       body: PagedList(
         path: 'mobile/notifications',
         cursor: true,
-        empty: EmptyState(icon: Icons.notifications_none, title: l.inboxEmpty),
+        empty: EmptyState(icon: AppIcons.bell, title: l.inboxEmpty),
         itemBuilder: (context, n, _) => ListTile(
           leading: Icon(notificationIcon(n.s('type')), color: n.b('read') ? context.colors.onSurfaceVariant : context.colors.primary),
           title: Text(n.s('title'), style: TextStyle(fontWeight: n.b('read') ? FontWeight.w400 : FontWeight.w600)),

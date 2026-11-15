@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers.dart';
+import '../../app/icons.dart';
 
 /// A cached photo; relative URLs are resolved against the server.
 class NetImage extends ConsumerWidget {
@@ -22,7 +23,7 @@ class NetImage extends ConsumerWidget {
       width: w,
       height: h,
       decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainerHigh, borderRadius: BorderRadius.circular(radius)),
-      child: Icon(Icons.image_outlined, size: (w < h ? w : h) * .4, color: Theme.of(context).colorScheme.onSurfaceVariant),
+      child: Icon(AppIcons.image, size: (w < h ? w : h) * .4, color: Theme.of(context).colorScheme.onSurfaceVariant),
     );
     if (url == null || url!.isEmpty) return placeholder;
     final full = url!.startsWith('http') ? url! : '${ref.read(apiProvider).siteUrl}${url!.replaceFirst(RegExp('^/'), '')}';

@@ -168,7 +168,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                             errorText: _fieldErrors['password'],
                             suffixIcon: IconButton(
                               tooltip: l.password,
-                              icon: Icon(_showPassword ? Icons.visibility_off : Icons.visibility),
+                              icon: Icon(_showPassword ? AppIcons.eyeOff : AppIcons.eye),
                               onPressed: () => setState(() => _showPassword = !_showPassword),
                             ),
                           ),

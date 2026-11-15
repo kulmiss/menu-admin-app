@@ -33,7 +33,7 @@ class PromotionsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(l.promotions)),
       floatingActionButton: FloatingActionButton.extended(
-        icon: const Icon(Icons.add),
+        icon: const Icon(AppIcons.plus),
         label: Text(l.add),
         onPressed: () async {
           final type = await showModalBottomSheet<String>(
@@ -43,8 +43,8 @@ class PromotionsScreen extends ConsumerWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ListTile(leading: const Icon(Icons.star_outline), title: Text(c.l.newSpecial), onTap: () => Navigator.pop(c, 'special')),
-                  ListTile(leading: const Icon(Icons.campaign_outlined), title: Text(c.l.newAnnouncement), onTap: () => Navigator.pop(c, 'announcement')),
+                  ListTile(leading: const Icon(AppIcons.star), title: Text(c.l.newSpecial), onTap: () => Navigator.pop(c, 'special')),
+                  ListTile(leading: const Icon(AppIcons.megaphone), title: Text(c.l.newAnnouncement), onTap: () => Navigator.pop(c, 'announcement')),
                 ],
               ),
             ),
@@ -58,7 +58,7 @@ class PromotionsScreen extends ConsumerWidget {
           final rows = J.dataList(data);
           if (rows.isEmpty) {
             return ListView(
-              children: [EmptyState(icon: Icons.campaign_outlined, title: l.promotions)],
+              children: [EmptyState(icon: AppIcons.megaphone, title: l.promotions)],
             );
           }
           return ListView(
@@ -66,9 +66,7 @@ class PromotionsScreen extends ConsumerWidget {
             children: [
               for (final p in rows)
                 ListTile(
-                  leading: p.has('media')
-                      ? NetImage(p.photo('media'), size: 48)
-                      : Icon(p.s('type') == 'special' ? Icons.star_outline : Icons.campaign_outlined),
+                  leading: p.has('media') ? NetImage(p.photo('media'), size: 48) : Icon(p.s('type') == 'special' ? AppIcons.star : AppIcons.megaphone),
                   title: Text(p.t('title')),
                   subtitle: Text(
                     [
@@ -181,7 +179,7 @@ class _PromotionSheetState extends ConsumerState<_PromotionSheet> {
               contentPadding: EdgeInsets.zero,
               title: Text(l.startsAt),
               subtitle: Text(_starts ?? '—'),
-              trailing: const Icon(Icons.event),
+              trailing: const Icon(AppIcons.calendar),
               onTap: () async {
                 final v = await _pick(_starts);
                 setState(() => _starts = v);
@@ -191,7 +189,7 @@ class _PromotionSheetState extends ConsumerState<_PromotionSheet> {
               contentPadding: EdgeInsets.zero,
               title: Text(l.endsAt),
               subtitle: Text(_ends ?? l.noEnd),
-              trailing: const Icon(Icons.event),
+              trailing: const Icon(AppIcons.calendar),
               onTap: () async {
                 final v = await _pick(_ends);
                 setState(() => _ends = v);
@@ -269,7 +267,7 @@ class HappyHourScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(l.pricePeriods)),
       floatingActionButton: FloatingActionButton.extended(
-        icon: const Icon(Icons.add),
+        icon: const Icon(AppIcons.plus),
         label: Text(l.newPricePeriod),
         onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const PricePeriodEditor())),
       ),
@@ -279,7 +277,7 @@ class HappyHourScreen extends ConsumerWidget {
           final rows = J.dataList(data);
           if (rows.isEmpty) {
             return ListView(
-              children: [EmptyState(icon: Icons.local_bar_outlined, title: l.pricePeriods)],
+              children: [EmptyState(icon: AppIcons.wine, title: l.pricePeriods)],
             );
           }
           return ListView(
@@ -406,7 +404,7 @@ class _PricePeriodEditorState extends ConsumerState<PricePeriodEditor> {
           if (widget.period != null)
             IconButton(
               tooltip: l.delete,
-              icon: const Icon(Icons.delete_outline),
+              icon: const Icon(AppIcons.trash2),
               onPressed: () async {
                 if (await runOk(context, () => ref.read(apiProvider).delete('$path/${widget.period!.i('id')}')) && context.mounted) {
                   ref.invalidate(cachedProvider(path));
@@ -478,7 +476,7 @@ class _PricePeriodEditorState extends ConsumerState<PricePeriodEditor> {
           ),
           SectionHeader(
             l.dishes,
-            trailing: TextButton.icon(onPressed: _addDishes, icon: const Icon(Icons.add), label: Text(l.addDishes)),
+            trailing: TextButton.icon(onPressed: _addDishes, icon: const Icon(AppIcons.plus), label: Text(l.addDishes)),
           ),
           for (final i in _items)
             Padding(
@@ -505,7 +503,7 @@ class _PricePeriodEditorState extends ConsumerState<PricePeriodEditor> {
                       onChanged: (v) => i['value'] = i['mode'] == 'fixed' ? ((double.tryParse(v) ?? 0) * 100).round() : int.tryParse(v) ?? 0,
                     ),
                   ),
-                  IconButton(tooltip: l.remove, onPressed: () => setState(() => _items.remove(i)), icon: const Icon(Icons.close)),
+                  IconButton(tooltip: l.remove, onPressed: () => setState(() => _items.remove(i)), icon: const Icon(AppIcons.x)),
                 ],
               ),
             ),

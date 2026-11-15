@@ -114,8 +114,11 @@ All go through a Laravel notification channel `fcm` → queued job → existing 
 
 ## 5. Screens
 
-**Restaurant mode** (bottom bar: Dashboard · Menu · Sold out · Insights · More; rail on tablets)
-- Dashboard: setup checklist, views/scans trend, missing photos, "My order" stats, plan & usage, platform news; pull to refresh; "Open my menu" (link + QR, share).
+> Redesign 2026-11 (docs/redesign.md): Home with today's numbers and quick actions, bottom bar Home · Menu · Orders · More, minimal Super Admin. The lists below are updated.
+
+**Restaurant mode** (bottom bar: Home · Menu · Orders (with "My order") · More; rail on tablets)
+- Home: today (views, QR scans vs yesterday, sold-out count), quick actions (change a price, hide/show a dish, add dish with photo, share menu link/QR, mark sold out, promotions), setup checklist, 7-day chart, missing photos, plan & usage, platform news, Manage shortcuts; pull to refresh.
+- Orders: "My order" lists shown, average list, most-added dishes, 7/30 days.
 - Menu: menus (schedules, duplicate, branches) → categories → dishes; drag to reorder (long-press handle); quick sold-out switches; FAB add.
 - Dish editor: name, description, price or sizes, add-on groups, tags, allergens, calories, prep time, up to 5 photos (camera/gallery, crop, reorder, main), show photo, sold out, duplicate, delete.
 - All dishes: DataTable-like list (search debounced 300 ms, filters: menu, category, sold out, no photo, tag), multi-select bulk (sold out on/off, hide, move, bulk price %/amount), infinite scroll.
@@ -128,14 +131,12 @@ All go through a Laravel notification channel `fcm` → queued job → existing 
 - Insights: totals, fl_chart bars, top dishes, scans per code, 7/30/90 days, branch, export CSV/PDF (share), monthly report switch.
 - Team: members, roles, invite, remove, pending invitations.
 - Billing: plan, paid until, usage, invoices (open/share PDF), upgrade contact.
-- More: Info & hours, Branches, QR & print, Appearance, Promotions, Happy hour, Team, Billing, Notifications, Profile, Settings, Switch restaurant.
+- More: All dishes, Sold out, Insights, Branches, QR codes, Print, Appearance, Info & hours, Promotions, Happy hour, Team, Activity, Billing, Notifications, Profile, Settings, Switch restaurant.
 
-**Platform mode** (bottom bar: Dashboard · Restaurants · Approvals · Search · More)
-- Dashboard: KPIs, growth chart, health groups, feature use, top restaurants, needs attention; every number opens the filtered restaurant list.
-- Restaurants: filters (plan, state, health, tags, follow-up), search, infinite list; detail tabs: Overview (plan, trial, paid until), Payments (record payment → invoice, open/share/resend/void), Features, CRM (notes, tags, follow-up), Team, Danger (suspend/restore/delete), "Log in as".
-- Approvals, Plans (limits + feature switches), Payments & invoices, Messages (compose with filters + recipient count, preview, test, send, history, retry), Backups (status, back up now, settings view), Global search, Announcements, Settings (all tabs incl. SMTP + test to any address), Activity log.
+**Super Admin** (one screen, no bar — redesign 2026-11)
+- Overview (restaurants, paying, trial, sign-ups and menu views over 30 days), emergency switches (app maintenance, self sign-up, push notifications, Super Admin app sign-in), "Open Super Admin on the web" for everything else.
 
-**Both**: sign-in, 2FA, Profile (name/e-mail, password, two-factor, devices), Notifications (switches + inbox), App settings (lock, auto-lock time, analytics switch, theme follows system, about, licences, privacy/terms/support, delete account link).
+**Both**: sign-in, 2FA, Profile (name/e-mail, password, two-factor, devices), Notifications (switches + inbox), App settings (theme Phone/Light/Dark, lock, auto-lock time, analytics switch, about, licences, privacy/terms/support, delete account link).
 
 ## 6. Offline & caching
 - `cache_entries(key, scope, json, etag, fetched_at)`; scope = `userId:tenantId`; cleared on sign-out.
@@ -154,8 +155,8 @@ All go through a Laravel notification channel `fcm` → queued job → existing 
 - In-app review: after 5 sessions on 3 different days and ≥ 3 successful saves, never after an error, at most once per 120 days.
 
 ## 8. Design
-- shadcn-like: slate neutrals (`#0F172A`…`#F8FAFC`), radius 10, 1 px borders, flat cards, Inter; accent teal `#0F766E` / restaurant brand colour; light/dark from the system.
-- 48 dp min tap targets (≥ 44 px), contrast ≥ 4.5:1 (checked in tests for both themes), text scaling to 200 % without clipping, semantics labels on every icon button, keyboard shortcuts on tablets (Ctrl+K search, Ctrl+S save, Esc close).
+- The web admin's shadcn tokens in `lib/app/theme.dart` (`AppTokens`, light + dark), primary = web slate everywhere, radius 10, 1 px borders, flat cards, Inter, Lucide icons; theme follows the phone with a switch in Settings. Details: docs/redesign.md.
+- 48 dp min tap targets, contrast ≥ 4.5:1 (checked in tests for both themes), text scaling up to 130 %, semantics labels on every icon button, keyboard shortcuts on tablets (Ctrl+K search, Ctrl+S save, Esc close).
 - Motion: 150–250 ms ease-out; `MediaQuery.disableAnimations` → no motion.
 - Skeletons, empty states with one action, error states with Retry.
 - Design preview: Claude Design artifact (link in handover.md).
@@ -176,7 +177,7 @@ Outputs: adaptive foreground/background/monochrome, legacy mipmaps, iOS AppIcon 
 ## 11. Testing
 - Unit: api interceptors (idempotency key reuse on retry, error mapping, 401 sign-out), auth repository (login, 2FA, logout), cache SWR, permissions (`Can` for Owner/Manager/Staff/Super Admin + features), deep-link parsing, link safety.
 - Widget: sign-in, 2FA, dashboard, menu editor, dish editor, sold-out, restaurants list, record payment.
-- Golden: sign-in, dashboard, sold-out, platform dashboard — light/dark × phone (390×844)/tablet (1024×1366). Fonts loaded in tests (Inter) for stable goldens; run on Linux only.
+- Golden: sign-in, sold-out (phone + tablet), Home, Menu, Orders, More, Settings, Super Admin, components — light/dark. Fonts loaded in tests (Inter) for stable goldens; run on Linux only.
 - Integration (`integration_test/`): login + 2FA, edit dish, sold-out toggle, record payment — against `FakeApi`; same files on a real phone.
 - Backend: Pest feature tests for every new endpoint (tokens, expiry, 2FA, devices, impersonation, push register, settings, inbox, config, FCM sender with fake HTTP, events).
 

@@ -60,6 +60,10 @@ flutter:
   uses-material-design: true
   generate: true
   fonts:
+    # Lucide subset (tool/icons/gen.py) — the web admin's icon set.
+    - family: Lucide
+      fonts:
+        - asset: assets/fonts/Lucide.ttf
     - family: Inter
       fonts:
         - asset: assets/fonts/Inter-Regular.ttf

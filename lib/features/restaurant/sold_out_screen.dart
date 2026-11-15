@@ -28,7 +28,7 @@ class _SoldOutScreenState extends ConsumerState<SoldOutScreen> {
     if (!ref.watch(canProvider).soldOut) {
       return RestaurantScaffold(
         title: l.navSoldOut,
-        body: EmptyState(icon: Icons.do_not_disturb_off_outlined, title: l.soldOutOffTitle, body: l.soldOutOffBody),
+        body: EmptyState(icon: AppIcons.circleOff, title: l.soldOutOffTitle, body: l.soldOutOffBody),
       );
     }
     return RestaurantScaffold(
@@ -66,7 +66,7 @@ class _SoldOutScreenState extends ConsumerState<SoldOutScreen> {
                       padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
                       child: Text(l.soldOutBranchNote, style: TextStyle(fontSize: 13, color: context.colors.onSurfaceVariant)),
                     ),
-              empty: EmptyState(icon: Icons.check_circle_outline, title: _all ? l.noMatches : l.soldOutEmpty, body: _all ? null : l.soldOutEmptyBody),
+              empty: EmptyState(icon: AppIcons.circleCheck, title: _all ? l.noMatches : l.soldOutEmpty, body: _all ? null : l.soldOutEmptyBody),
               itemBuilder: (context, row, _) {
                 final id = row.i('id');
                 final sold = overrides[id] ?? row.b('is_sold_out');

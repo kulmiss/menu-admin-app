@@ -23,7 +23,7 @@ class BranchesScreen extends ConsumerWidget {
       appBar: AppBar(title: Text(context.l.branches)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => can.feature('branches') ? editBranch(context, ref, null) : showUpgradeSheet(context),
-        icon: const Icon(Icons.add),
+        icon: const Icon(AppIcons.plus),
         label: Text(context.l.newBranch),
       ),
       body: CachedView(
@@ -46,7 +46,7 @@ class BranchesScreen extends ConsumerWidget {
                         if (b.s('address').isNotEmpty) b.s('address'),
                       ].join(' · '),
                     ),
-                    trailing: const Icon(Icons.chevron_right),
+                    trailing: const Icon(AppIcons.chevronRight),
                     onTap: () => context.push('/r/${t.id}/branches/${b.i('id')}'),
                   ),
                 ),
@@ -154,7 +154,7 @@ class _BranchDetailScreenState extends ConsumerState<BranchDetailScreen> with Si
         title: Text(b?.s('name') ?? l.branches),
         actions: [
           if (b != null) ...[
-            IconButton(tooltip: l.edit, icon: const Icon(Icons.edit_outlined), onPressed: () => editBranch(context, ref, b)),
+            IconButton(tooltip: l.edit, icon: const Icon(AppIcons.pencil), onPressed: () => editBranch(context, ref, b)),
             PopupMenuButton<String>(
               onSelected: (v) async {
                 if (v == 'open') await openExternal(context, b.s('url'));
@@ -259,7 +259,7 @@ class _BranchPricesState extends ConsumerState<_BranchPrices> {
             children: [
               Expanded(
                 child: TextField(
-                  decoration: InputDecoration(prefixIcon: const Icon(Icons.search), hintText: l.search, isDense: true),
+                  decoration: InputDecoration(prefixIcon: const Icon(AppIcons.search), hintText: l.search, isDense: true),
                   onSubmitted: (v) => setState(() => _q = v.trim()),
                 ),
               ),
@@ -457,7 +457,7 @@ class _Tables extends ConsumerWidget {
               child: Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton.icon(onPressed: () => _add(context, ref), icon: const Icon(Icons.add), label: Text(l.addTables)),
+                    child: OutlinedButton.icon(onPressed: () => _add(context, ref), icon: const Icon(AppIcons.plus), label: Text(l.addTables)),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -465,7 +465,7 @@ class _Tables extends ConsumerWidget {
                       onPressed: tables.isEmpty
                           ? null
                           : () => downloadAndOpen(context, ref, tenantPath(t.id, 'branches/$branchId/table-cards.pdf'), 'table-cards.pdf'),
-                      icon: const Icon(Icons.picture_as_pdf_outlined),
+                      icon: const Icon(AppIcons.fileText),
                       label: Text(l.tableCardsPdf, maxLines: 1, overflow: TextOverflow.ellipsis),
                     ),
                   ),
@@ -474,12 +474,12 @@ class _Tables extends ConsumerWidget {
             ),
             for (final tb in tables)
               ListTile(
-                leading: const Icon(Icons.table_restaurant_outlined),
+                leading: const Icon(AppIcons.armchair),
                 title: Text(tb.s('label')),
                 subtitle: Text(tb.o('qr').s('code', tb.s('code'))),
                 trailing: IconButton(
                   tooltip: l.delete,
-                  icon: const Icon(Icons.delete_outline),
+                  icon: const Icon(AppIcons.trash2),
                   onPressed: () async {
                     if (await confirm(context, title: l.confirmDeleteTitle(tb.s('label')), action: l.delete, danger: true) && context.mounted) {
                       await runOk(context, () => ref.read(apiProvider).delete(tenantPath(t.id, 'tables/${tb.i('id')}')));
