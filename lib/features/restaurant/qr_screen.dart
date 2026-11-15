@@ -196,6 +196,7 @@ class _PrintScreenState extends ConsumerState<PrintScreen> {
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 40),
         children: [
           DropdownButtonFormField<String>(
+            isExpanded: true,
             initialValue: _material,
             decoration: InputDecoration(labelText: l.material),
             items: [

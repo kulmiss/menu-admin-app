@@ -339,11 +339,11 @@ class _TrendCard extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    spacing: 8,
                     children: [
-                      Expanded(
-                        child: Text(context.l.viewsChart, style: const TextStyle(fontWeight: FontWeight.w600)),
-                      ),
+                      Text(context.l.viewsChart, style: const TextStyle(fontWeight: FontWeight.w600)),
                       Text(context.l.weekViews(week), style: TextStyle(fontSize: 13, color: context.colors.onSurfaceVariant)),
                     ],
                   ),

@@ -69,6 +69,7 @@ class _AllDishesScreenState extends ConsumerState<AllDishesScreen> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<int>(
+                isExpanded: true,
                 initialValue: round,
                 decoration: InputDecoration(labelText: l.bulkPriceRound),
                 items: [

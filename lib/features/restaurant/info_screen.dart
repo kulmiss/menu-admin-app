@@ -201,6 +201,7 @@ class _HoursState extends ConsumerState<_Hours> {
       children: [
         if (bl.length > 1)
           DropdownButtonFormField<int?>(
+            isExpanded: true,
             initialValue: _branch,
             decoration: InputDecoration(labelText: l.forBranch),
             items: [

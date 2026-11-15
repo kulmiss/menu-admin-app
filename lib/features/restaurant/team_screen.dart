@@ -115,6 +115,7 @@ class TeamScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
+                isExpanded: true,
                 initialValue: role,
                 decoration: InputDecoration(labelText: l.role),
                 items: [

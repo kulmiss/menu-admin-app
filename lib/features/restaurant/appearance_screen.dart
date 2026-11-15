@@ -284,6 +284,7 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
         ),
         if (_upload != null) LinearProgressIndicator(value: _upload),
         DropdownButtonFormField<String?>(
+          isExpanded: true,
           initialValue: _v!['banner_text'] as String?,
           decoration: InputDecoration(labelText: l.bannerText),
           items: [
@@ -310,13 +311,24 @@ class _ImageRow extends StatelessWidget {
   final bool wide;
   final bool busy;
 
+  // The buttons wrap under each other when the row is narrow (small phones,
+  // big text): the wide cover image plus two buttons overflowed on a 360 dp phone.
   @override
   Widget build(BuildContext context) => Row(
     children: [
       NetImage(url, width: wide ? 160 : 72, height: 72),
       const SizedBox(width: 12),
-      OutlinedButton(onPressed: busy ? null : onPick, child: Text(context.l.change)),
-      if (url != null) TextButton(onPressed: busy ? null : onRemove, child: Text(context.l.remove)),
+      Expanded(
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 4,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            OutlinedButton(onPressed: busy ? null : onPick, child: Text(context.l.change)),
+            if (url != null) TextButton(onPressed: busy ? null : onRemove, child: Text(context.l.remove)),
+          ],
+        ),
+      ),
     ],
   );
 }
