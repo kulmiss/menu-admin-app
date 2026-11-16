@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/widgets/kit.dart';
+import '../help/help_screens.dart';
 
 /// The page frame inside the restaurant/platform shells.
 class RestaurantScaffold extends StatelessWidget {
@@ -39,10 +40,12 @@ class RestaurantScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Every screen has a "?" that opens its help article (QUESTIONS M37).
+    final actions = [...?this.actions, const HelpButton()];
     Widget header() => PageTitle(
       title,
       subtitle: subtitle,
-      trailing: actions == null ? null : Row(mainAxisSize: MainAxisSize.min, children: actions!),
+      trailing: Row(mainAxisSize: MainAxisSize.min, children: actions),
     );
     if (_fixed) {
       return Scaffold(
@@ -66,18 +69,7 @@ class RestaurantScaffold extends StatelessWidget {
         floatingActionButton: fab,
       );
     }
-    final list = ListView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.only(bottom: 32),
-      children: [
-        PageTitle(
-          title,
-          subtitle: subtitle,
-          trailing: actions == null ? null : Row(mainAxisSize: MainAxisSize.min, children: actions!),
-        ),
-        ...children!,
-      ],
-    );
+    final list = ListView(physics: const AlwaysScrollableScrollPhysics(), padding: const EdgeInsets.only(bottom: 32), children: [header(), ...children!]);
     return Scaffold(
       body: SafeArea(
         bottom: false,
