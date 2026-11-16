@@ -40,7 +40,7 @@ class RestaurantScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Every screen has a "?" that opens its help article (QUESTIONS M37).
+    // Every screen has a "?" that opens its help article (QUESTIONS M44).
     final actions = [...?this.actions, const HelpButton()];
     Widget header() => PageTitle(
       title,
