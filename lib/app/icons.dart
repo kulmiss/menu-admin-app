@@ -123,4 +123,10 @@ abstract final class AppIcons {
   static const IconData wine = IconData(0xe2f8, fontFamily: 'Lucide');
   static const IconData wrench = IconData(0xe1b1, fontFamily: 'Lucide');
   static const IconData x = IconData(0xe1b2, fontFamily: 'Lucide');
+  static const IconData circleHelp = IconData(0xe082, fontFamily: 'Lucide');
+  static const IconData lifeBuoy = IconData(0xe101, fontFamily: 'Lucide');
+  static const IconData compass = IconData(0xe09b, fontFamily: 'Lucide');
+  static const IconData thumbsUp = IconData(0xe18a, fontFamily: 'Lucide');
+  static const IconData thumbsDown = IconData(0xe189, fontFamily: 'Lucide');
+  static const IconData bookOpen = IconData(0xe05f, fontFamily: 'Lucide');
 }

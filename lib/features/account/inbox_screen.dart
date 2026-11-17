@@ -34,8 +34,9 @@ class InboxScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () async {
-              await runOk(context, () => ref.read(apiProvider).post('mobile/notifications/read', data: {'all': true}));
-              ref.invalidate(cachedProvider('mobile/notifications'));
+              final api = ref.read(apiProvider), container = context.container;
+              await runOk(context, () => api.post('mobile/notifications/read', data: {'all': true}));
+              container.invalidate(cachedProvider('mobile/notifications'));
             },
             child: Text(l.markAllRead),
           ),
