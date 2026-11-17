@@ -79,7 +79,7 @@ void main() {
   testWidgets('the server says the app is off (older saved config): the same screen', (tester) async {
     final api = restaurantServer();
     config(api, {});
-    api.json('GET t/7/announcements', {'message': 'Not for the app.', 'code': 'mobile.app_off'}, 403);
+    api.json('GET restaurant/7/announcements', {'message': 'Not for the app.', 'code': 'mobile.app_off'}, 403);
     await startApp(tester, api, token: 'tok');
     expect(find.byKey(const Key('app-off')), findsOneWidget);
     expect(find.text('Not for the app.'), findsOneWidget);

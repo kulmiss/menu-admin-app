@@ -6,6 +6,7 @@ import '../../app/env.dart';
 import '../../core/api/api_error.dart';
 import '../../core/app_config.dart';
 import '../../core/auth/auth_repository.dart';
+import '../../core/auth/google_auth.dart';
 import '../../core/providers.dart';
 import '../../core/widgets/app_logo.dart';
 import '../../core/widgets/kit.dart';
@@ -54,6 +55,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
             await ref.read(sessionProvider.notifier).signIn(token);
           case NeedsTwoFactor(:final challenge):
             setState(() => _challenge = challenge);
+          case NeedsRestaurant():
+            break; // only after "Continue with Google"
         }
       } else {
         final token = await auth.twoFactor(_challenge!, code: _recovery ? null : _code.text, recoveryCode: _recovery ? _code.text : null);
@@ -72,6 +75,52 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           _error = errorText(context, e);
         }
       });
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  /// "Continue with Google" (backend 2026-11-17): Google gives an ID token on
+  /// the phone, the server answers like a password sign-in.
+  Future<void> _google(String clientId) async {
+    setState(() {
+      _busy = true;
+      _error = null;
+      _fieldErrors = {};
+    });
+    final auth = ref.read(authRepositoryProvider);
+    try {
+      final idToken = await ref.read(googleIdTokensProvider).idToken(clientId);
+      if (idToken == null) return; // the person closed Google's sheet
+      var result = await auth.google(idToken);
+      if (result case NeedsRestaurant(:final ticket, :final email)) {
+        if (!mounted) return;
+        setState(() => _busy = false); // the sheet has its own progress
+        final token = await showModalBottomSheet<String>(
+          context: context,
+          isScrollControlled: true,
+          showDragHandle: true,
+          builder: (_) => GoogleFinishSheet(ticket: ticket, email: email),
+        );
+        if (token == null) return;
+        if (mounted) setState(() => _busy = true);
+        result = LoggedIn(token);
+      }
+      switch (result) {
+        case LoggedIn(:final token, :final googleLinked):
+          await ref.read(sessionProvider.notifier).signIn(token);
+          if (googleLinked && mounted) showSnack(context, context.l.googleLinked);
+        case NeedsTwoFactor(:final challenge):
+          setState(() => _challenge = challenge);
+        case NeedsRestaurant():
+          break;
+      }
+    } on GoogleIdTokenFailure {
+      if (mounted) setState(() => _error = context.l.googleUnavailable);
+    } on ApiError catch (e) {
+      if (mounted) setState(() => _error = errorText(context, e));
+    } catch (e) {
+      if (mounted) setState(() => _error = errorText(context, e));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -189,6 +238,21 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                           validator: (v) => (v == null || v.isEmpty) ? l.requiredField : null,
                         ),
                       const SizedBox(height: 20),
+                      if (!twoFactor && (config?.googleEnabled ?? false)) ...[
+                        GoogleButton(key: const Key('google'), onPressed: _busy ? null : () => _google(config!.googleClientId!)),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            const Expanded(child: Divider()),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              child: Text(l.orDivider, style: TextStyle(color: context.colors.onSurfaceVariant)),
+                            ),
+                            const Expanded(child: Divider()),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                      ],
                       FilledButton(
                         key: const Key('submit'),
                         onPressed: _busy ? null : _submit,
@@ -235,6 +299,139 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Google's own look for its sign-in button: white (dark grey in dark mode), the four-colour G.
+class GoogleButton extends StatelessWidget {
+  const GoogleButton({super.key, required this.onPressed});
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        minimumSize: const Size.fromHeight(48),
+        backgroundColor: dark ? const Color(0xFF131314) : Colors.white,
+        foregroundColor: dark ? const Color(0xFFE3E3E3) : const Color(0xFF1F1F1F),
+        side: BorderSide(color: dark ? const Color(0xFF8E918F) : const Color(0xFF747775)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset('assets/images/google_g.png', width: 20, height: 20, excludeFromSemantics: true),
+          const SizedBox(width: 12),
+          Text(context.l.continueWithGoogle, style: const TextStyle(fontWeight: FontWeight.w500)),
+        ],
+      ),
+    );
+  }
+}
+
+/// A new e-mail from Google: the restaurant name and the Terms, then the app token.
+class GoogleFinishSheet extends ConsumerStatefulWidget {
+  const GoogleFinishSheet({super.key, required this.ticket, required this.email});
+  final String ticket;
+  final String email;
+  @override
+  ConsumerState<GoogleFinishSheet> createState() => _GoogleFinishSheetState();
+}
+
+class _GoogleFinishSheetState extends ConsumerState<GoogleFinishSheet> {
+  final _form = GlobalKey<FormState>();
+  final _name = TextEditingController();
+  bool _terms = false;
+  bool _termsError = false;
+  bool _busy = false;
+  String? _error;
+
+  @override
+  void dispose() {
+    _name.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final ok = _form.currentState?.validate() ?? false;
+    setState(() => _termsError = !_terms);
+    if (!ok || !_terms) return;
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      final token = await ref.read(authRepositoryProvider).googleFinish(widget.ticket, _name.text, locale: Localizations.localeOf(context).languageCode);
+      if (mounted) Navigator.pop(context, token);
+    } catch (e) {
+      if (mounted) setState(() => _error = errorText(context, e));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l;
+    final config = ref.watch(appConfigProvider);
+    final site = ref.read(apiProvider).siteUrl;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(24, 0, 24, 24 + MediaQuery.viewInsetsOf(context).bottom),
+      child: Form(
+        key: _form,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(l.googleFinishTitle, style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
+            const SizedBox(height: 6),
+            Text(l.googleFinishBody(widget.email), style: TextStyle(color: context.colors.onSurfaceVariant)),
+            const SizedBox(height: 20),
+            if (_error != null) ...[
+              Semantics(
+                liveRegion: true,
+                child: Text(_error!, style: TextStyle(color: context.colors.error)),
+              ),
+              const SizedBox(height: 12),
+            ],
+            TextFormField(
+              key: const Key('restaurantName'),
+              controller: _name,
+              autofocus: true,
+              maxLength: 120,
+              textCapitalization: TextCapitalization.words,
+              autofillHints: const [AutofillHints.organizationName],
+              decoration: InputDecoration(labelText: l.restaurantName, counterText: ''),
+              validator: (v) => (v == null || v.trim().length < 2) ? l.requiredField : null,
+            ),
+            const SizedBox(height: 8),
+            CheckboxListTile(
+              key: const Key('terms'),
+              value: _terms,
+              contentPadding: EdgeInsets.zero,
+              controlAffinity: ListTileControlAffinity.leading,
+              onChanged: (v) => setState(() => _terms = v ?? false),
+              title: Text(l.acceptTerms),
+              subtitle: _termsError ? Text(l.acceptTermsRequired, style: TextStyle(color: context.colors.error)) : null,
+            ),
+            Wrap(
+              spacing: 8,
+              children: [
+                TextButton(onPressed: () => openExternal(context, config?.link('terms') ?? '${site}terms'), child: Text(l.terms)),
+                TextButton(onPressed: () => openExternal(context, config?.link('privacy') ?? '${site}privacy'), child: Text(l.privacy)),
+              ],
+            ),
+            const SizedBox(height: 12),
+            FilledButton(
+              key: const Key('createMenu'),
+              onPressed: _busy ? null : _submit,
+              child: _busy ? const SizedBox.square(dimension: 20, child: CircularProgressIndicator(strokeWidth: 2)) : Text(l.createMyFreeMenu),
+            ),
+          ],
         ),
       ),
     );

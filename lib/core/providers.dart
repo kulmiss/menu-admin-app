@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../app/env.dart';
 import 'api/api_client.dart';
 import 'api/api_error.dart';
+import 'auth/google_auth.dart';
 import 'auth/models.dart';
 import 'auth/permissions.dart';
 import 'auth/token_store.dart';
@@ -170,6 +171,10 @@ class SessionController extends Notifier<SessionState> {
     } catch (_) {
       // Signing out locally always works, even offline.
     }
+    // Also out of Google on this phone (after "Continue with Google"), so the next sign-in asks for the account.
+    try {
+      await ref.read(googleIdTokensProvider).signOut();
+    } catch (_) {}
     await _clear();
   }
 
@@ -200,4 +205,4 @@ final tenantProvider = Provider<TenantInfo?>((ref) => ref.watch(sessionProvider.
 final canProvider = Provider<Can>((ref) => Can(ref.watch(tenantProvider)));
 
 /// Path prefix of the current restaurant: `t/12/`.
-String tenantPath(int tenantId, [String rest = '']) => 't/$tenantId/$rest';
+String tenantPath(int tenantId, [String rest = '']) => 'restaurant/$tenantId/$rest';

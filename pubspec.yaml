@@ -43,6 +43,7 @@ dependencies:
   webview_flutter: ^4.14.1
   # Android-only WebView settings (no file access) for the live preview.
   webview_flutter_android: ^4.14.1
+  google_sign_in: ^7.2.0
 
 dev_dependencies:
   flutter_test:
@@ -59,6 +60,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    # Google's "G" for "Continue with Google" (their sign-in branding guidelines).
+    - assets/images/google_g.png
   fonts:
     # Lucide subset (tool/icons/gen.py) — the web admin's icon set.
     - family: Lucide

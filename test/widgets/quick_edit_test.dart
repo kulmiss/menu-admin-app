@@ -6,7 +6,7 @@ import '../helpers/fake_api.dart';
 import 'flows.dart';
 
 FakeApi _server({String role = 'owner'}) => restaurantServer(role: role)
-  ..json('GET t/7/items?sort=name&per=30&page=1', {
+  ..json('GET restaurant/7/items?sort=name&per=30&page=1', {
     'data': [
       {
         'id': 41,
@@ -22,8 +22,8 @@ FakeApi _server({String role = 'owner'}) => restaurantServer(role: role)
     ],
     'meta': {'page': 1, 'pages': 1},
   })
-  ..json('PATCH t/7/items/41/price', {'data': dish()})
-  ..on('POST t/7/items/bulk', (_) => (204, null));
+  ..json('PATCH restaurant/7/items/41/price', {'data': dish()})
+  ..on('POST restaurant/7/items/bulk', (_) => (204, null));
 
 void main() {
   testWidgets('Home › Change a price: pick, type, save — one PATCH to /price', (tester) async {
@@ -37,7 +37,7 @@ void main() {
     await tester.enterText(find.byType(TextFormField), '95.50');
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
-    final call = api.called('PATCH', 't/7/items/41/price').single;
+    final call = api.called('PATCH', 'restaurant/7/items/41/price').single;
     expect(call.body, {'price_minor': 9550});
     expect(find.text('Saved'), findsOneWidget);
   });
@@ -49,7 +49,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byType(Switch).last);
     await tester.pumpAndSettle();
-    final call = api.called('POST', 't/7/items/bulk').single;
+    final call = api.called('POST', 'restaurant/7/items/bulk').single;
     expect(call.body, {
       'ids': [41],
       'action': 'hide',

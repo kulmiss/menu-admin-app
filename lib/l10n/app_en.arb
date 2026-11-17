@@ -58,6 +58,21 @@
   "signIn": "Sign in",
   "forgotPassword": "Forgot password?",
   "newRestaurant": "New restaurant? Sign up on the website.",
+  "continueWithGoogle": "Continue with Google",
+  "orDivider": "or",
+  "googleLinked": "Google is now linked. Next time, tap “Continue with Google”.",
+  "googleUnavailable": "Google sign-in is not available on this phone. Use your e-mail and password.",
+  "googleFinishTitle": "Almost done",
+  "googleFinishBody": "You are signing up with Google as {email}. Type your restaurant name.",
+  "@googleFinishBody": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "restaurantName": "Restaurant name",
+  "acceptTerms": "I accept the Terms of Service and the Privacy Policy.",
+  "acceptTermsRequired": "Please accept the terms to continue.",
+  "createMyFreeMenu": "Create my free menu",
   "privacy": "Privacy",
   "terms": "Terms",
   "twoFactorTitle": "Two-step sign-in",

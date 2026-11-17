@@ -47,7 +47,7 @@ void main() {
         _explainOverflows(tester);
         final api = s.key == 'super admin'
             ? demoPlatform()
-            : (demoRestaurant()..json('GET t/7/appearance', {
+            : (demoRestaurant()..json('GET restaurant/7/appearance', {
                 'data': {'style': 'editorial', 'primary_color': '#0F766E', 'font': 'system', 'logo': _media(1), 'cover': _media(2)},
               }));
         final c = await startApp(tester, api, token: s.key == 'super admin' ? 'admin-tok' : 'tok');
