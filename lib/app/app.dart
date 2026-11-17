@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/platform/push.dart';
+import '../core/util/links.dart';
 import '../features/auth/gates.dart';
 import '../l10n/app_localizations.dart';
 import 'app_identity.dart';
@@ -35,13 +36,16 @@ class _MenuAdminAppState extends ConsumerState<MenuAdminApp> {
     final msg = ref.read(pushServiceProvider).foreground.value;
     final n = msg?.notification;
     if (n == null) return;
+    // Only app screens, checked like a tapped push (an outside link opened "not found").
+    final path = appPathFrom(msg!.data['link'] as String?);
     final messenger = _messengerKey.currentState;
-    messenger?.showSnackBar(
+    if (messenger == null) return;
+    messenger.showSnackBar(
       SnackBar(
         content: Text([n.title, n.body].whereType<String>().join('\n')),
-        action: msg!.data['link'] == null
+        action: path == null
             ? null
-            : SnackBarAction(label: 'Open', onPressed: () => ref.read(pushServiceProvider).pendingLink.value = msg.data['link'] as String),
+            : SnackBarAction(label: L.of(messenger.context).open, onPressed: () => ref.read(pushServiceProvider).pendingLink.value = path),
       ),
     );
   }

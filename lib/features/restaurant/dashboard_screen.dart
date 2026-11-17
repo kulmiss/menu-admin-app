@@ -12,6 +12,7 @@ import '../../core/util/files.dart';
 import '../../core/util/json.dart';
 import '../../core/widgets/auth_image.dart';
 import '../../core/widgets/kit.dart';
+import '../help/tour.dart';
 import 'quick_edit.dart';
 import 'restaurant_scaffold.dart';
 
@@ -27,6 +28,7 @@ class DashboardScreen extends ConsumerWidget {
     final can = ref.watch(canProvider);
     final l = context.l;
     final t = tenantPath(tenant.id);
+    maybeShowAppTour(context, ref);
     final paths = [
       '${t}dashboard',
       '${t}widgets/trend',

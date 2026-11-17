@@ -118,13 +118,13 @@ Future<void> editBranch(BuildContext context, WidgetRef ref, J? branch) async {
     'maps_url': maps.text.trim().isEmpty ? null : maps.text.trim(),
     if (branch != null && !branch.b('is_default')) 'is_active': active,
   };
-  final api = ref.read(apiProvider);
+  final api = ref.read(apiProvider), container = context.container;
   await runOk(
     context,
     () => branch == null ? api.post(tenantPath(t.id, 'branches'), data: data) : api.patch(tenantPath(t.id, 'branches/${branch.i('id')}'), data: data),
     success: l.saved,
   );
-  ref.invalidate(cachedProvider(tenantPath(t.id, 'branches')));
+  container.invalidate(cachedProvider(tenantPath(t.id, 'branches')));
 }
 
 class BranchDetailScreen extends ConsumerStatefulWidget {
@@ -161,9 +161,10 @@ class _BranchDetailScreenState extends ConsumerState<BranchDetailScreen> with Si
                 if (v == 'delete' &&
                     await confirm(context, title: l.confirmDeleteTitle(b.s('name')), body: l.confirmDeleteBody, action: l.delete, danger: true) &&
                     context.mounted) {
-                  if (await runOk(context, () => ref.read(apiProvider).delete(tenantPath(t.id, 'branches/${b.i('id')}'))) && context.mounted) {
-                    ref.invalidate(cachedProvider(tenantPath(t.id, 'branches')));
-                    context.pop();
+                  final api = ref.read(apiProvider), container = context.container;
+                  if (await runOk(context, () => api.delete(tenantPath(t.id, 'branches/${b.i('id')}')))) {
+                    container.invalidate(cachedProvider(tenantPath(t.id, 'branches')));
+                    if (context.mounted) context.pop();
                   }
                 }
               },
@@ -220,9 +221,10 @@ class _BranchPricesState extends ConsumerState<_BranchPrices> {
     final rows = _rows!.values
         .where((r) => r['price_minor'] != null || r['is_sold_out'] == true || r['is_hidden'] == true || (r['sizes'] as Map).isNotEmpty)
         .toList();
+    final api = ref.read(apiProvider);
     final ok = await runOk(
       context,
-      () => ref.read(apiProvider).put(tenantPath(t.id, 'branches/${widget.branchId}/overrides'), data: {'overrides': rows}),
+      () => api.put(tenantPath(t.id, 'branches/${widget.branchId}/overrides'), data: {'overrides': rows}),
       success: context.l.saved,
     );
     if (mounted) {
@@ -427,17 +429,17 @@ class _Tables extends ConsumerWidget {
     );
     if (ok != true || !context.mounted) return;
     final t = ref.read(tenantProvider)!;
+    final api = ref.read(apiProvider), container = context.container;
     await runOk(
       context,
-      () => ref
-          .read(apiProvider)
-          .post(
-            tenantPath(t.id, 'branches/$branchId/tables'),
-            data: {'prefix': prefix.text.trim(), 'from': int.tryParse(from.text), 'to': int.tryParse(to.text)},
-          ),
+      () => api.post(
+        tenantPath(t.id, 'branches/$branchId/tables'),
+        data: {'prefix': prefix.text.trim(), 'from': int.tryParse(from.text), 'to': int.tryParse(to.text)},
+      ),
     );
-    ref.invalidate(cachedProvider(tenantPath(t.id, 'branches/$branchId/tables')));
-    ref.invalidate(cachedProvider(tenantPath(t.id, 'branches')));
+    container
+      ..invalidate(cachedProvider(tenantPath(t.id, 'branches/$branchId/tables')))
+      ..invalidate(cachedProvider(tenantPath(t.id, 'branches')));
   }
 
   @override
@@ -482,8 +484,9 @@ class _Tables extends ConsumerWidget {
                   icon: const Icon(AppIcons.trash2),
                   onPressed: () async {
                     if (await confirm(context, title: l.confirmDeleteTitle(tb.s('label')), action: l.delete, danger: true) && context.mounted) {
-                      await runOk(context, () => ref.read(apiProvider).delete(tenantPath(t.id, 'tables/${tb.i('id')}')));
-                      ref.invalidate(cachedProvider(path));
+                      final api = ref.read(apiProvider), container = context.container;
+                      await runOk(context, () => api.delete(tenantPath(t.id, 'tables/${tb.i('id')}')));
+                      container.invalidate(cachedProvider(path));
                     }
                   },
                 ),
