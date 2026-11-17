@@ -62,6 +62,16 @@ Backend decisions for this app are also listed in `kulmiss/menu` QUESTIONS.md (#
 | M43 | Text size | Follows the phone up to 130 % (was unlimited). | Owner's accessibility target; larger sizes broke the card layouts. |
 | M44 | Help and the welcome tour in the app (backend #194, #195) | **Help** (More → Help, Settings → Help, and **Help** on the sign-in screen) shows the same articles as the web admin from `GET t/{id}/help` (Super Admins without a restaurant: `platform/help`; signed out: `help/public`). The answer goes through the offline cache, so Help works **without internet** (the words; pictures need a connection). Search, topics, one article at a time, **Was this helpful?** (signed in only). Every restaurant screen has a **?** in its title bar: it opens the article whose `app` path matches the screen (`/r/:tid/menu`) in a sheet; links open more articles in place. A small Markdown renderer (headings, lists, bold, links, tables, code, phone/app pictures; desktop pictures skipped) instead of a package. **Welcome tour**: up to 4 slides with big icons (Home → Add dish with photo → menu look → share QR; Staff: Home + Sold out when on), once on Home when `me.onboarding.app_tour` is false (missing = seen, so an older server shows nothing), skippable, reopened from Help → Take the tour; seen is saved with `PUT me/onboarding`. New icons: circle-help, life-buoy, compass, thumbs-up/down, book-open. | The web and the app each show their own tour once. |
 
+## Bug hunt (Claude, 2026-11-17)
+
+| # | Question | Decision | Why |
+|---|---|---|---|
+| M45 | Backing out of the crop screen after taking or choosing a photo | Cancels: nothing is uploaded (it used to upload the uncropped photo). | Back means "not this one" everywhere else in the app. |
+| M46 | Camera permission | Not declared any more. The camera opens through the phone's camera app, which needs no permission when the app doesn't declare it; photos come from the system photo picker. Storage/media permissions (added by open_filex) and the advertising ID (added by Firebase Analytics) are removed in the manifest; `tool/play_check.sh` fails the build if they come back. | Google Play rejects READ_MEDIA_* without a core need; fewer permission prompts; "camera permission denied" can't happen. |
+| M47 | Signing out on a bad network | One try to tell the server (no retries), at most 5 s, then the phone signs out anyway. | Signing out must always work and be quick; the server also drops the sign-in token's push address. |
+| M48 | Super Admin switches while saving | Locked until the server answers. | A second tap could send the opposite value and leave screen and server disagreeing. |
+| M49 | In-app review | Counts a dish save and a price save that worked; asks after one of them when the PLAN §7 rule is met (5 sessions, 3 days, 3 saves, 120 days apart). | It was never asked before (saves weren't counted). |
+
 ## Open (owner)
 - Live domain for `API_BASE_URL` (M9).
 - Firebase project, `google-services.json`, FCM service-account JSON on the server (see docs/firebase.md).

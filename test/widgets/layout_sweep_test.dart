@@ -1,6 +1,7 @@
 // Every screen on a small phone (360 dp) and a 10" tablet, with long names and
 // the largest text the app allows (130 %): nothing may overflow or throw.
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:menu_admin/app/router.dart';
 
@@ -12,7 +13,7 @@ import 'help_test.dart' show library;
 const _long = 'Ethiopian traditional breakfast combination platter with honey';
 const _email = 'selamawit.tesfaye-gebremariam@restaurant-example.com';
 
-FakeApi _stress() {
+FakeApi stressServer() {
   final api = demoRestaurant();
   Map<String, String> en(String s) => {'en': s};
   api
@@ -246,7 +247,7 @@ void main() {
         addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
         _explainOverflows();
         final sa = s.key == 'super admin';
-        final c = await startApp(tester, sa ? demoPlatform() : _stress(), token: sa ? 'admin-tok' : 'tok');
+        final c = await startApp(tester, sa ? demoPlatform() : stressServer(), token: sa ? 'admin-tok' : 'tok');
         c.read(routerProvider).go(s.value);
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull);
@@ -283,4 +284,24 @@ void main() {
       expect(find.byKey(const Key('code')), findsOneWidget);
     });
   }
+
+  testWidgets('Insights at 360 dp and 130 %: "7 days", big numbers and chart labels stay on one line', (tester) async {
+    tester.view.physicalSize = const Size(360, 740) * 3;
+    tester.view.devicePixelRatio = 3;
+    tester.platformDispatcher.textScaleFactorTestValue = 1.3;
+    addTearDown(tester.view.reset);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    final c = await startApp(tester, stressServer(), token: 'tok');
+    c.read(routerProvider).go('/r/7/insights');
+    await tester.pumpAndSettle();
+    tester.takeException();
+    double lines(Finder f) {
+      final p = tester.renderObject<RenderParagraph>(f);
+      return p.size.height / p.preferredLineHeight;
+    }
+
+    expect(lines(find.text('7 days')), lessThan(1.5));
+    expect(lines(find.text('123456')), lessThan(1.5));
+    expect(lines(find.text('3K')), lessThan(1.5), reason: 'chart labels are short (3K, not 3000)');
+  });
 }

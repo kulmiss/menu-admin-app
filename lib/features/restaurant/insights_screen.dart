@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/cache/swr.dart';
@@ -69,40 +70,47 @@ class _InsightsScreenState extends ConsumerState<InsightsScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-            child: Row(
-              children: [
-                Expanded(
-                  child: SegmentedButton<int>(
-                    showSelectedIcon: false,
-                    segments: [
-                      ButtonSegment(value: 7, label: Text(l.days7)),
-                      ButtonSegment(value: 30, label: Text(l.days30)),
-                      ButtonSegment(value: 90, label: Text(l.days90)),
-                    ],
-                    selected: {_days},
-                    onSelectionChanged: (s) => setState(() => _days = s.first),
-                  ),
-                ),
-                if (bl.length > 1) ...[
-                  const SizedBox(width: 8),
-                  // A long branch name pushed the row 1000 px off a small phone.
-                  Flexible(
-                    child: DropdownButton<int?>(
-                      value: _branch,
-                      isExpanded: true,
-                      items: [
-                        DropdownMenuItem(value: null, child: Text(l.allBranches, overflow: TextOverflow.ellipsis)),
-                        for (final b in bl)
-                          DropdownMenuItem(
-                            value: b.i('id'),
-                            child: Text(b.s('name'), overflow: TextOverflow.ellipsis),
-                          ),
-                      ],
-                      onChanged: (v) => setState(() => _branch = v),
-                    ),
-                  ),
-                ],
-              ],
+            // Narrow phones: the branch filter goes under the days, so "7 days" stays on one line.
+            child: LayoutBuilder(
+              builder: (context, box) {
+                final days = SegmentedButton<int>(
+                  showSelectedIcon: false,
+                  segments: [
+                    for (final (v, label) in [(7, l.days7), (30, l.days30), (90, l.days90)])
+                      ButtonSegment(
+                        value: v,
+                        label: Text(label, maxLines: 1, softWrap: false, overflow: TextOverflow.fade),
+                      ),
+                  ],
+                  selected: {_days},
+                  onSelectionChanged: (s) => setState(() => _days = s.first),
+                );
+                if (bl.length < 2) return days;
+                // A long branch name pushed the row 1000 px off a small phone.
+                final branch = DropdownButton<int?>(
+                  value: _branch,
+                  isExpanded: true,
+                  items: [
+                    DropdownMenuItem(value: null, child: Text(l.allBranches, overflow: TextOverflow.ellipsis)),
+                    for (final b in bl)
+                      DropdownMenuItem(
+                        value: b.i('id'),
+                        child: Text(b.s('name'), overflow: TextOverflow.ellipsis),
+                      ),
+                  ],
+                  onChanged: (v) => setState(() => _branch = v),
+                );
+                if (box.maxWidth < 560) {
+                  return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [days, branch]);
+                }
+                return Row(
+                  children: [
+                    Expanded(child: days),
+                    const SizedBox(width: 8),
+                    Flexible(child: branch),
+                  ],
+                );
+              },
             ),
           ),
           Expanded(
@@ -155,8 +163,15 @@ class _InsightsScreenState extends ConsumerState<InsightsScreen> {
                                   leftTitles: AxisTitles(
                                     sideTitles: SideTitles(
                                       showTitles: true,
-                                      reservedSize: 36,
-                                      getTitlesWidget: (v, m) => Text(v.toInt().toString(), style: const TextStyle(fontSize: 11)),
+                                      reservedSize: 40,
+                                      // Short (3.4k) and one line: long numbers broke over three lines.
+                                      getTitlesWidget: (v, m) => Text(
+                                        NumberFormat.compact().format(v),
+                                        maxLines: 1,
+                                        softWrap: false,
+                                        style: const TextStyle(fontSize: 11),
+                                        textScaler: TextScaler.noScaling,
+                                      ),
                                     ),
                                   ),
                                 ),
