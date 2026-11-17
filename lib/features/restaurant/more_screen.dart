@@ -84,6 +84,12 @@ class MoreScreen extends ConsumerWidget {
               trailing: const Icon(AppIcons.chevronRight),
               onTap: () => context.push('/account/app'),
             ),
+            ListTile(
+              leading: const Icon(AppIcons.lifeBuoy),
+              title: Text(l.helpTitle),
+              trailing: const Icon(AppIcons.chevronRight),
+              onTap: () => context.push('/help'),
+            ),
           ],
         ),
         if ((s.me?.isSuperAdmin ?? false) && !s.impersonating) ...[

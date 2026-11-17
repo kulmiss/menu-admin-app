@@ -8,21 +8,17 @@ import '../../core/util/json.dart';
 import '../../core/widgets/kit.dart';
 import 'menu_data.dart';
 
-void _reloadMenus(WidgetRef ref, [int? menuId]) {
-  final t = ref.read(tenantProvider)!;
-  ref.invalidate(cachedProvider(tenantPath(t.id, 'menus')));
-  if (menuId != null) ref.invalidate(cachedProvider(tenantPath(t.id, 'menus/$menuId/tree')));
-}
+/// Reloads the menus and their trees ([ref]: see [invalidatePrefixes]).
+Future<void> _reloadMenus(Object ref, int tenantId) => invalidatePrefix(ref, tenantPath(tenantId, 'menus'));
 
 Future<int?> createMenu(BuildContext context, WidgetRef ref) async {
   final name = await askText(context, title: context.l.newMenu, label: context.l.menuName);
   if (name == null || !context.mounted) return null;
   final t = ref.read(tenantProvider)!;
-  final r = await runAction(
-    context,
-    () => ref.read(apiProvider).post(tenantPath(t.id, 'menus'), data: {'name': translated(ref, null, name), 'is_visible': true}),
-  );
-  _reloadMenus(ref);
+  final api = ref.read(apiProvider), container = context.container;
+  final data = {'name': translated(ref, null, name), 'is_visible': true};
+  final r = await runAction(context, () => api.post(tenantPath(t.id, 'menus'), data: data));
+  await _reloadMenus(container, t.id);
   return r == null ? null : J.data(r).i('id');
 }
 
@@ -30,11 +26,10 @@ Future<void> createCategory(BuildContext context, WidgetRef ref, int menuId) asy
   final name = await askText(context, title: context.l.newCategory, label: context.l.categoryName);
   if (name == null || !context.mounted) return;
   final t = ref.read(tenantProvider)!;
-  await runAction(
-    context,
-    () => ref.read(apiProvider).post(tenantPath(t.id, 'categories'), data: {'menu_id': menuId, 'name': translated(ref, null, name), 'is_visible': true}),
-  );
-  _reloadMenus(ref, menuId);
+  final api = ref.read(apiProvider), container = context.container;
+  final data = {'menu_id': menuId, 'name': translated(ref, null, name), 'is_visible': true};
+  await runAction(context, () => api.post(tenantPath(t.id, 'categories'), data: data));
+  await _reloadMenus(container, t.id);
 }
 
 /// The "⋮" menu of the menu editor.
@@ -51,18 +46,20 @@ class MenuActions extends ConsumerWidget {
     return PopupMenuButton<String>(
       tooltip: context.l.more,
       onSelected: (v) async {
+        final container = context.container;
         switch (v) {
           case 'new':
-            onChanged(await createMenu(context, ref));
+            final id = await createMenu(context, ref);
+            if (context.mounted) onChanged(id);
           case 'rename':
             final name = await askText(context, title: context.l.renameMenu, label: context.l.menuName, initial: m!.t('name'));
             if (name != null && context.mounted) {
               await runAction(context, () => api.patch(tenantPath(t.id, 'menus/${m.i('id')}'), data: {'name': translated(ref, m['name'], name)}));
-              _reloadMenus(ref);
+              await _reloadMenus(container, t.id);
             }
           case 'visible':
             await runAction(context, () => api.patch(tenantPath(t.id, 'menus/${m!.i('id')}'), data: {'is_visible': !m.b('is_visible', true)}));
-            _reloadMenus(ref);
+            await _reloadMenus(container, t.id);
           case 'schedule':
             await showModalBottomSheet<void>(
               context: context,
@@ -70,18 +67,18 @@ class MenuActions extends ConsumerWidget {
               showDragHandle: true,
               builder: (_) => ScheduleSheet(menu: m!),
             );
-            _reloadMenus(ref);
+            await _reloadMenus(container, t.id);
           case 'branches':
             await showModalBottomSheet<void>(
               context: context,
               showDragHandle: true,
               builder: (_) => MenuBranchesSheet(menu: m!),
             );
-            _reloadMenus(ref);
+            await _reloadMenus(container, t.id);
           case 'duplicate':
             final r = await runAction(context, () => api.post(tenantPath(t.id, 'menus/${m!.i('id')}/duplicate')));
-            _reloadMenus(ref);
-            if (r != null) onChanged(J.data(r).i('id'));
+            await _reloadMenus(container, t.id);
+            if (r != null && context.mounted) onChanged(J.data(r).i('id'));
           case 'delete':
             if (await confirm(
                   context,
@@ -92,8 +89,8 @@ class MenuActions extends ConsumerWidget {
                 ) &&
                 context.mounted) {
               await runAction(context, () => api.delete(tenantPath(t.id, 'menus/${m.i('id')}')));
-              onChanged(null);
-              _reloadMenus(ref);
+              if (context.mounted) onChanged(null);
+              await _reloadMenus(container, t.id);
             }
         }
       },
@@ -186,7 +183,7 @@ class _ScheduleSheetState extends ConsumerState<ScheduleSheet> {
       context: context,
       initialTime: TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1])),
     );
-    if (t != null) setState(() => _rows[i][key] = '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}');
+    if (t != null && mounted) setState(() => _rows[i][key] = '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}');
   }
 
   @override
@@ -312,10 +309,8 @@ class _MenuBranchesSheetState extends ConsumerState<MenuBranchesSheet> {
             child: FilledButton(
               onPressed: () async {
                 final ids = _ids!.isEmpty ? [for (final b in list) b.i('id')] : _ids!.toList();
-                final ok = await runOk(
-                  context,
-                  () => ref.read(apiProvider).put(tenantPath(t.id, 'menus/${widget.menu.i('id')}/branches'), data: {'branch_ids': ids}),
-                );
+                final api = ref.read(apiProvider);
+                final ok = await runOk(context, () => api.put(tenantPath(t.id, 'menus/${widget.menu.i('id')}/branches'), data: {'branch_ids': ids}));
                 if (ok && context.mounted) Navigator.pop(context);
               },
               child: Text(context.l.save),

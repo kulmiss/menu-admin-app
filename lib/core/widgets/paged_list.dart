@@ -47,6 +47,13 @@ class PagedListState extends ConsumerState<PagedList> {
   bool _done = false;
   Object? _error;
 
+  /// When the first page that [_more] follows was fetched; a newer first page
+  /// (pull to refresh, a change made elsewhere) makes [_more] out of date.
+  DateTime? _basis;
+
+  /// Bumped by [reset]: an older page arriving afterwards is dropped.
+  int _gen = 0;
+
   String get _firstPath {
     final q = {
       ...widget.query,
@@ -63,11 +70,14 @@ class PagedListState extends ConsumerState<PagedList> {
   }
 
   void reset() => setState(() {
+    _gen++;
     _more.clear();
     _page = 1;
     _cursor = null;
     _done = false;
     _error = null;
+    _loading = false;
+    _basis = null;
   });
 
   Future<void> refresh() async {
@@ -75,7 +85,7 @@ class PagedListState extends ConsumerState<PagedList> {
     await ref.refreshPath(_firstPath);
   }
 
-  Future<void> _loadMore(J firstMeta) async {
+  Future<void> _loadMore(J firstMeta, DateTime basis) async {
     if (_loading || _done) return;
     final pages = firstMeta.i('pages', 1);
     if (!widget.cursor && _page >= pages) {
@@ -87,13 +97,19 @@ class PagedListState extends ConsumerState<PagedList> {
       _done = true;
       return;
     }
-    setState(() => _loading = true);
+    final gen = _gen;
+    final api = ref.read(apiProvider);
+    setState(() {
+      _loading = true;
+      _basis ??= basis;
+    });
     try {
       final q = {
         ...widget.query,
         if (widget.cursor) 'cursor': next! else ...{'per': '${widget.perPage}', 'page': '${_page + 1}'},
       };
-      final r = J.of(await ref.read(apiProvider).get(widget.path, query: q));
+      final r = J.of(await api.get(widget.path, query: q));
+      if (!mounted || gen != _gen) return;
       setState(() {
         _more.addAll(r.list('data'));
         _page++;
@@ -101,9 +117,9 @@ class PagedListState extends ConsumerState<PagedList> {
         if (widget.cursor && _cursor == null) _done = true;
       });
     } catch (e) {
-      setState(() => _error = e);
+      if (mounted && gen == _gen) setState(() => _error = e);
     } finally {
-      if (mounted) setState(() => _loading = false);
+      if (mounted && gen == _gen) setState(() => _loading = false);
     }
   }
 
@@ -111,9 +127,14 @@ class PagedListState extends ConsumerState<PagedList> {
   Widget build(BuildContext context) {
     return CachedView(
       path: _firstPath,
-      builder: (context, data, _) {
+      builder: (context, data, cached) {
         final first = J.of(data);
-        final rows = [...first.list('data'), ..._more];
+        final fresh = _basis == null || _basis == cached.fetchedAt;
+        if (!fresh) {
+          // The first page was reloaded: load the next pages again too.
+          WidgetsBinding.instance.addPostFrameCallback((_) => mounted ? reset() : null);
+        }
+        final rows = [...first.list('data'), if (fresh) ..._more];
         if (rows.isEmpty) {
           return ListView(children: [?widget.header, widget.empty ?? const EmptyState()]);
         }
@@ -122,7 +143,7 @@ class PagedListState extends ConsumerState<PagedList> {
         final count = rows.length + (widget.header != null ? 1 : 0) + (hasMore || _error != null ? 1 : 0);
         return NotificationListener<ScrollNotification>(
           onNotification: (n) {
-            if (n.metrics.extentAfter < 600 && hasMore) unawaited(_loadMore(meta));
+            if (n.metrics.extentAfter < 600 && hasMore && fresh) unawaited(_loadMore(meta, cached.fetchedAt));
             return false;
           },
           child: ListView.builder(
@@ -140,7 +161,7 @@ class PagedListState extends ConsumerState<PagedList> {
                     child: OutlinedButton(onPressed: () => setState(() => _error = null), child: Text(context.l.retry)),
                   );
                 }
-                if (!_loading) WidgetsBinding.instance.addPostFrameCallback((_) => _loadMore(meta));
+                if (!_loading && fresh) WidgetsBinding.instance.addPostFrameCallback((_) => mounted ? _loadMore(meta, cached.fetchedAt) : null);
                 return const Padding(
                   padding: EdgeInsets.all(20),
                   child: Center(child: CircularProgressIndicator(strokeWidth: 2)),

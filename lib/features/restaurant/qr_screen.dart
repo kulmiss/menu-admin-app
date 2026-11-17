@@ -68,8 +68,9 @@ class QrScreen extends ConsumerWidget {
             },
           );
           if (label == null || label.isEmpty || !context.mounted) return;
-          await runOk(context, () => ref.read(apiProvider).post(path, data: {'label': label}));
-          ref.invalidate(cachedProvider(path));
+          final api = ref.read(apiProvider), container = context.container;
+          await runOk(context, () => api.post(path, data: {'label': label}));
+          container.invalidate(cachedProvider(path));
         },
       ),
       body: CachedView(
@@ -120,8 +121,9 @@ class QrScreen extends ConsumerWidget {
                         onSelected: (v) async {
                           if (v == 'delete') {
                             if (await confirm(context, title: l.confirmDeleteTitle(name), action: l.delete, danger: true) && context.mounted) {
-                              await runOk(context, () => ref.read(apiProvider).delete(tenantPath(t.id, 'qr-codes/$id')));
-                              ref.invalidate(cachedProvider(path));
+                              final api = ref.read(apiProvider), container = context.container;
+                              await runOk(context, () => api.delete(tenantPath(t.id, 'qr-codes/$id')));
+                              container.invalidate(cachedProvider(path));
                             }
                             return;
                           }
