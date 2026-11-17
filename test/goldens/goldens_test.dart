@@ -4,7 +4,7 @@
 @Tags(['golden'])
 library;
 
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:menu_admin/core/auth/token_store.dart';
@@ -36,6 +36,36 @@ void main() {
         );
         await tester.pumpAndSettle();
         await expectLater(find.byType(SignInScreen), matchesGoldenFile('images/sign_in_${size.key}_${b.name}.png'));
+      });
+
+      testWidgets('sign-in with Google ${size.key} ${b.name}', (tester) async {
+        tester.view.physicalSize = size.value * 2;
+        tester.view.devicePixelRatio = 2;
+        addTearDown(tester.view.reset);
+        final api = FakeApi()
+          ..json('GET mobile/config', {
+            'data': {
+              'links': {},
+              'google': {'enabled': true, 'client_id': 'web.apps.googleusercontent.com'},
+            },
+          });
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: testOverrides(api),
+            retry: noRetry,
+            child: testApp(const SignInScreen(), brightness: b),
+          ),
+        );
+        await tester.pumpAndSettle();
+        // Asset images decode outside the fake clock: wait for Google's "G".
+        await tester.runAsync(() async {
+          for (final e in find.byType(Image).evaluate()) {
+            await precacheImage((e.widget as Image).image, e);
+          }
+        });
+        await tester.pumpAndSettle();
+        expect(find.text('Continue with Google'), findsOneWidget);
+        await expectLater(find.byType(SignInScreen), matchesGoldenFile('images/sign_in_google_${size.key}_${b.name}.png'));
       });
 
       testWidgets('sold out ${size.key} ${b.name}', (tester) async {

@@ -379,6 +379,66 @@ abstract class L {
   /// **'New restaurant? Sign up on the website.'**
   String get newRestaurant;
 
+  /// No description provided for @continueWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get continueWithGoogle;
+
+  /// No description provided for @orDivider.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get orDivider;
+
+  /// No description provided for @googleLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Google is now linked. Next time, tap “Continue with Google”.'**
+  String get googleLinked;
+
+  /// No description provided for @googleUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Google sign-in is not available on this phone. Use your e-mail and password.'**
+  String get googleUnavailable;
+
+  /// No description provided for @googleFinishTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Almost done'**
+  String get googleFinishTitle;
+
+  /// No description provided for @googleFinishBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You are signing up with Google as {email}. Type your restaurant name.'**
+  String googleFinishBody(Object email);
+
+  /// No description provided for @restaurantName.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant name'**
+  String get restaurantName;
+
+  /// No description provided for @acceptTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'I accept the Terms of Service and the Privacy Policy.'**
+  String get acceptTerms;
+
+  /// No description provided for @acceptTermsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please accept the terms to continue.'**
+  String get acceptTermsRequired;
+
+  /// No description provided for @createMyFreeMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Create my free menu'**
+  String get createMyFreeMenu;
+
   /// No description provided for @privacy.
   ///
   /// In en, this message translates to:

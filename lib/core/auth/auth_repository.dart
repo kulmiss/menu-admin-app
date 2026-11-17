@@ -8,13 +8,24 @@ import '../providers.dart';
 sealed class LoginResult {}
 
 class LoggedIn extends LoginResult {
-  LoggedIn(this.token);
+  LoggedIn(this.token, {this.googleLinked = false});
   final String token;
+
+  /// "Continue with Google" just linked Google to an existing account.
+  final bool googleLinked;
 }
 
 class NeedsTwoFactor extends LoginResult {
   NeedsTwoFactor(this.challenge);
   final String challenge;
+}
+
+/// "Continue with Google" with a new e-mail: the restaurant name and the Terms
+/// are still needed ([googleFinish] within 15 minutes).
+class NeedsRestaurant extends LoginResult {
+  NeedsRestaurant(this.ticket, this.email);
+  final String ticket;
+  final String email;
 }
 
 /// Token sign-in (backend QUESTIONS #187).
@@ -35,6 +46,24 @@ class AuthRepository {
     final r = (await _api.post('mobile/auth/login', data: {'email': email.trim(), 'password': password, ..._device}, options: _signIn)) as Map;
     if (r['two_factor'] == true) return NeedsTwoFactor(r['challenge'] as String);
     return LoggedIn(r['token'] as String);
+  }
+
+  /// "Continue with Google": Google's ID token in, the app token (or the next step) out.
+  Future<LoginResult> google(String idToken) async {
+    final r = (await _api.post('mobile/auth/google', data: {'id_token': idToken, ..._device}, options: _signIn)) as Map;
+    if (r['two_factor'] == true) return NeedsTwoFactor(r['challenge'] as String);
+    if (r['google_signup'] == true) return NeedsRestaurant(r['ticket'] as String, r['email'] as String? ?? '');
+    return LoggedIn(r['token'] as String, googleLinked: r['google_linked'] == true);
+  }
+
+  /// The new owner's restaurant name and the Terms → the app token.
+  Future<String> googleFinish(String ticket, String restaurantName, {required String locale}) async {
+    final r = (await _api.post(
+      'mobile/auth/google/finish',
+      data: {'ticket': ticket, 'restaurant_name': restaurantName.trim(), 'terms': true, 'locale': locale},
+      options: _signIn,
+    )) as Map;
+    return r['token'] as String;
   }
 
   Future<String> twoFactor(String challenge, {String? code, String? recoveryCode}) async {
