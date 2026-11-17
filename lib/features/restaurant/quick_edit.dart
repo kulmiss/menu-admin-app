@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/cache/swr.dart';
+import '../../core/platform/updates.dart';
 import '../../core/providers.dart';
 import '../../core/util/json.dart';
 import '../../core/widgets/kit.dart';
@@ -207,7 +208,10 @@ class _PriceFormState extends ConsumerState<_PriceForm> {
             ],
           };
     final ok = await runOk(context, () => api.patch(tenantPath(t.id, 'items/${widget.itemId}/price'), data: data), success: context.l.saved);
-    if (ok) await dishesChanged(container, t.id);
+    if (ok) {
+      await dishesChanged(container, t.id);
+      unawaited(container.read(reviewPromptProvider).afterSave());
+    }
     if (!mounted) return;
     setState(() => _busy = false);
     if (ok) Navigator.pop(context, true);

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/api/api_error.dart';
 import '../../core/cache/swr.dart';
+import '../../core/platform/updates.dart';
 import '../../core/providers.dart';
 import '../../core/util/json.dart';
 import '../../core/util/photos.dart';
@@ -219,6 +222,8 @@ class _DishEditorState extends ConsumerState<DishEditor> {
     try {
       await (_isNewDish ? api.post(tenantPath(t.id, 'items'), data: payload) : api.patch(tenantPath(t.id, 'items/${widget.dishId}'), data: payload));
       await dishesChanged(container, t.id);
+      // Saves are what the Play review prompt counts (PLAN.md §7); it was never called.
+      unawaited(container.read(reviewPromptProvider).afterSave());
       if (!mounted) return;
       showSnack(context, context.l.dishSaved);
       setState(() => _dirty = false);
