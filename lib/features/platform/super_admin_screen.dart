@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/auth/models.dart';
 import '../../core/cache/swr.dart';
 import '../../core/providers.dart';
 import '../../core/util/json.dart';
@@ -16,11 +17,14 @@ class SuperAdminScreen extends ConsumerWidget {
 
   static const paths = ['super/dashboard', 'super/mobile-app', 'super/settings'];
 
+  /// "Open Super Admin on the web": the area's real address (it can be secret), not the old /platform.
+  static String webUrl(String siteUrl, Me? me) => '$siteUrl${(me?.superAdminPath ?? '/super').replaceFirst(RegExp('^/+'), '')}';
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l;
     final s = ref.watch(sessionProvider);
-    final web = '${ref.read(apiProvider).siteUrl}platform';
+    final web = webUrl(ref.read(apiProvider).siteUrl, s.me);
     return RestaurantScaffold.large(
       title: l.saTitle,
       subtitle: s.me?.name,

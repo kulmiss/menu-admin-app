@@ -14,6 +14,9 @@ import '../../core/widgets/kit.dart';
 /// Sign-in and the two-factor step (backend QUESTIONS #187).
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
+
+  /// The website's "forgot password" page, if the server's config has no link (the old auth/… page is gone).
+  static const forgotPasswordPath = 'forgot-password';
   @override
   ConsumerState<SignInScreen> createState() => _SignInScreenState();
 }
@@ -271,7 +274,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         )
                       else
                         TextButton(
-                          onPressed: () => openExternal(context, config?.link('forgot_password') ?? '${ref.read(apiProvider).siteUrl}auth/forgot-password'),
+                          onPressed: () =>
+                              openExternal(context, config?.link('forgot_password') ?? '${ref.read(apiProvider).siteUrl}${SignInScreen.forgotPasswordPath}'),
                           child: Text(l.forgotPassword),
                         ),
                       const SizedBox(height: 24),
