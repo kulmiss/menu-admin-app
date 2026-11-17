@@ -1267,6 +1267,18 @@ abstract class L {
   /// **'Crop photo'**
   String get cropPhoto;
 
+  /// No description provided for @photoAccessDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'The app may not use the camera or photos. Allow it in your phone\'s Settings › Apps › Menu Admin › Permissions.'**
+  String get photoAccessDenied;
+
+  /// No description provided for @photoUnreadable.
+  ///
+  /// In en, this message translates to:
+  /// **'This photo can\'t be opened. Try another one.'**
+  String get photoUnreadable;
+
   /// No description provided for @photos.
   ///
   /// In en, this message translates to:

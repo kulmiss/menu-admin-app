@@ -248,6 +248,8 @@
   "takePhoto": "Take a photo",
   "choosePhoto": "Choose from gallery",
   "cropPhoto": "Crop photo",
+  "photoAccessDenied": "The app may not use the camera or photos. Allow it in your phone's Settings › Apps › Menu Admin › Permissions.",
+  "photoUnreadable": "This photo can't be opened. Try another one.",
   "photos": "Photos",
   "photosCount": "{count} of {max} photos",
   "mainPhoto": "Main",

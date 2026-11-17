@@ -105,7 +105,7 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
     final t = ref.read(tenantProvider)!;
     final banner = key == 'cover_media_id';
     final ratio = banner ? data.o('banner').o(_v!['style'] as String).d('ratio', 2.5) : 1.0;
-    final f = await pickPhoto(context, aspect: CropAspectRatio(ratioX: ratio, ratioY: 1));
+    final f = await pickPhoto(context, ref, aspect: CropAspectRatio(ratioX: ratio, ratioY: 1));
     if (f == null || !mounted) return;
     setState(() => _upload = 0);
     try {

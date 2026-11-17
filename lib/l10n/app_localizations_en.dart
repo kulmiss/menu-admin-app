@@ -622,6 +622,12 @@ class LEn extends L {
   String get cropPhoto => 'Crop photo';
 
   @override
+  String get photoAccessDenied => 'The app may not use the camera or photos. Allow it in your phone\'s Settings › Apps › Menu Admin › Permissions.';
+
+  @override
+  String get photoUnreadable => 'This photo can\'t be opened. Try another one.';
+
+  @override
   String get photos => 'Photos';
 
   @override

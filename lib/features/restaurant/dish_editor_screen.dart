@@ -240,7 +240,7 @@ class _DishEditorState extends ConsumerState<DishEditor> {
 
   Future<void> _addPhoto() async {
     if (_photos.length >= maxPhotos) return;
-    final file = await pickPhoto(context);
+    final file = await pickPhoto(context, ref);
     if (file == null || !mounted) return;
     final t = ref.read(tenantProvider)!;
     setState(() => _upload = 0);
@@ -248,6 +248,7 @@ class _DishEditorState extends ConsumerState<DishEditor> {
       final r = await ref
           .read(apiProvider)
           .upload(tenantPath(t.id, 'media'), filePath: file.path, fileName: 'dish.jpg', onProgress: (p) => mounted ? setState(() => _upload = p) : null);
+      if (!mounted) return;
       setState(() {
         _photos.add(J.data(r).m);
         _dirty = true;

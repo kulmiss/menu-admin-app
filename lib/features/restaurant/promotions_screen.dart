@@ -165,7 +165,7 @@ class _PromotionSheetState extends ConsumerState<_PromotionSheet> {
                   OutlinedButton(
                     onPressed: () async {
                       final api = ref.read(apiProvider);
-                      final f = await pickPhoto(context);
+                      final f = await pickPhoto(context, ref);
                       if (f == null || !context.mounted) return;
                       final r = await runAction(context, () => api.upload(tenantPath(t.id, 'media'), filePath: f.path, fileName: 'special.jpg'));
                       if (r == null || !mounted) return;
