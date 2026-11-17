@@ -79,9 +79,10 @@ class QrScreen extends ConsumerWidget {
           final codes = J.dataList(data);
           return GridView.builder(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 260,
-              mainAxisExtent: 300,
+              // Fixed parts (code image, button) + the two text lines, which grow with the text size.
+              mainAxisExtent: 244 + MediaQuery.textScalerOf(context).scale(56),
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
             ),

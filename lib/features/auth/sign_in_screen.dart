@@ -217,8 +217,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 13, color: context.colors.onSurfaceVariant),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      // Wraps: three links overflowed a 360 dp phone with large text.
+                      Wrap(
+                        alignment: WrapAlignment.center,
                         children: [
                           TextButton(
                             onPressed: () => openExternal(context, config?.link('privacy') ?? '${ref.read(apiProvider).siteUrl}privacy'),
