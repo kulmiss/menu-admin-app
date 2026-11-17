@@ -354,20 +354,20 @@ Future<void> showDishActions(BuildContext context, WidgetRef ref, J item, {requi
             onTap: () async {
               Navigator.pop(c);
               final t = ref.read(tenantProvider)!;
+              final api = ref.read(apiProvider);
+              final container = context.container;
               final ok = await runOk(
                 context,
-                () => ref
-                    .read(apiProvider)
-                    .post(
-                      tenantPath(t.id, 'items/bulk'),
-                      data: {
-                        'ids': [item.i('id')],
-                        'action': hidden ? 'show' : 'hide',
-                      },
-                    ),
+                () => api.post(
+                  tenantPath(t.id, 'items/bulk'),
+                  data: {
+                    'ids': [item.i('id')],
+                    'action': hidden ? 'show' : 'hide',
+                  },
+                ),
                 success: l.saved,
               );
-              if (ok) await invalidatePrefix(ref, tenantPath(t.id, 'menus'));
+              if (ok) await dishesChanged(container, t.id);
             },
           ),
         if (can.toggleSoldOut)
@@ -413,18 +413,17 @@ class _ReorderCategoriesState extends ConsumerState<_ReorderCategories> {
 
   Future<void> _save(List<J> order) async {
     final t = ref.read(tenantProvider)!;
+    final api = ref.read(apiProvider), container = context.container;
     setState(() => _cats = order);
     await runAction(context, () async {
-      await ref
-          .read(apiProvider)
-          .post(
-            tenantPath(t.id, 'categories/reorder'),
-            data: {
-              'menu_id': widget.menuId,
-              'ids': [for (final c in order) c.i('id')],
-            },
-          );
-      ref.invalidate(cachedProvider(widget.treePath));
+      await api.post(
+        tenantPath(t.id, 'categories/reorder'),
+        data: {
+          'menu_id': widget.menuId,
+          'ids': [for (final c in order) c.i('id')],
+        },
+      );
+      container.invalidate(cachedProvider(widget.treePath));
     });
   }
 
@@ -473,18 +472,17 @@ class _ReorderDishesState extends ConsumerState<_ReorderDishes> {
 
   Future<void> _save(List<J> order) async {
     final t = ref.read(tenantProvider)!;
+    final api = ref.read(apiProvider), container = context.container;
     setState(() => _items = order);
     await runAction(context, () async {
-      await ref
-          .read(apiProvider)
-          .post(
-            tenantPath(t.id, 'items/reorder'),
-            data: {
-              'category_id': widget.category.i('id'),
-              'ids': [for (final c in order) c.i('id')],
-            },
-          );
-      ref.invalidate(cachedProvider(widget.treePath));
+      await api.post(
+        tenantPath(t.id, 'items/reorder'),
+        data: {
+          'category_id': widget.category.i('id'),
+          'ids': [for (final c in order) c.i('id')],
+        },
+      );
+      container.invalidate(cachedProvider(widget.treePath));
     });
   }
 
