@@ -622,6 +622,12 @@ class LEn extends L {
   String get cropPhoto => 'Crop photo';
 
   @override
+  String get photoAccessDenied => 'The app may not use the camera or photos. Allow it in your phone\'s Settings › Apps › Menu Admin › Permissions.';
+
+  @override
+  String get photoUnreadable => 'This photo can\'t be opened. Try another one.';
+
+  @override
   String get photos => 'Photos';
 
   @override
@@ -1413,6 +1419,110 @@ class LEn extends L {
 
   @override
   String get help => 'Help and support';
+
+  @override
+  String get helpTitle => 'Help';
+
+  @override
+  String get helpSearch => 'Search help';
+
+  @override
+  String helpResults(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count articles found', one: '1 article found');
+    return '$_temp0';
+  }
+
+  @override
+  String get helpNothing => 'Nothing found. Try other words.';
+
+  @override
+  String get helpContact => 'Contact support';
+
+  @override
+  String get helpNotFound => 'This article is not available.';
+
+  @override
+  String get helpHelpful => 'Was this helpful?';
+
+  @override
+  String get helpThanks => 'Thank you! You can change your answer.';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get helpThisScreen => 'Help for this screen';
+
+  @override
+  String get helpNoArticle => 'Pick an article in Help.';
+
+  @override
+  String get helpOpenCentre => 'Open Help';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get tourOpen => 'Take the tour';
+
+  @override
+  String tourStep(int n, int total) {
+    return '$n of $total';
+  }
+
+  @override
+  String get tourSkip => 'Skip tour';
+
+  @override
+  String get tourNext => 'Next';
+
+  @override
+  String get tourDone => 'Done';
+
+  @override
+  String get tourHomeTitle => 'This is Home';
+
+  @override
+  String get tourHomeText => 'Today’s menu views and QR scans, and the quick actions for the jobs you do every day.';
+
+  @override
+  String get tourDishTitle => 'Add your first dish';
+
+  @override
+  String get tourDishText => 'Tap Add dish with photo, take the photo, type the name and price, and save.';
+
+  @override
+  String get tourDishGo => 'Add a dish';
+
+  @override
+  String get tourSoldOutTitle => 'Mark dishes sold out';
+
+  @override
+  String get tourSoldOutText => 'Finished for today? Mark it sold out. Tap Available again when it is back.';
+
+  @override
+  String get tourSoldOutGo => 'Open Sold out';
+
+  @override
+  String get tourLookTitle => 'Choose your menu look';
+
+  @override
+  String get tourLookText => 'Pick a style, your colour, your logo and a banner photo.';
+
+  @override
+  String get tourLookGo => 'Choose a look';
+
+  @override
+  String get tourQrTitle => 'Share your QR code';
+
+  @override
+  String get tourQrText => 'Share your menu link on WhatsApp, and print your QR code for the tables.';
+
+  @override
+  String get tourQrGo => 'Get my QR code';
 
   @override
   String get profileTitle => 'Profile';
