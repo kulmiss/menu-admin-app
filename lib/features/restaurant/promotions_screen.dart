@@ -77,8 +77,9 @@ class PromotionsScreen extends ConsumerWidget {
                   trailing: Switch(
                     value: p.b('is_active', true),
                     onChanged: (v) async {
-                      await runOk(context, () => ref.read(apiProvider).patch('$path/${p.i('id')}', data: {'is_active': v}));
-                      ref.invalidate(cachedProvider(path));
+                      final api = ref.read(apiProvider), container = context.container;
+                      await runOk(context, () => api.patch('$path/${p.i('id')}', data: {'is_active': v}));
+                      container.invalidate(cachedProvider(path));
                     },
                   ),
                   onTap: () => _edit(context, ref, p, p.s('type')),
@@ -163,9 +164,11 @@ class _PromotionSheetState extends ConsumerState<_PromotionSheet> {
                   const SizedBox(width: 12),
                   OutlinedButton(
                     onPressed: () async {
+                      final api = ref.read(apiProvider);
                       final f = await pickPhoto(context);
-                      if (f == null) return;
-                      final r = await ref.read(apiProvider).upload(tenantPath(t.id, 'media'), filePath: f.path, fileName: 'special.jpg');
+                      if (f == null || !context.mounted) return;
+                      final r = await runAction(context, () => api.upload(tenantPath(t.id, 'media'), filePath: f.path, fileName: 'special.jpg'));
+                      if (r == null || !mounted) return;
                       setState(() {
                         _media = J.data(r).i('id');
                         _mediaUrl = photoUrl(J.data(r).m);
@@ -182,7 +185,7 @@ class _PromotionSheetState extends ConsumerState<_PromotionSheet> {
               trailing: const Icon(AppIcons.calendar),
               onTap: () async {
                 final v = await _pick(_starts);
-                setState(() => _starts = v);
+                if (mounted) setState(() => _starts = v);
               },
             ),
             ListTile(
@@ -192,7 +195,7 @@ class _PromotionSheetState extends ConsumerState<_PromotionSheet> {
               trailing: const Icon(AppIcons.calendar),
               onTap: () async {
                 final v = await _pick(_ends);
-                setState(() => _ends = v);
+                if (mounted) setState(() => _ends = v);
               },
             ),
             const SizedBox(height: 12),
@@ -201,9 +204,10 @@ class _PromotionSheetState extends ConsumerState<_PromotionSheet> {
                 if (p != null)
                   TextButton(
                     onPressed: () async {
-                      if (await runOk(context, () => ref.read(apiProvider).delete('$path/${p.i('id')}')) && context.mounted) {
-                        ref.invalidate(cachedProvider(path));
-                        Navigator.pop(context);
+                      final api = ref.read(apiProvider), container = context.container;
+                      if (await runOk(context, () => api.delete('$path/${p.i('id')}'))) {
+                        container.invalidate(cachedProvider(path));
+                        if (context.mounted) Navigator.pop(context);
                       }
                     },
                     child: Text(l.delete, style: TextStyle(color: context.colors.error)),
@@ -222,16 +226,12 @@ class _PromotionSheetState extends ConsumerState<_PromotionSheet> {
                             'starts_at': _starts,
                             'ends_at': _ends,
                           };
-                          final ok = await runOk(
-                            context,
-                            () => p == null ? ref.read(apiProvider).post(path, data: data) : ref.read(apiProvider).patch('$path/${p.i('id')}', data: data),
-                          );
+                          final api = ref.read(apiProvider), container = context.container;
+                          final ok = await runOk(context, () => p == null ? api.post(path, data: data) : api.patch('$path/${p.i('id')}', data: data));
+                          if (ok) container.invalidate(cachedProvider(path));
                           if (!context.mounted) return;
                           setState(() => _busy = false);
-                          if (ok) {
-                            ref.invalidate(cachedProvider(path));
-                            Navigator.pop(context);
-                          }
+                          if (ok) Navigator.pop(context);
                         },
                   child: Text(l.save),
                 ),
@@ -292,8 +292,9 @@ class HappyHourScreen extends ConsumerWidget {
                   trailing: Switch(
                     value: p.b('is_active', true),
                     onChanged: (v) async {
-                      await runOk(context, () => ref.read(apiProvider).put('$path/${p.i('id')}', data: {..._periodPayload(p), 'is_active': v}));
-                      ref.invalidate(cachedProvider(path));
+                      final api = ref.read(apiProvider), container = context.container;
+                      await runOk(context, () => api.put('$path/${p.i('id')}', data: {..._periodPayload(p), 'is_active': v}));
+                      container.invalidate(cachedProvider(path));
                     },
                   ),
                   onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => PricePeriodEditor(period: p))),
@@ -339,7 +340,7 @@ class _PricePeriodEditorState extends ConsumerState<PricePeriodEditor> {
       context: context,
       initialTime: TimeOfDay(hour: int.parse(p[0]), minute: int.parse(p[1])),
     );
-    if (t != null) setState(() => start ? _start = _fmt(t) : _end = _fmt(t));
+    if (t != null && mounted) setState(() => start ? _start = _fmt(t) : _end = _fmt(t));
   }
 
   String _fmt(TimeOfDay t) => '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
@@ -406,9 +407,10 @@ class _PricePeriodEditorState extends ConsumerState<PricePeriodEditor> {
               tooltip: l.delete,
               icon: const Icon(AppIcons.trash2),
               onPressed: () async {
-                if (await runOk(context, () => ref.read(apiProvider).delete('$path/${widget.period!.i('id')}')) && context.mounted) {
-                  ref.invalidate(cachedProvider(path));
-                  Navigator.pop(context);
+                final api = ref.read(apiProvider), container = context.container;
+                if (await runOk(context, () => api.delete('$path/${widget.period!.i('id')}'))) {
+                  container.invalidate(cachedProvider(path));
+                  if (context.mounted) Navigator.pop(context);
                 }
               },
             ),
@@ -434,19 +436,16 @@ class _PricePeriodEditorState extends ConsumerState<PricePeriodEditor> {
                             },
                         ],
                       };
+                      final api = ref.read(apiProvider), container = context.container;
                       final ok = await runOk(
                         context,
-                        () => widget.period == null
-                            ? ref.read(apiProvider).post(path, data: data)
-                            : ref.read(apiProvider).put('$path/${widget.period!.i('id')}', data: data),
+                        () => widget.period == null ? api.post(path, data: data) : api.put('$path/${widget.period!.i('id')}', data: data),
                         success: l.saved,
                       );
+                      if (ok) container.invalidate(cachedProvider(path));
                       if (!context.mounted) return;
                       setState(() => _busy = false);
-                      if (ok) {
-                        ref.invalidate(cachedProvider(path));
-                        Navigator.pop(context);
-                      }
+                      if (ok) Navigator.pop(context);
                     },
               child: Text(l.save),
             ),

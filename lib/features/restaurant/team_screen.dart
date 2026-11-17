@@ -41,7 +41,7 @@ class TeamScreen extends ConsumerWidget {
                     ? null
                     : PopupMenuButton<String>(
                         onSelected: (v) async {
-                          final api = ref.read(apiProvider);
+                          final api = ref.read(apiProvider), container = context.container;
                           if (v == 'remove') {
                             if (await confirm(context, title: l.removeMember, body: m.o('user').s('name'), action: l.remove, danger: true) && context.mounted) {
                               await runOk(context, () => api.delete('$members/${m.i('id')}'));
@@ -51,7 +51,7 @@ class TeamScreen extends ConsumerWidget {
                           } else {
                             await runOk(context, () => api.patch('$members/${m.i('id')}', data: {'role': v}));
                           }
-                          ref.invalidate(cachedProvider(members));
+                          container.invalidate(cachedProvider(members));
                         },
                         itemBuilder: (c) => [
                           for (final r in ['owner', 'manager', 'staff'])
@@ -76,8 +76,9 @@ class TeamScreen extends ConsumerWidget {
                     tooltip: l.delete,
                     icon: const Icon(AppIcons.x),
                     onPressed: () async {
-                      await runOk(context, () => ref.read(apiProvider).delete('$invites/${i.i('id')}'));
-                      ref.invalidate(cachedProvider(invites));
+                      final api = ref.read(apiProvider), container = context.container;
+                      await runOk(context, () => api.delete('$invites/${i.i('id')}'));
+                      container.invalidate(cachedProvider(invites));
                     },
                   ),
                 ),
@@ -135,12 +136,13 @@ class TeamScreen extends ConsumerWidget {
     );
     if (ok != true || !context.mounted) return;
     final t = ref.read(tenantProvider)!;
+    final api = ref.read(apiProvider), container = context.container;
     if (await runOk(
       context,
-      () => ref.read(apiProvider).post(tenantPath(t.id, 'invitations'), data: {'email': email.text.trim(), 'role': role, 'can_edit_prices': prices}),
+      () => api.post(tenantPath(t.id, 'invitations'), data: {'email': email.text.trim(), 'role': role, 'can_edit_prices': prices}),
       success: l.inviteSent,
     )) {
-      ref.invalidate(cachedProvider(tenantPath(t.id, 'invitations')));
+      container.invalidate(cachedProvider(tenantPath(t.id, 'invitations')));
     }
   }
 }
