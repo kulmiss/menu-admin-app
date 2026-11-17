@@ -37,6 +37,9 @@ class FakeApi implements HttpClientAdapter {
   /// "METHOD path" answers that wait until the test completes them (slow server).
   final Map<String, Completer<void>> holds = {};
 
+  /// No network: every request fails like a phone without a connection.
+  bool offline = false;
+
   /// Makes "METHOD path" wait; complete the returned completer to answer.
   Completer<void> hold(String key) => holds[key] = Completer<void>();
 
@@ -52,6 +55,7 @@ class FakeApi implements HttpClientAdapter {
     final body = options.data is String ? jsonDecode(options.data as String) : options.data;
     final call = Call(options.method, path, Map.of(options.headers), body);
     calls.add(call);
+    if (offline) throw DioException.connectionError(requestOptions: options, reason: 'offline');
     final held = holds['${options.method} $path'];
     if (held != null && !held.isCompleted) {
       await Future.any([held.future, ?cancelFuture]);
