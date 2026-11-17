@@ -354,20 +354,20 @@ Future<void> showDishActions(BuildContext context, WidgetRef ref, J item, {requi
             onTap: () async {
               Navigator.pop(c);
               final t = ref.read(tenantProvider)!;
+              final api = ref.read(apiProvider);
+              final container = context.container;
               final ok = await runOk(
                 context,
-                () => ref
-                    .read(apiProvider)
-                    .post(
-                      tenantPath(t.id, 'items/bulk'),
-                      data: {
-                        'ids': [item.i('id')],
-                        'action': hidden ? 'show' : 'hide',
-                      },
-                    ),
+                () => api.post(
+                  tenantPath(t.id, 'items/bulk'),
+                  data: {
+                    'ids': [item.i('id')],
+                    'action': hidden ? 'show' : 'hide',
+                  },
+                ),
                 success: l.saved,
               );
-              if (ok) await invalidatePrefix(ref, tenantPath(t.id, 'menus'));
+              if (ok) await dishesChanged(container, t.id);
             },
           ),
         if (can.toggleSoldOut)

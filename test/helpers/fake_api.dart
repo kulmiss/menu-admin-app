@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -33,6 +34,12 @@ class FakeApi implements HttpClientAdapter {
   final Map<String, Handler> routes = {};
   final List<Call> calls = [];
 
+  /// "METHOD path" answers that wait until the test completes them (slow server).
+  final Map<String, Completer<void>> holds = {};
+
+  /// Makes "METHOD path" wait; complete the returned completer to answer.
+  Completer<void> hold(String key) => holds[key] = Completer<void>();
+
   void on(String key, Handler h) => routes[key] = h;
   void json(String key, Object? body, [int status = 200]) => routes[key] = (_) => (status, body);
 
@@ -45,6 +52,11 @@ class FakeApi implements HttpClientAdapter {
     final body = options.data is String ? jsonDecode(options.data as String) : options.data;
     final call = Call(options.method, path, Map.of(options.headers), body);
     calls.add(call);
+    final held = holds['${options.method} $path'];
+    if (held != null && !held.isCompleted) {
+      await Future.any([held.future, ?cancelFuture]);
+      if (!held.isCompleted) throw DioException.requestCancelled(requestOptions: options, reason: 'cancelled');
+    }
     final withQuery = full.hasQuery ? '$path?${_sorted(full.query)}' : path;
     final h =
         routes.entries.where((e) => _normal(e.key) == '${options.method} $withQuery').map((e) => e.value).firstOrNull ?? routes['${options.method} $path'];
