@@ -1,6 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/cache/swr.dart';
@@ -166,7 +165,7 @@ class _InsightsScreenState extends ConsumerState<InsightsScreen> {
                                       reservedSize: 40,
                                       // Short (3.4k) and one line: long numbers broke over three lines.
                                       getTitlesWidget: (v, m) => Text(
-                                        NumberFormat.compact().format(v),
+                                        shortNumber(v),
                                         maxLines: 1,
                                         softWrap: false,
                                         style: const TextStyle(fontSize: 11),
@@ -275,4 +274,14 @@ class _MonthlySwitchState extends ConsumerState<_MonthlySwitch> {
       ),
     );
   }
+}
+
+/// 950 → "950", 3450 → "3.5K", 1200000 → "1.2M" (chart labels; intl's compact
+/// format would add ~130 KB of locale data to the app).
+String shortNumber(num v) {
+  final a = v.abs();
+  String f(num x, String unit) => '${x >= 10 || x == x.roundToDouble() ? x.round() : x.toStringAsFixed(1)}$unit';
+  if (a >= 1000000) return f(v / 1000000, 'M');
+  if (a >= 1000) return f(v / 1000, 'K');
+  return v.round().toString();
 }
