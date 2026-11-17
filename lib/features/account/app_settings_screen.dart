@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../app/app_identity.dart';
 import '../../app/theme_mode.dart';
@@ -150,13 +151,15 @@ class _AppSettingsScreenState extends ConsumerState<AppSettingsScreen> {
               ListTile(
                 title: Text(l.deleteAccount),
                 trailing: const Icon(AppIcons.externalLink),
-                onTap: () => openExternal(context, '${config?.link('privacy') ?? '${ref.read(apiProvider).siteUrl}privacy'}#10-your-rights'),
+                // The website's section id drops the number: "10. Your rights" → #your-rights.
+                onTap: () => openExternal(context, '${config?.link('privacy') ?? '${ref.read(apiProvider).siteUrl}privacy'}#your-rights'),
               ),
             ],
           ),
           SectionHeader(l.help),
           Group(
             children: [
+              ListTile(leading: const Icon(AppIcons.lifeBuoy), title: Text(l.helpTitle), onTap: () => context.push('/help')),
               if (config?.link('support_whatsapp') != null)
                 ListTile(
                   leading: const Icon(AppIcons.messageCircle),

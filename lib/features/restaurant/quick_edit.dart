@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/cache/swr.dart';
+import '../../core/platform/updates.dart';
 import '../../core/providers.dart';
 import '../../core/util/json.dart';
 import '../../core/widgets/kit.dart';
@@ -14,12 +15,6 @@ import 'menu_data.dart';
 
 /// Quick edits in bottom sheets (redesign 2026-11): the top jobs without
 /// opening the full dish editor. Home → "Change a price" → pick → type → Save.
-
-Future<void> _afterChange(WidgetRef ref, int itemId) async {
-  final t = ref.read(tenantProvider)!;
-  ref.invalidate(cachedProvider(tenantPath(t.id, 'items/$itemId')));
-  await invalidatePrefix(ref, tenantPath(t.id, 'menus'));
-}
 
 /// Search the dishes and pick one (null when closed).
 Future<J?> pickDish(BuildContext context, {required String title}) => showAppSheet<J>(context, title: title, builder: (c) => const _DishSearch());
@@ -94,18 +89,18 @@ class _DishSearchState extends ConsumerState<_DishSearch> {
   Future<void> _toggle(J row, bool v) async {
     final id = row.i('id');
     final t = ref.read(tenantProvider)!;
+    final api = ref.read(apiProvider);
+    final container = context.container;
     setState(() => _visible[id] = v);
     try {
-      await ref
-          .read(apiProvider)
-          .post(
-            tenantPath(t.id, 'items/bulk'),
-            data: {
-              'ids': [id],
-              'action': v ? 'show' : 'hide',
-            },
-          );
-      await _afterChange(ref, id);
+      await api.post(
+        tenantPath(t.id, 'items/bulk'),
+        data: {
+          'ids': [id],
+          'action': v ? 'show' : 'hide',
+        },
+      );
+      await dishesChanged(container, t.id);
     } catch (e) {
       if (!mounted) return;
       setState(() => _visible.remove(id));
@@ -202,6 +197,8 @@ class _PriceFormState extends ConsumerState<_PriceForm> {
     if (!(_form.currentState?.validate() ?? false)) return;
     setState(() => _busy = true);
     final t = ref.read(tenantProvider)!;
+    final api = ref.read(apiProvider);
+    final container = context.container;
     final variants = item.list('variants');
     final data = variants.isEmpty
         ? {'price_minor': textToMinor(_c[null]!.text)}
@@ -210,8 +207,11 @@ class _PriceFormState extends ConsumerState<_PriceForm> {
               for (final v in variants) {'id': v.i('id'), 'price_minor': textToMinor(_c[v.i('id')]!.text)},
             ],
           };
-    final ok = await runOk(context, () => ref.read(apiProvider).patch(tenantPath(t.id, 'items/${widget.itemId}/price'), data: data), success: context.l.saved);
-    if (ok) await _afterChange(ref, widget.itemId);
+    final ok = await runOk(context, () => api.patch(tenantPath(t.id, 'items/${widget.itemId}/price'), data: data), success: context.l.saved);
+    if (ok) {
+      await dishesChanged(container, t.id);
+      unawaited(container.read(reviewPromptProvider).afterSave());
+    }
     if (!mounted) return;
     setState(() => _busy = false);
     if (ok) Navigator.pop(context, true);

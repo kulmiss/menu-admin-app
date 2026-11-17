@@ -9,6 +9,7 @@ import '../core/widgets/banners.dart';
 import '../core/widgets/kit.dart';
 import '../features/account/account_screens.dart';
 import '../features/account/inbox_screen.dart';
+import '../features/help/help_screens.dart';
 import '../features/auth/gates.dart';
 import '../features/auth/sign_in_screen.dart';
 import '../features/platform/platform_routes.dart';
@@ -43,7 +44,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       final s = ref.read(sessionProvider);
       final loc = state.matchedLocation;
       if (s.status == SessionStatus.loading) return loc == '/splash' ? null : '/splash';
-      if (s.status == SessionStatus.signedOut) return loc == '/sign-in' ? null : '/sign-in';
+      // Help is readable signed out too (sign-in problems).
+      if (s.status == SessionStatus.signedOut) return loc == '/sign-in' || loc.startsWith('/help') ? null : '/sign-in';
       // Signed in.
       if (loc == '/splash' || loc == '/sign-in' || loc == '/') return homeFor(s);
       final me = s.me;
@@ -63,6 +65,17 @@ final routerProvider = Provider<GoRouter>((ref) {
       ...platformRoutes(ref, _rootKey),
       ...accountRoutes(),
       GoRoute(path: '/inbox', parentNavigatorKey: _rootKey, builder: (_, _) => const InboxScreen()),
+      GoRoute(
+        path: '/help',
+        parentNavigatorKey: _rootKey,
+        builder: (_, _) => const HelpScreen(),
+        routes: [
+          GoRoute(
+            path: ':slug',
+            builder: (_, st) => HelpArticleScreen(slug: st.pathParameters['slug']!),
+          ),
+        ],
+      ),
     ],
     errorBuilder: (context, state) => Scaffold(
       appBar: AppBar(),
