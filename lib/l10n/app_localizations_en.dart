@@ -158,6 +158,38 @@ class LEn extends L {
   String get newRestaurant => 'New restaurant? Sign up on the website.';
 
   @override
+  String get continueWithGoogle => 'Continue with Google';
+
+  @override
+  String get orDivider => 'or';
+
+  @override
+  String get googleLinked => 'Google is now linked. Next time, tap “Continue with Google”.';
+
+  @override
+  String get googleUnavailable => 'Google sign-in is not available on this phone. Use your e-mail and password.';
+
+  @override
+  String get googleFinishTitle => 'Almost done';
+
+  @override
+  String googleFinishBody(Object email) {
+    return 'You are signing up with Google as $email. Type your restaurant name.';
+  }
+
+  @override
+  String get restaurantName => 'Restaurant name';
+
+  @override
+  String get acceptTerms => 'I accept the Terms of Service and the Privacy Policy.';
+
+  @override
+  String get acceptTermsRequired => 'Please accept the terms to continue.';
+
+  @override
+  String get createMyFreeMenu => 'Create my free menu';
+
+  @override
   String get privacy => 'Privacy';
 
   @override
