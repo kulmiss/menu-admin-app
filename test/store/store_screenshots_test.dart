@@ -204,11 +204,21 @@ const phone = Size(392.7, 785.5); // 1080 × 2160 at 2.75
 const tablet7 = Size(600, 960); // 1200 × 1920 at 2
 const tablet10 = Size(1280, 800); // 2560 × 1600 at 2 (landscape: two panes)
 
-Future<void> shoot(WidgetTester tester, FakeApi api, String path, String name, Size size, double dpr, {Future<void> Function()? then}) async {
+Future<void> shoot(
+  WidgetTester tester,
+  FakeApi api,
+  String path,
+  String name,
+  Size size,
+  double dpr, {
+  Future<void> Function()? then,
+  bool signedIn = true,
+}) async {
   tester.view.physicalSize = size * dpr;
   tester.view.devicePixelRatio = dpr;
   addTearDown(tester.view.reset);
-  final store = MemoryTokenStore()..values[TokenKeys.token] = 'tok';
+  final store = MemoryTokenStore();
+  if (signedIn) store.values[TokenKeys.token] = 'tok';
   final c = ProviderContainer(
     overrides: testOverrides(api, store: store),
     retry: noRetry,

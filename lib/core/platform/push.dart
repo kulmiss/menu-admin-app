@@ -77,7 +77,8 @@ class PushService {
     final t = _token;
     if (t == null) return;
     try {
-      await _ref.read(apiProvider).delete('mobile/push-tokens', data: {'token': t});
+      // Part of signing out: one quick try (the server also drops it with the sign-in token).
+      await _ref.read(apiProvider).delete('mobile/push-tokens', data: {'token': t}, noRetry: true).timeout(SessionController.signOutWait);
     } catch (_) {}
   }
 }

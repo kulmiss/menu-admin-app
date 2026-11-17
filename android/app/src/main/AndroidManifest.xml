@@ -1,10 +1,24 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
+
+    <!-- Google Play (bug hunt 2026-11-17; checked by tool/play_check.sh). The camera opens through
+         the camera app (no CAMERA permission: with it declared, Android refuses the camera until
+         the user allows it), photos come from the system photo picker, and downloaded files are
+         opened from the app's own folder, so no storage or media permission is needed. open_filex
+         and Firebase Analytics add these; Play rejects READ_MEDIA_* without a core need, and the
+         app shows no ads (advertising ID collection is off). -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" tools:node="remove" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_AD_ID" tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_ATTRIBUTION" tools:node="remove" />
 
     <application
         android:label="@string/app_name"
@@ -42,10 +56,13 @@
                 <data android:scheme="menuadmin" android:host="open" />
             </intent-filter>
         </activity>
+        <!-- The crop screens turn with the phone (Android 16 ignores the lock on tablets; Play flags it). -->
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name="vn.hunghd.flutter.plugins.imagecropper.CmUCropActivity"
+            tools:remove="android:screenOrientation" />
         <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="default" />
         <!-- Off until the app applies the user's choices (SECURITY_REPORT.md M16). -->
         <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />

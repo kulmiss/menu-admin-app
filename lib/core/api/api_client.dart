@@ -63,8 +63,13 @@ class ApiClient {
   Future<dynamic> patch(String path, {Object? data, String? idempotencyKey}) =>
       _run(() => dio.patch<dynamic>(path, data: data, options: _withKey(null, idempotencyKey)));
 
-  Future<dynamic> delete(String path, {Object? data, String? idempotencyKey}) =>
-      _run(() => dio.delete<dynamic>(path, data: data, options: _withKey(null, idempotencyKey)));
+  Future<dynamic> delete(String path, {Object? data, String? idempotencyKey, bool noRetry = false}) => _run(
+    () => dio.delete<dynamic>(
+      path,
+      data: data,
+      options: _withKey(noRetry ? Options(extra: {'noRetry': true}) : null, idempotencyKey),
+    ),
+  );
 
   Options _withKey(Options? o, String? key) {
     final options = o ?? Options();

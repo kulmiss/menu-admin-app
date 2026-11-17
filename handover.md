@@ -1,12 +1,12 @@
 # Handover — Menu Admin app
 
-_Last updated: 2026-11-14 03:00 EAT._
+_Last updated: 2026-11-16 21:45 EAT. Merged into `develop`: #1–#22. Open: #23 (Help centre + welcome tour), #24 (start here, contributing). Backend side: kulmiss/menu #122–#128._
 
 > **Working mode (owner, 2026-11-14):** work non-stop through Steps 1–5. Pick the recommended option for every question and record it in QUESTIONS.md. Stop only for: deleting the owner's files, paid services, irreversible security choices, or a real blocker. Small PRs into `develop` (never `main`), tests in every PR, CI green. The app repo is **public** now, so CI minutes are free.
 
 ## Links
 - Design preview (canvas, phone-friendly): https://claude.ai/artifact/TsJJLddM7a56sJn9FoKprK
-- Plan: PLAN.md · Decisions: QUESTIONS.md (M1–M33) · Step 1: docs/step1-safety-check.md
+- Plan: PLAN.md · Decisions: QUESTIONS.md (M1–M44) · Step 1: docs/step1-safety-check.md
 - Laptop: docs/laptop.md · Firebase: docs/firebase.md · Release/Play: docs/release.md · Store texts: store/listing.md
 
 ## PRs — merge in this order
@@ -22,6 +22,11 @@ _Last updated: 2026-11-14 03:00 EAT._
 
 Backend after merging: `php artisan migrate --force` (four migrations). Optional: `FCM_CREDENTIALS` (kulmiss/menu docs/deploy.md §10a). New scheduled commands: `mobile:prune-tokens` 03:25, `push:plan-reminders` 09:00, `push:followups` 08:00, `push:health` every 15 min, inbox prune 03:35.
 
+## Latest (2026-11-14 → 16)
+- #12 follow the Super Admin's feature switches (M35) · #13 Super Admin → Mobile app: forced update, maintenance, app off, update prompt, banner, app features (M36) — merged.
+- #23 **Help** (More → Help, Settings, sign-in screen; offline from the cache; **?** on every screen; Was this helpful?) and the **welcome tour** (once, `me.onboarding.app_tour`) — M44. Needs kulmiss/menu #124 (help API) and #126 (`me/onboarding`) on the server; on an older server Help shows an error and the tour never shows.
+- Help screenshots for the web repo: `flutter test --run-skipped -t store --update-goldens test/store/help_shots_test.dart`, then `tool/help_shots.sh ../menu`.
+
 ## App structure (lib/)
 - `app/`: identity, env (`API_BASE_URL`), theme (`AppTokens` = web shadcn tokens), theme mode, icons (generated Lucide subset, `tool/icons/gen.py`), router (go_router: `/r/:tid/...` restaurant shell, `/p` Super Admin screen, `/account`, `/inbox`), app widget.
 - `core/api`: dio client + interceptors (Bearer, Idempotency-Key reused on retry, retries, error mapping → `ApiError`).
@@ -29,13 +34,14 @@ Backend after merging: `php artisan migrate --force` (four migrations). Optional
 - `core/auth`: models, permissions (`Can`), token store, auth repository; `core/providers.dart` has the session (sign-in, restaurant switch, "log in as" stash, sign-out).
 - `core/platform`: Firebase (optional), push, app lock, in-app update/review.
 - `core/widgets`: ui (Button, Badge, Card, Sheet, Toast, SkeletonBox, PageTitle), kit (states, upgrade card, helpers), adaptive shell (bottom bar / rail / two-pane), paged list, images.
+- `features/help`: Help centre (data, small Markdown renderer, screens, "?" sheet) and the welcome tour.
 - `features/restaurant|platform|account|auth`: screens. `restaurant/quick_edit.dart` = price and hide/show sheets; `platform/super_admin_screen.dart` = the whole Super Admin.
 
 ## Redesign 2026-11
 PRs #16–#22 (stacked, merge in order): before screenshots, theme tokens, icons + components, Home + nav, quick sheets + Menu, minimal Super Admin, docs + after screenshots. See docs/redesign.md.
 
 ## Tests
-`flutter test`: 32 tests (API/idempotency/errors, permissions, links, units, 4 flows: login+2FA, sold-out, edit dish, record payment; 8 goldens). `integration_test/app_test.dart` runs the same 4 flows on a phone. Goldens are Linux-only (`--exclude-tags golden` elsewhere).
+`flutter test`: 115 tests (2026-11-16; earlier: 32 tests (API/idempotency/errors, permissions, links, units, 4 flows: login+2FA, sold-out, edit dish, record payment; 8 goldens)). `integration_test/app_test.dart` runs the same 4 flows on a phone. Goldens are Linux-only (`--exclude-tags golden` elsewhere).
 
 ## Not done / known limits
 - Real-device checks (cold start time, 60 fps, size per ABI on a real build) are for the laptop: docs/laptop.md.
