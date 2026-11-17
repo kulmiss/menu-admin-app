@@ -213,13 +213,11 @@ class _DishEditorState extends ConsumerState<DishEditor> {
     });
     final t = ref.read(tenantProvider)!;
     final api = ref.read(apiProvider);
+    final container = context.container;
+    final payload = _payload();
     try {
-      final r = _isNewDish
-          ? await api.post(tenantPath(t.id, 'items'), data: _payload())
-          : await api.patch(tenantPath(t.id, 'items/${widget.dishId}'), data: _payload());
-      final saved = J.data(r);
-      if (_menuId != null) ref.invalidate(cachedProvider(tenantPath(t.id, 'menus/$_menuId/tree')));
-      ref.invalidate(cachedProvider(tenantPath(t.id, 'items/${saved.i('id')}')));
+      await (_isNewDish ? api.post(tenantPath(t.id, 'items'), data: payload) : api.patch(tenantPath(t.id, 'items/${widget.dishId}'), data: payload));
+      await dishesChanged(container, t.id);
       if (!mounted) return;
       showSnack(context, context.l.dishSaved);
       setState(() => _dirty = false);
@@ -312,12 +310,12 @@ class _DishEditorState extends ConsumerState<DishEditor> {
             PopupMenuButton<String>(
               onSelected: (v) async {
                 final api = ref.read(apiProvider);
+                final container = context.container;
                 if (v == 'duplicate') {
                   final r = await runAction(context, () => api.post(tenantPath(t.id, 'items/${widget.dishId}/duplicate')));
-                  if (r != null && mounted) {
-                    ref.invalidate(cachedProvider(tenantPath(t.id, 'menus/$_menuId/tree')));
-                    context.pushReplacement('/r/${t.id}/dishes/${J.data(r).i('id')}');
-                  }
+                  if (r == null) return;
+                  await dishesChanged(container, t.id);
+                  if (mounted) context.pushReplacement('/r/${t.id}/dishes/${J.data(r).i('id')}');
                 } else if (v == 'delete' &&
                     await confirm(context, title: l.confirmDeleteTitle(_name.text), body: l.confirmDeleteBody, action: l.delete, danger: true)) {
                   if (!mounted) return;
@@ -325,8 +323,9 @@ class _DishEditorState extends ConsumerState<DishEditor> {
                     await api.delete(tenantPath(t.id, 'items/${widget.dishId}'));
                     return true;
                   });
-                  ref.invalidate(cachedProvider(tenantPath(t.id, 'menus/$_menuId/tree')));
-                  if (ok == true && mounted) {
+                  if (ok != true) return;
+                  await dishesChanged(container, t.id);
+                  if (mounted) {
                     setState(() => _dirty = false);
                     widget.embedded ? widget.onClosed?.call() : context.pop();
                   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../app/env.dart';
 import '../../core/api/api_error.dart';
@@ -227,6 +228,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                             onPressed: () => openExternal(context, config?.link('terms') ?? '${ref.read(apiProvider).siteUrl}terms'),
                             child: Text(l.terms),
                           ),
+                          TextButton(onPressed: () => context.push('/help'), child: Text(l.helpTitle)),
                         ],
                       ),
                     ],
