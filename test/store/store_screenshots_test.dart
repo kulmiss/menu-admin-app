@@ -45,7 +45,7 @@ FakeApi demoRestaurant() {
     item(54, 'Shiro tegabino', 'Breakfast', 17000, sold: true),
   ];
   return restaurantServer(features: {'insights': true, 'promotions': true, 'price_periods': true, 'branches': true, 'pdf_menu': true, 'order_list': true})
-    ..json('GET t/7/widgets/orders', {
+    ..json('GET restaurant/7/widgets/orders', {
       'data': {
         'enabled': true,
         'currency': 'ETB',
@@ -75,7 +75,7 @@ FakeApi demoRestaurant() {
         },
       },
     })
-    ..json('GET t/7/dashboard', {
+    ..json('GET restaurant/7/dashboard', {
       'data': {
         'today': {'views': 214, 'scans': 107},
         'yesterday': {'views': 176, 'scans': 88},
@@ -85,7 +85,7 @@ FakeApi demoRestaurant() {
         ],
       },
     })
-    ..json('GET t/7/widgets/setup', {
+    ..json('GET restaurant/7/widgets/setup', {
       'data': {
         'percent': 71,
         'complete': false,
@@ -97,7 +97,7 @@ FakeApi demoRestaurant() {
         ],
       },
     })
-    ..json('GET t/7/widgets/trend', {
+    ..json('GET restaurant/7/widgets/trend', {
       'data': {
         'days': [
           for (final v in [120, 140, 132, 168, 190, 176, 214]) {'views': v, 'scans': v ~/ 2},
@@ -105,7 +105,7 @@ FakeApi demoRestaurant() {
         'yesterday': {'views': 176, 'scans': 88},
       },
     })
-    ..json('GET t/7/widgets/plan', {
+    ..json('GET restaurant/7/widgets/plan', {
       'data': {
         'plan': {'en': 'Plus'},
         'trial': false,
@@ -121,7 +121,7 @@ FakeApi demoRestaurant() {
         },
       },
     })
-    ..json('GET t/7/menus/2/tree', {
+    ..json('GET restaurant/7/menus/2/tree', {
       'data': {
         'categories': [
           {
@@ -139,11 +139,11 @@ FakeApi demoRestaurant() {
         ],
       },
     })
-    ..json('GET t/7/items?status=sold_out&sort=name&per=100&page=1', {
+    ..json('GET restaurant/7/items?status=sold_out&sort=name&per=100&page=1', {
       'data': [coffee[2], breakfast[3]],
       'meta': {'page': 1, 'pages': 1},
     })
-    ..json('GET t/7/items/42', {
+    ..json('GET restaurant/7/items/42', {
       'data': {
         ...dish(),
         'name': {'en': 'Spris'},
@@ -165,7 +165,7 @@ FakeApi demoRestaurant() {
         'allergens': ['milk'],
       },
     })
-    ..json('GET t/7/tags', {
+    ..json('GET restaurant/7/tags', {
       'data': [
         {'id': 1, 'key': 'vegetarian'},
         {'id': 2, 'key': 'popular'},
@@ -179,7 +179,7 @@ FakeApi demoPlatform() => FakeApi()
     'data': {'min_version': '1.0.0', 'links': {}},
   })
   ..json('GET me', meJson(superAdmin: true))
-  ..json('GET platform/dashboard', {
+  ..json('GET super/dashboard', {
     'data': {
       'restaurants': 128,
       'states': {'active': 74, 'trial': 31, 'grace': 4, 'read_only': 9, 'suspended': 10},
@@ -188,7 +188,7 @@ FakeApi demoPlatform() => FakeApi()
       'scans_30d': 20114,
     },
   })
-  ..json('GET platform/mobile-app', {
+  ..json('GET super/mobile-app', {
     'data': {
       'maintenance': false,
       'super_admin_sign_in': true,
@@ -196,7 +196,7 @@ FakeApi demoPlatform() => FakeApi()
       'app_features': {'push': true, 'analytics': true, 'crash_reports': true, 'biometric_lock': true},
     },
   })
-  ..json('GET platform/settings', {
+  ..json('GET super/settings', {
     'data': {'signup_open': true},
   });
 

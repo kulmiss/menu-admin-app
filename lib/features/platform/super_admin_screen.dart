@@ -14,7 +14,7 @@ import '../restaurant/restaurant_scaffold.dart';
 class SuperAdminScreen extends ConsumerWidget {
   const SuperAdminScreen({super.key});
 
-  static const paths = ['platform/dashboard', 'platform/mobile-app', 'platform/settings'];
+  static const paths = ['super/dashboard', 'super/mobile-app', 'super/settings'];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -91,9 +91,9 @@ class _Overview extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final v = ref.watch(cachedProvider('platform/dashboard'));
+    final v = ref.watch(cachedProvider('super/dashboard'));
     final d = v.value == null ? null : J.data(v.value!.data);
-    if (d == null && v.hasError) return ErrorView(error: v.error!, onRetry: () => ref.refreshPath('platform/dashboard'));
+    if (d == null && v.hasError) return ErrorView(error: v.error!, onRetry: () => ref.refreshPath('super/dashboard'));
     final l = context.l;
     final states = d?.o('states');
     String n(int? x) => x == null ? '—' : '$x';
@@ -154,8 +154,8 @@ class _SwitchesState extends ConsumerState<_Switches> {
   @override
   Widget build(BuildContext context) {
     final l = context.l;
-    final mobile = ref.watch(cachedProvider('platform/mobile-app'));
-    final settings = ref.watch(cachedProvider('platform/settings'));
+    final mobile = ref.watch(cachedProvider('super/mobile-app'));
+    final settings = ref.watch(cachedProvider('super/settings'));
     final m = mobile.value == null ? null : J.data(mobile.value!.data);
     final st = settings.value == null ? null : J.data(settings.value!.data);
     bool? value(String key, bool? server) => _pending[key] ?? server;
@@ -174,9 +174,9 @@ class _SwitchesState extends ConsumerState<_Switches> {
           l.saMaintenance,
           l.saMaintenanceHint,
           maintenance,
-          (v) => _set('maintenance', v, path: 'platform/mobile-app', body: {'maintenance': v}, confirmText: v ? l.saMaintenanceConfirm : null),
+          (v) => _set('maintenance', v, path: 'super/mobile-app', body: {'maintenance': v}, confirmText: v ? l.saMaintenanceConfirm : null),
         ),
-        row('signup_open', l.saSignup, l.saSignupHint, signup, (v) => _set('signup_open', v, path: 'platform/settings', body: {'signup_open': v})),
+        row('signup_open', l.saSignup, l.saSignupHint, signup, (v) => _set('signup_open', v, path: 'super/settings', body: {'signup_open': v})),
         row(
           'push',
           l.saPush,
@@ -185,7 +185,7 @@ class _SwitchesState extends ConsumerState<_Switches> {
           (v) => _set(
             'push',
             v,
-            path: 'platform/mobile-app',
+            path: 'super/mobile-app',
             body: {
               'app_features': {'push': v},
             },
@@ -196,7 +196,7 @@ class _SwitchesState extends ConsumerState<_Switches> {
           l.saSaSignIn,
           l.saSaSignInHint,
           saSignIn,
-          (v) => _set('super_admin_sign_in', v, path: 'platform/mobile-app', body: {'super_admin_sign_in': v}, confirmText: v ? null : l.saSaSignInConfirm),
+          (v) => _set('super_admin_sign_in', v, path: 'super/mobile-app', body: {'super_admin_sign_in': v}, confirmText: v ? null : l.saSaSignInConfirm),
         ),
       ],
     );

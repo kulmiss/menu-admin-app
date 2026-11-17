@@ -73,7 +73,7 @@ void main() {
         tester.view.devicePixelRatio = 2;
         addTearDown(tester.view.reset);
         final api = restaurantServer(role: 'staff')
-          ..json('GET t/7/items?status=sold_out&sort=name&per=100&page=1', {
+          ..json('GET restaurant/7/items?status=sold_out&sort=name&per=100&page=1', {
             'data': [
               {
                 'id': 41,

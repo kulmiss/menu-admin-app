@@ -205,4 +205,4 @@ final tenantProvider = Provider<TenantInfo?>((ref) => ref.watch(sessionProvider.
 final canProvider = Provider<Can>((ref) => Can(ref.watch(tenantProvider)));
 
 /// Path prefix of the current restaurant: `t/12/`.
-String tenantPath(int tenantId, [String rest = '']) => 't/$tenantId/$rest';
+String tenantPath(int tenantId, [String rest = '']) => 'restaurant/$tenantId/$rest';
