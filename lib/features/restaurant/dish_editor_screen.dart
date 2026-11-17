@@ -206,7 +206,8 @@ class _DishEditorState extends ConsumerState<DishEditor> {
   }
 
   Future<void> _save() async {
-    if (!(_form.currentState?.validate() ?? false)) return;
+    // Ctrl+S reaches here even while the Save button is disabled.
+    if (_busy || _upload != null || !(_form.currentState?.validate() ?? false)) return;
     setState(() {
       _busy = true;
       _errors = {};
@@ -287,7 +288,7 @@ class _DishEditorState extends ConsumerState<DishEditor> {
         loading: () => Scaffold(appBar: AppBar(), body: const Skeleton()),
         error: (e, _) => Scaffold(
           appBar: AppBar(),
-          body: ErrorView(error: e),
+          body: ErrorView(error: e, onRetry: () => ref.invalidate(cachedProvider(tenantPath(t.id, 'items/${widget.dishId}')))),
         ),
         data: (c) {
           WidgetsBinding.instance.addPostFrameCallback((_) {

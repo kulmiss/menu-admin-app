@@ -151,7 +151,8 @@ class _AppSettingsScreenState extends ConsumerState<AppSettingsScreen> {
               ListTile(
                 title: Text(l.deleteAccount),
                 trailing: const Icon(AppIcons.externalLink),
-                onTap: () => openExternal(context, '${config?.link('privacy') ?? '${ref.read(apiProvider).siteUrl}privacy'}#10-your-rights'),
+                // The website's section id drops the number: "10. Your rights" → #your-rights.
+                onTap: () => openExternal(context, '${config?.link('privacy') ?? '${ref.read(apiProvider).siteUrl}privacy'}#your-rights'),
               ),
             ],
           ),
