@@ -85,13 +85,21 @@ class _InsightsScreenState extends ConsumerState<InsightsScreen> {
                 ),
                 if (bl.length > 1) ...[
                   const SizedBox(width: 8),
-                  DropdownButton<int?>(
-                    value: _branch,
-                    items: [
-                      DropdownMenuItem(value: null, child: Text(l.allBranches)),
-                      for (final b in bl) DropdownMenuItem(value: b.i('id'), child: Text(b.s('name'))),
-                    ],
-                    onChanged: (v) => setState(() => _branch = v),
+                  // A long branch name pushed the row 1000 px off a small phone.
+                  Flexible(
+                    child: DropdownButton<int?>(
+                      value: _branch,
+                      isExpanded: true,
+                      items: [
+                        DropdownMenuItem(value: null, child: Text(l.allBranches, overflow: TextOverflow.ellipsis)),
+                        for (final b in bl)
+                          DropdownMenuItem(
+                            value: b.i('id'),
+                            child: Text(b.s('name'), overflow: TextOverflow.ellipsis),
+                          ),
+                      ],
+                      onChanged: (v) => setState(() => _branch = v),
+                    ),
                   ),
                 ],
               ],
@@ -171,11 +179,11 @@ class _InsightsScreenState extends ConsumerState<InsightsScreen> {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 16,
                       children: [
                         _Legend(color: context.colors.primary, label: l.menuViews),
-                        const SizedBox(width: 16),
                         _Legend(color: context.colors.onSurfaceVariant, label: l.qrScans),
                       ],
                     ),
@@ -215,6 +223,7 @@ class _Legend extends StatelessWidget {
   final String label;
   @override
   Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
     children: [
       Container(width: 12, height: 3, color: color),
       const SizedBox(width: 6),

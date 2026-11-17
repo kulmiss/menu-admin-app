@@ -226,7 +226,7 @@ class _HoursState extends ConsumerState<_Hours> {
                 TextButton(
                   onPressed: () async {
                     final x = await _time(r['opens_at'] as String);
-                    if (x != null) setState(() => [r['opens_at'] = x, _dirty = true]);
+                    if (x != null && mounted) setState(() => [r['opens_at'] = x, _dirty = true]);
                   },
                   child: Text(r['opens_at'] as String),
                 ),
@@ -234,7 +234,7 @@ class _HoursState extends ConsumerState<_Hours> {
                 TextButton(
                   onPressed: () async {
                     final x = await _time(r['closes_at'] as String);
-                    if (x != null) setState(() => [r['closes_at'] = x, _dirty = true]);
+                    if (x != null && mounted) setState(() => [r['closes_at'] = x, _dirty = true]);
                   },
                   child: Text(r['closes_at'] as String),
                 ),
@@ -274,13 +274,14 @@ class _HoursState extends ConsumerState<_Hours> {
           onPressed: !_dirty
               ? null
               : () async {
+                  final api = ref.read(apiProvider), container = context.container, path = _path;
                   if (await runOk(
                     context,
-                    () => ref.read(apiProvider).put(tenantPath(t.id, 'hours'), data: {if (_branch != null) 'branch_id': _branch, 'hours': _rows}),
+                    () => api.put(tenantPath(t.id, 'hours'), data: {if (_branch != null) 'branch_id': _branch, 'hours': _rows}),
                     success: l.saved,
                   )) {
-                    setState(() => _dirty = false);
-                    ref.invalidate(cachedProvider(_path));
+                    container.invalidate(cachedProvider(path));
+                    if (mounted) setState(() => _dirty = false);
                   }
                 },
           child: Text(l.save),
@@ -318,16 +319,10 @@ class _Closures extends ConsumerWidget {
                 final note = await askText(context, title: l.note, label: '${l.note} (${l.optional})', max: 120);
                 if (!context.mounted) return;
                 final f = DateFormat('yyyy-MM-dd');
-                await runOk(
-                  context,
-                  () => ref
-                      .read(apiProvider)
-                      .post(
-                        path,
-                        data: {'starts_on': f.format(range.start), 'ends_on': f.format(range.end), if (note != null) 'note': translated(ref, null, note)},
-                      ),
-                );
-                ref.invalidate(cachedProvider(path));
+                final api = ref.read(apiProvider), container = context.container;
+                final data = {'starts_on': f.format(range.start), 'ends_on': f.format(range.end), if (note != null) 'note': translated(ref, null, note)};
+                await runOk(context, () => api.post(path, data: data));
+                container.invalidate(cachedProvider(path));
               },
             ),
           ),
@@ -340,8 +335,9 @@ class _Closures extends ConsumerWidget {
                 tooltip: l.delete,
                 icon: const Icon(AppIcons.trash2),
                 onPressed: () async {
-                  await runOk(context, () => ref.read(apiProvider).delete('$path/${c.i('id')}'));
-                  ref.invalidate(cachedProvider(path));
+                  final api = ref.read(apiProvider), container = context.container;
+                  await runOk(context, () => api.delete('$path/${c.i('id')}'));
+                  container.invalidate(cachedProvider(path));
                 },
               ),
             ),
