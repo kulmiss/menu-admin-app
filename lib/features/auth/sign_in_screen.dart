@@ -54,7 +54,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           case LoggedIn(:final token):
             await ref.read(sessionProvider.notifier).signIn(token);
           case NeedsTwoFactor(:final challenge):
-            setState(() => _challenge = challenge);
+            if (mounted) setState(() => _challenge = challenge);
         }
       } else {
         final token = await auth.twoFactor(_challenge!, code: _recovery ? null : _code.text, recoveryCode: _recovery ? _code.text : null);

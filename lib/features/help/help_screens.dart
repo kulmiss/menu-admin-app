@@ -144,11 +144,9 @@ class HelpArticleBody extends ConsumerWidget {
               for (final yes in [true, false])
                 (voted == yes ? FilledButton.icon : OutlinedButton.icon)(
                   onPressed: () async {
-                    final ok = await runOk(
-                      context,
-                      () => ref.read(apiProvider).post('help/feedback', data: {'audience': source.audience, 'slug': article.slug, 'helpful': yes}),
-                    );
-                    if (ok) ref.invalidate(cachedProvider(source.path));
+                    final api = ref.read(apiProvider), container = context.container;
+                    final ok = await runOk(context, () => api.post('help/feedback', data: {'audience': source.audience, 'slug': article.slug, 'helpful': yes}));
+                    if (ok) container.invalidate(cachedProvider(source.path));
                   },
                   icon: Icon(yes ? AppIcons.thumbsUp : AppIcons.thumbsDown),
                   label: Text(yes ? l.yes : l.no),

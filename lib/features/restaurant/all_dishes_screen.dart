@@ -92,10 +92,11 @@ class _AllDishesScreenState extends ConsumerState<AllDishesScreen> {
 
   Future<void> _move() async {
     final t = ref.read(tenantProvider)!;
-    final menus = J.dataList(await ref.read(apiProvider).get(tenantPath(t.id, 'menus')));
+    final api = ref.read(apiProvider);
+    final menus = J.dataList(await api.get(tenantPath(t.id, 'menus')));
     final cats = <(String, int)>[];
     for (final m in menus) {
-      final tree = J.data(await ref.read(apiProvider).get(tenantPath(t.id, 'menus/${m.i('id')}/tree')));
+      final tree = J.data(await api.get(tenantPath(t.id, 'menus/${m.i('id')}/tree')));
       for (final c in tree.list('categories')) {
         cats.add(('${m.t('name')} › ${c.t('name')}', c.i('id')));
       }
