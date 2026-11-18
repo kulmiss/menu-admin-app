@@ -64,6 +64,9 @@ class Me {
   /// The Super Admin requires two-factor for Owners and it isn't on yet (M17).
   bool get twoFactorRequired => json['two_factor_required'] as bool? ?? false;
   bool get isSuperAdmin => json['is_super_admin'] as bool? ?? false;
+
+  /// The Super Admin's web area: `/super` or the server's secret path (Super Admins only).
+  String get superAdminPath => json['super_admin_url'] as String? ?? '/super';
   Impersonation? get impersonation => json['impersonation'] is Map ? Impersonation((json['impersonation'] as Map).cast<String, dynamic>()) : null;
   List<TenantInfo> get tenants => [for (final t in (json['tenants'] as List? ?? const [])) TenantInfo((t as Map).cast<String, dynamic>())];
 

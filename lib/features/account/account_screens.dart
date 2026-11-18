@@ -91,10 +91,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 password = await askPassword(context);
                                 if (password == null) return;
                               }
-                              await ref
-                                  .read(apiProvider)
-                                  .put('mobile/account/profile', data: {'name': _name.text.trim(), 'email': newEmail, 'current_password': ?password});
-                              await ref.read(sessionProvider.notifier).refreshMe();
+                              final api = ref.read(apiProvider), session = ref.read(sessionProvider.notifier);
+                              await api.put('mobile/account/profile', data: {'name': _name.text.trim(), 'email': newEmail, 'current_password': ?password});
+                              await session.refreshMe();
                               if (changed) _email.text = me.email;
                               if (context.mounted) showSnack(context, changed ? l.emailChangeSent(newEmail) : l.saved);
                             } catch (e) {
@@ -314,22 +313,24 @@ class _TwoFactorScreenState extends ConsumerState<TwoFactorScreen> {
     try {
       await api.post('mobile/account/two-factor', data: {'password': pw});
       final s = J.data(await api.get('mobile/account/two-factor'));
-      setState(() => _setup = s);
+      if (mounted) setState(() => _setup = s);
     } catch (e) {
       if (mounted) showSnack(context, errorText(context, e));
     }
   }
 
   Future<void> _confirm() async {
+    final api = ref.read(apiProvider), session = ref.read(sessionProvider.notifier);
     try {
-      final r = J.data(await ref.read(apiProvider).post('mobile/account/two-factor/confirm', data: {'code': _code.text}));
-      await ref.read(sessionProvider.notifier).refreshMe();
+      final r = J.data(await api.post('mobile/account/two-factor/confirm', data: {'code': _code.text}));
+      await session.refreshMe();
+      if (!mounted) return;
       setState(() {
         _codes = [for (final c in (r['recovery_codes'] as List)) '$c'];
         _setup = null;
       });
     } catch (e) {
-      setState(() => _error = errorText(context, e));
+      if (mounted) setState(() => _error = errorText(context, e));
     }
   }
 
@@ -403,8 +404,9 @@ class _TwoFactorScreenState extends ConsumerState<TwoFactorScreen> {
                   onPressed: () async {
                     final pw = await askPassword(context);
                     if (pw == null || !context.mounted) return;
-                    final r = await runAction(context, () => ref.read(apiProvider).post('mobile/account/two-factor/recovery-codes', data: {'password': pw}));
-                    if (r != null) setState(() => _codes = [for (final c in (J.data(r)['recovery_codes'] as List)) '$c']);
+                    final api = ref.read(apiProvider);
+                    final r = await runAction(context, () => api.post('mobile/account/two-factor/recovery-codes', data: {'password': pw}));
+                    if (r != null && context.mounted) setState(() => _codes = [for (final c in (J.data(r)['recovery_codes'] as List)) '$c']);
                   },
                   child: Text(l.newRecoveryCodes),
                 ),
@@ -414,8 +416,9 @@ class _TwoFactorScreenState extends ConsumerState<TwoFactorScreen> {
                     onPressed: () async {
                       final pw = await askPassword(context);
                       if (pw == null || !context.mounted) return;
-                      if (await runOk(context, () => ref.read(apiProvider).delete('mobile/account/two-factor', data: {'password': pw}))) {
-                        await ref.read(sessionProvider.notifier).refreshMe();
+                      final api = ref.read(apiProvider), session = ref.read(sessionProvider.notifier);
+                      if (await runOk(context, () => api.delete('mobile/account/two-factor', data: {'password': pw}))) {
+                        await session.refreshMe();
                       }
                     },
                     child: Text(l.twoFactorTurnOff, style: TextStyle(color: context.colors.error)),
@@ -538,8 +541,9 @@ class DevicesScreen extends ConsumerWidget {
                         icon: const Icon(AppIcons.logOut),
                         onPressed: () async {
                           if (await confirm(context, title: l.signOutDeviceConfirm(d.s('name')), action: l.signOut, danger: true) && context.mounted) {
-                            await runOk(context, () => ref.read(apiProvider).delete('mobile/devices/${d.i('id')}'));
-                            ref.invalidate(cachedProvider('mobile/devices'));
+                            final api = ref.read(apiProvider), container = context.container;
+                            await runOk(context, () => api.delete('mobile/devices/${d.i('id')}'));
+                            container.invalidate(cachedProvider('mobile/devices'));
                           }
                         },
                       ),

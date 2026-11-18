@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:in_app_update/in_app_update.dart';
 
 import '../auth/token_store.dart';
+import '../providers.dart';
 
 /// Google Play in-app update (QUESTIONS M21): flexible normally, immediate when
 /// this version is below the server's minimum.
@@ -23,6 +25,8 @@ Future<void> checkPlayUpdate({required bool mustUpdate}) async {
     // Not installed from Play (debug, side-loaded): nothing to do.
   }
 }
+
+final reviewPromptProvider = Provider<ReviewPrompt>((ref) => ReviewPrompt(ref.watch(tokenStoreProvider)));
 
 /// Polite review prompt: after 5 sessions on 3 different days and 3 saves,
 /// never after an error, at most every 120 days (PLAN.md §7).
@@ -45,6 +49,12 @@ class ReviewPrompt {
     final days = (await _store.read('review_days') ?? '').split(',').where((d) => d.isNotEmpty).length;
     final last = DateTime.tryParse(await _store.read('review_asked') ?? '');
     return sessions >= 5 && days >= 3 && saves >= 3 && (last == null || DateTime.now().difference(last).inDays >= 120);
+  }
+
+  /// After a save that worked: count it, and maybe ask (a good moment).
+  Future<void> afterSave() async {
+    await recordSave();
+    await maybeAsk();
   }
 
   Future<void> maybeAsk() async {

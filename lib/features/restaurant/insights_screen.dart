@@ -69,32 +69,47 @@ class _InsightsScreenState extends ConsumerState<InsightsScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-            child: Row(
-              children: [
-                Expanded(
-                  child: SegmentedButton<int>(
-                    showSelectedIcon: false,
-                    segments: [
-                      ButtonSegment(value: 7, label: Text(l.days7)),
-                      ButtonSegment(value: 30, label: Text(l.days30)),
-                      ButtonSegment(value: 90, label: Text(l.days90)),
-                    ],
-                    selected: {_days},
-                    onSelectionChanged: (s) => setState(() => _days = s.first),
-                  ),
-                ),
-                if (bl.length > 1) ...[
-                  const SizedBox(width: 8),
-                  DropdownButton<int?>(
-                    value: _branch,
-                    items: [
-                      DropdownMenuItem(value: null, child: Text(l.allBranches)),
-                      for (final b in bl) DropdownMenuItem(value: b.i('id'), child: Text(b.s('name'))),
-                    ],
-                    onChanged: (v) => setState(() => _branch = v),
-                  ),
-                ],
-              ],
+            // Narrow phones: the branch filter goes under the days, so "7 days" stays on one line.
+            child: LayoutBuilder(
+              builder: (context, box) {
+                final days = SegmentedButton<int>(
+                  showSelectedIcon: false,
+                  segments: [
+                    for (final (v, label) in [(7, l.days7), (30, l.days30), (90, l.days90)])
+                      ButtonSegment(
+                        value: v,
+                        label: Text(label, maxLines: 1, softWrap: false, overflow: TextOverflow.fade),
+                      ),
+                  ],
+                  selected: {_days},
+                  onSelectionChanged: (s) => setState(() => _days = s.first),
+                );
+                if (bl.length < 2) return days;
+                // A long branch name pushed the row 1000 px off a small phone.
+                final branch = DropdownButton<int?>(
+                  value: _branch,
+                  isExpanded: true,
+                  items: [
+                    DropdownMenuItem(value: null, child: Text(l.allBranches, overflow: TextOverflow.ellipsis)),
+                    for (final b in bl)
+                      DropdownMenuItem(
+                        value: b.i('id'),
+                        child: Text(b.s('name'), overflow: TextOverflow.ellipsis),
+                      ),
+                  ],
+                  onChanged: (v) => setState(() => _branch = v),
+                );
+                if (box.maxWidth < 560) {
+                  return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [days, branch]);
+                }
+                return Row(
+                  children: [
+                    Expanded(child: days),
+                    const SizedBox(width: 8),
+                    Flexible(child: branch),
+                  ],
+                );
+              },
             ),
           ),
           Expanded(
@@ -147,8 +162,15 @@ class _InsightsScreenState extends ConsumerState<InsightsScreen> {
                                   leftTitles: AxisTitles(
                                     sideTitles: SideTitles(
                                       showTitles: true,
-                                      reservedSize: 36,
-                                      getTitlesWidget: (v, m) => Text(v.toInt().toString(), style: const TextStyle(fontSize: 11)),
+                                      reservedSize: 40,
+                                      // Short (3.4k) and one line: long numbers broke over three lines.
+                                      getTitlesWidget: (v, m) => Text(
+                                        shortNumber(v),
+                                        maxLines: 1,
+                                        softWrap: false,
+                                        style: const TextStyle(fontSize: 11),
+                                        textScaler: TextScaler.noScaling,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -171,11 +193,11 @@ class _InsightsScreenState extends ConsumerState<InsightsScreen> {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 16,
                       children: [
                         _Legend(color: context.colors.primary, label: l.menuViews),
-                        const SizedBox(width: 16),
                         _Legend(color: context.colors.onSurfaceVariant, label: l.qrScans),
                       ],
                     ),
@@ -215,6 +237,7 @@ class _Legend extends StatelessWidget {
   final String label;
   @override
   Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
     children: [
       Container(width: 12, height: 3, color: color),
       const SizedBox(width: 6),
@@ -251,4 +274,14 @@ class _MonthlySwitchState extends ConsumerState<_MonthlySwitch> {
       ),
     );
   }
+}
+
+/// 950 → "950", 3450 → "3.5K", 1200000 → "1.2M" (chart labels; intl's compact
+/// format would add ~130 KB of locale data to the app).
+String shortNumber(num v) {
+  final a = v.abs();
+  String f(num x, String unit) => '${x >= 10 || x == x.roundToDouble() ? x.round() : x.toStringAsFixed(1)}$unit';
+  if (a >= 1000000) return f(v / 1000000, 'M');
+  if (a >= 1000) return f(v / 1000, 'K');
+  return v.round().toString();
 }

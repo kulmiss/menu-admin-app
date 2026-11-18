@@ -73,8 +73,7 @@ Future<void> main() async {
     container.listen(sessionProvider.select((s) => s.status), (prev, next) {
       if (next == SessionStatus.signedIn && prev != SessionStatus.signedIn) startPush();
     });
-    final review = ReviewPrompt(store);
-    await review.recordSession();
+    await container.read(reviewPromptProvider).recordSession();
     final c = config();
     final mustUpdate = c != null && compareVersions(info.version, c.minVersion) < 0;
     unawaited(checkPlayUpdate(mustUpdate: mustUpdate));
