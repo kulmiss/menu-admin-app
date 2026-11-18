@@ -2239,6 +2239,120 @@ abstract class L {
   /// **'G · Street Board'**
   String get style_board;
 
+  /// No description provided for @style_arabic.
+  ///
+  /// In en, this message translates to:
+  /// **'H · Arabic'**
+  String get style_arabic;
+
+  /// No description provided for @style_islamic.
+  ///
+  /// In en, this message translates to:
+  /// **'I · Islamic'**
+  String get style_islamic;
+
+  /// No description provided for @style_somali.
+  ///
+  /// In en, this message translates to:
+  /// **'J · Somali'**
+  String get style_somali;
+
+  /// No description provided for @style_mono.
+  ///
+  /// In en, this message translates to:
+  /// **'K · Black & White'**
+  String get style_mono;
+
+  /// No description provided for @style_colour.
+  ///
+  /// In en, this message translates to:
+  /// **'L · Colourful'**
+  String get style_colour;
+
+  /// No description provided for @styleOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Options for this style'**
+  String get styleOptions;
+
+  /// No description provided for @menuDirection.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu direction'**
+  String get menuDirection;
+
+  /// No description provided for @menuDirectionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Right-to-left puts the text and buttons on the right side, for Arabic menus.'**
+  String get menuDirectionHint;
+
+  /// No description provided for @direction_auto.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic (follows your menu\'s language)'**
+  String get direction_auto;
+
+  /// No description provided for @direction_ltr.
+  ///
+  /// In en, this message translates to:
+  /// **'Left to right'**
+  String get direction_ltr;
+
+  /// No description provided for @direction_rtl.
+  ///
+  /// In en, this message translates to:
+  /// **'Right to left'**
+  String get direction_rtl;
+
+  /// No description provided for @opt_show_halal.
+  ///
+  /// In en, this message translates to:
+  /// **'Show a \"Halal\" badge'**
+  String get opt_show_halal;
+
+  /// No description provided for @opt_show_halal_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'A small badge under your restaurant\'s name. Turn it on only if all your food is halal.'**
+  String get opt_show_halal_hint;
+
+  /// No description provided for @opt_ramadan_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Ramadan mode'**
+  String get opt_ramadan_mode;
+
+  /// No description provided for @opt_ramadan_mode_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'A night-sky top with a crescent. Turn it off again after Ramadan.'**
+  String get opt_ramadan_mode_hint;
+
+  /// No description provided for @opt_photos_greyscale.
+  ///
+  /// In en, this message translates to:
+  /// **'Black-and-white photos'**
+  String get opt_photos_greyscale;
+
+  /// No description provided for @opt_photos_greyscale_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Shows your dish photos and banner in black and white.'**
+  String get opt_photos_greyscale_hint;
+
+  /// No description provided for @opt_mono_accent.
+  ///
+  /// In en, this message translates to:
+  /// **'Use your brand colour as a small accent'**
+  String get opt_mono_accent;
+
+  /// No description provided for @opt_mono_accent_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your colour on the \"+\" buttons, badges and the chosen category. Prices keep the text colour.'**
+  String get opt_mono_accent_hint;
+
   /// No description provided for @brandColour.
   ///
   /// In en, this message translates to:

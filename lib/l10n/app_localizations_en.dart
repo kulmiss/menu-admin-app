@@ -1118,6 +1118,63 @@ class LEn extends L {
   String get style_board => 'G · Street Board';
 
   @override
+  String get style_arabic => 'H · Arabic';
+
+  @override
+  String get style_islamic => 'I · Islamic';
+
+  @override
+  String get style_somali => 'J · Somali';
+
+  @override
+  String get style_mono => 'K · Black & White';
+
+  @override
+  String get style_colour => 'L · Colourful';
+
+  @override
+  String get styleOptions => 'Options for this style';
+
+  @override
+  String get menuDirection => 'Menu direction';
+
+  @override
+  String get menuDirectionHint => 'Right-to-left puts the text and buttons on the right side, for Arabic menus.';
+
+  @override
+  String get direction_auto => 'Automatic (follows your menu\'s language)';
+
+  @override
+  String get direction_ltr => 'Left to right';
+
+  @override
+  String get direction_rtl => 'Right to left';
+
+  @override
+  String get opt_show_halal => 'Show a \"Halal\" badge';
+
+  @override
+  String get opt_show_halal_hint => 'A small badge under your restaurant\'s name. Turn it on only if all your food is halal.';
+
+  @override
+  String get opt_ramadan_mode => 'Ramadan mode';
+
+  @override
+  String get opt_ramadan_mode_hint => 'A night-sky top with a crescent. Turn it off again after Ramadan.';
+
+  @override
+  String get opt_photos_greyscale => 'Black-and-white photos';
+
+  @override
+  String get opt_photos_greyscale_hint => 'Shows your dish photos and banner in black and white.';
+
+  @override
+  String get opt_mono_accent => 'Use your brand colour as a small accent';
+
+  @override
+  String get opt_mono_accent_hint => 'Your colour on the \"+\" buttons, badges and the chosen category. Prices keep the text colour.';
+
+  @override
   String get brandColour => 'Brand colour';
 
   @override

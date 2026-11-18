@@ -1,4 +1,4 @@
-// Appearance → Menu style lists every style the server knows, A–G (website
+// Appearance → Menu style lists every style the server knows, A–L (website
 // QUESTIONS #228): E · Mesob, F · Night Lounge and G · Street Board too, with
 // the restaurant's current one selected, and saves the one picked.
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ import 'package:menu_admin/app/router.dart';
 
 import 'flows.dart';
 
-const _all = ['editorial', 'grid', 'bistro', 'minimal', 'mesob', 'lounge', 'board'];
+const _all = ['editorial', 'grid', 'bistro', 'minimal', 'mesob', 'lounge', 'board', 'arabic', 'islamic', 'somali', 'mono', 'colour'];
 const _labels = ['A · Editorial', 'B · Grid', 'C · Bistro', 'D · Minimal', 'E · Mesob', 'F · Night Lounge', 'G · Street Board'];
 
 void main() {
