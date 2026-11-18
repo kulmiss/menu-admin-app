@@ -24,6 +24,11 @@ class AppConfig {
   bool get signInClosedForEveryone => !signInAllowed(superAdmin: false) && !signInAllowed(superAdmin: true);
   String? get signInMessage => _s(_o('sign_in')['message']);
 
+  /// "Continue with Google" (backend 2026-11-17): shown only when the server
+  /// says it is on and gives the web client the app asks Google for a token for.
+  String? get googleClientId => _s(_o('google')['client_id']);
+  bool get googleEnabled => _o('google')['enabled'] == true && googleClientId != null;
+
   bool get maintenance => _o('maintenance')['on'] == true;
   String? get maintenanceMessage => _s(_o('maintenance')['message']);
 

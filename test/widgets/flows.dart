@@ -37,10 +37,10 @@ FakeApi restaurantServer({String role = 'owner', Map<String, bool>? features}) {
       'data': {'min_version': '1.0.0', 'links': {}},
     })
     ..json('GET me', meJson(role: role, features: features))
-    ..json('GET t/7/dashboard', {
+    ..json('GET restaurant/7/dashboard', {
       'data': {'today': {}, 'yesterday': {}, 'sold_out': []},
     })
-    ..json('GET t/7/widgets/trend', {
+    ..json('GET restaurant/7/widgets/trend', {
       'data': {
         'days': [
           for (var i = 0; i < 7; i++) {'date': '2026-11-0$i', 'views': i * 10, 'scans': i},
@@ -49,8 +49,8 @@ FakeApi restaurantServer({String role = 'owner', Map<String, bool>? features}) {
         'yesterday': {'views': 50, 'scans': 5},
       },
     })
-    ..json('GET t/7/announcements', {'data': []})
-    ..json('GET t/7/menus', {
+    ..json('GET restaurant/7/announcements', {'data': []})
+    ..json('GET restaurant/7/menus', {
       'data': [
         {
           'id': 2,
@@ -61,7 +61,7 @@ FakeApi restaurantServer({String role = 'owner', Map<String, bool>? features}) {
         },
       ],
     })
-    ..json('GET t/7/menus/2/tree', {
+    ..json('GET restaurant/7/menus/2/tree', {
       'data': {
         'menu': {'id': 2},
         'categories': [
@@ -75,12 +75,12 @@ FakeApi restaurantServer({String role = 'owner', Map<String, bool>? features}) {
         ],
       },
     })
-    ..json('GET t/7/items/41', {'data': dish()})
-    ..json('GET t/7/tags', {'data': []})
-    ..json('GET t/7/addon-groups', {'data': []})
-    ..json('PATCH t/7/items/41/sold-out', {'data': dish(soldOut: true)})
+    ..json('GET restaurant/7/items/41', {'data': dish()})
+    ..json('GET restaurant/7/tags', {'data': []})
+    ..json('GET restaurant/7/addon-groups', {'data': []})
+    ..json('PATCH restaurant/7/items/41/sold-out', {'data': dish(soldOut: true)})
     ..on(
-      'PATCH t/7/items/41',
+      'PATCH restaurant/7/items/41',
       (c) => (
         200,
         {
@@ -88,11 +88,11 @@ FakeApi restaurantServer({String role = 'owner', Map<String, bool>? features}) {
         },
       ),
     )
-    ..json('GET t/7/items?status=sold_out&sort=name&per=100&page=1', {
+    ..json('GET restaurant/7/items?status=sold_out&sort=name&per=100&page=1', {
       'data': [],
       'meta': {'page': 1, 'pages': 1},
     })
-    ..json('GET t/7/items?sort=name&per=100&page=1', {
+    ..json('GET restaurant/7/items?sort=name&per=100&page=1', {
       'data': [
         {
           'id': 41,
@@ -183,7 +183,7 @@ Future<void> toggleSoldOut(WidgetTester tester) async {
   // Optimistic: the button flips before the server answers.
   expect(find.text('Available again'), findsOneWidget);
   await tester.pumpAndSettle();
-  final call = api.called('PATCH', 't/7/items/41/sold-out').single;
+  final call = api.called('PATCH', 'restaurant/7/items/41/sold-out').single;
   expect(call.body, {'is_sold_out': true});
   expect(call.headers['Idempotency-Key'], isNotNull);
 }
@@ -202,7 +202,7 @@ Future<void> editDish(WidgetTester tester) async {
   await tester.tap(find.byKey(const Key('saveDish')));
   await tester.pumpAndSettle();
 
-  final call = api.called('PATCH', 't/7/items/41').single;
+  final call = api.called('PATCH', 'restaurant/7/items/41').single;
   expect(call.body['name'], {'en': 'Spris special'});
   expect(call.body['price_minor'], 9550);
   expect(find.text('Dish saved'), findsOneWidget);
@@ -212,7 +212,7 @@ Future<void> editDish(WidgetTester tester) async {
 Future<void> superAdminSwitchFlow(WidgetTester tester) async {
   final api = demoPlatform()
     ..on(
-      'PUT platform/mobile-app',
+      'PUT super/mobile-app',
       (c) => (
         200,
         {
@@ -230,7 +230,7 @@ Future<void> superAdminSwitchFlow(WidgetTester tester) async {
   await tester.pumpAndSettle();
   await tester.tap(find.text('Turn on'));
   await tester.pumpAndSettle();
-  expect(api.called('PUT', 'platform/mobile-app').single.body, {'maintenance': true});
+  expect(api.called('PUT', 'super/mobile-app').single.body, {'maintenance': true});
 
   // Old links (pushes, bookmarks) land on the overview.
   container.read(routerProvider).go('/p/restaurants/9/payments');

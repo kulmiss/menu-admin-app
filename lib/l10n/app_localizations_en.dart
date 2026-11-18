@@ -158,6 +158,38 @@ class LEn extends L {
   String get newRestaurant => 'New restaurant? Sign up on the website.';
 
   @override
+  String get continueWithGoogle => 'Continue with Google';
+
+  @override
+  String get orDivider => 'or';
+
+  @override
+  String get googleLinked => 'Google is now linked. Next time, tap “Continue with Google”.';
+
+  @override
+  String get googleUnavailable => 'Google sign-in is not available on this phone. Use your e-mail and password.';
+
+  @override
+  String get googleFinishTitle => 'Almost done';
+
+  @override
+  String googleFinishBody(Object email) {
+    return 'You are signing up with Google as $email. Type your restaurant name.';
+  }
+
+  @override
+  String get restaurantName => 'Restaurant name';
+
+  @override
+  String get acceptTerms => 'I accept the Terms of Service and the Privacy Policy.';
+
+  @override
+  String get acceptTermsRequired => 'Please accept the terms to continue.';
+
+  @override
+  String get createMyFreeMenu => 'Create my free menu';
+
+  @override
   String get privacy => 'Privacy';
 
   @override
@@ -622,6 +654,12 @@ class LEn extends L {
   String get cropPhoto => 'Crop photo';
 
   @override
+  String get photoAccessDenied => 'The app may not use the camera or photos. Allow it in your phone\'s Settings › Apps › Menu Admin › Permissions.';
+
+  @override
+  String get photoUnreadable => 'This photo can\'t be opened. Try another one.';
+
+  @override
   String get photos => 'Photos';
 
   @override
@@ -1071,6 +1109,72 @@ class LEn extends L {
   String get style_minimal => 'D · Minimal';
 
   @override
+  String get style_mesob => 'E · Mesob';
+
+  @override
+  String get style_lounge => 'F · Night Lounge';
+
+  @override
+  String get style_board => 'G · Street Board';
+
+  @override
+  String get style_arabic => 'H · Arabic';
+
+  @override
+  String get style_islamic => 'I · Islamic';
+
+  @override
+  String get style_somali => 'J · Somali';
+
+  @override
+  String get style_mono => 'K · Black & White';
+
+  @override
+  String get style_colour => 'L · Colourful';
+
+  @override
+  String get styleOptions => 'Options for this style';
+
+  @override
+  String get menuDirection => 'Menu direction';
+
+  @override
+  String get menuDirectionHint => 'Right-to-left puts the text and buttons on the right side, for Arabic menus.';
+
+  @override
+  String get direction_auto => 'Automatic (follows your menu\'s language)';
+
+  @override
+  String get direction_ltr => 'Left to right';
+
+  @override
+  String get direction_rtl => 'Right to left';
+
+  @override
+  String get opt_show_halal => 'Show a \"Halal\" badge';
+
+  @override
+  String get opt_show_halal_hint => 'A small badge under your restaurant\'s name. Turn it on only if all your food is halal.';
+
+  @override
+  String get opt_ramadan_mode => 'Ramadan mode';
+
+  @override
+  String get opt_ramadan_mode_hint => 'A night-sky top with a crescent. Turn it off again after Ramadan.';
+
+  @override
+  String get opt_photos_greyscale => 'Black-and-white photos';
+
+  @override
+  String get opt_photos_greyscale_hint => 'Shows your dish photos and banner in black and white.';
+
+  @override
+  String get opt_mono_accent => 'Use your brand colour as a small accent';
+
+  @override
+  String get opt_mono_accent_hint => 'Your colour on the \"+\" buttons, badges and the chosen category. Prices keep the text colour.';
+
+  @override
   String get brandColour => 'Brand colour';
 
   @override
@@ -1413,6 +1517,110 @@ class LEn extends L {
 
   @override
   String get help => 'Help and support';
+
+  @override
+  String get helpTitle => 'Help';
+
+  @override
+  String get helpSearch => 'Search help';
+
+  @override
+  String helpResults(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count articles found', one: '1 article found');
+    return '$_temp0';
+  }
+
+  @override
+  String get helpNothing => 'Nothing found. Try other words.';
+
+  @override
+  String get helpContact => 'Contact support';
+
+  @override
+  String get helpNotFound => 'This article is not available.';
+
+  @override
+  String get helpHelpful => 'Was this helpful?';
+
+  @override
+  String get helpThanks => 'Thank you! You can change your answer.';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get helpThisScreen => 'Help for this screen';
+
+  @override
+  String get helpNoArticle => 'Pick an article in Help.';
+
+  @override
+  String get helpOpenCentre => 'Open Help';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get tourOpen => 'Take the tour';
+
+  @override
+  String tourStep(int n, int total) {
+    return '$n of $total';
+  }
+
+  @override
+  String get tourSkip => 'Skip tour';
+
+  @override
+  String get tourNext => 'Next';
+
+  @override
+  String get tourDone => 'Done';
+
+  @override
+  String get tourHomeTitle => 'This is Home';
+
+  @override
+  String get tourHomeText => 'Today’s menu views and QR scans, and the quick actions for the jobs you do every day.';
+
+  @override
+  String get tourDishTitle => 'Add your first dish';
+
+  @override
+  String get tourDishText => 'Tap Add dish with photo, take the photo, type the name and price, and save.';
+
+  @override
+  String get tourDishGo => 'Add a dish';
+
+  @override
+  String get tourSoldOutTitle => 'Mark dishes sold out';
+
+  @override
+  String get tourSoldOutText => 'Finished for today? Mark it sold out. Tap Available again when it is back.';
+
+  @override
+  String get tourSoldOutGo => 'Open Sold out';
+
+  @override
+  String get tourLookTitle => 'Choose your menu look';
+
+  @override
+  String get tourLookText => 'Pick a style, your colour, your logo and a banner photo.';
+
+  @override
+  String get tourLookGo => 'Choose a look';
+
+  @override
+  String get tourQrTitle => 'Share your QR code';
+
+  @override
+  String get tourQrText => 'Share your menu link on WhatsApp, and print your QR code for the tables.';
+
+  @override
+  String get tourQrGo => 'Get my QR code';
 
   @override
   String get profileTitle => 'Profile';
