@@ -1109,6 +1109,15 @@ class LEn extends L {
   String get style_minimal => 'D · Minimal';
 
   @override
+  String get style_mesob => 'E · Mesob';
+
+  @override
+  String get style_lounge => 'F · Night Lounge';
+
+  @override
+  String get style_board => 'G · Street Board';
+
+  @override
   String get brandColour => 'Brand colour';
 
   @override

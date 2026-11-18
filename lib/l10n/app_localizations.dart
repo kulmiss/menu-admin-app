@@ -2221,6 +2221,24 @@ abstract class L {
   /// **'D · Minimal'**
   String get style_minimal;
 
+  /// No description provided for @style_mesob.
+  ///
+  /// In en, this message translates to:
+  /// **'E · Mesob'**
+  String get style_mesob;
+
+  /// No description provided for @style_lounge.
+  ///
+  /// In en, this message translates to:
+  /// **'F · Night Lounge'**
+  String get style_lounge;
+
+  /// No description provided for @style_board.
+  ///
+  /// In en, this message translates to:
+  /// **'G · Street Board'**
+  String get style_board;
+
   /// No description provided for @brandColour.
   ///
   /// In en, this message translates to:

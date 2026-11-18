@@ -67,11 +67,19 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
     _ => context.l.show_other_branches,
   };
 
+  /// Guest-menu styles A–G in picker order (website TenantAppearance::STYLES).
+  static const menuStyles = ['editorial', 'grid', 'bistro', 'minimal', 'mesob', 'lounge', 'board'];
+
   String _styleLabel(String s) => switch (s) {
     'editorial' => context.l.style_editorial,
     'grid' => context.l.style_grid,
     'bistro' => context.l.style_bistro,
-    _ => context.l.style_minimal,
+    'minimal' => context.l.style_minimal,
+    'mesob' => context.l.style_mesob,
+    'lounge' => context.l.style_lounge,
+    'board' => context.l.style_board,
+    // A style added on the server later: its own name until the app knows it.
+    _ => s,
   };
 
   void _load(J d) {
@@ -210,7 +218,7 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
           spacing: 8,
           runSpacing: 8,
           children: [
-            for (final s in ['editorial', 'grid', 'bistro', 'minimal'])
+            for (final s in [...menuStyles, ...styles.where((s) => !menuStyles.contains(s))])
               ChoiceChip(
                 label: Text(_styleLabel(s)),
                 avatar: styles.contains(s) ? null : const Icon(AppIcons.lock, size: 16),

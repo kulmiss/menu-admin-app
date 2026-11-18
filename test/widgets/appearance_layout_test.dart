@@ -56,7 +56,11 @@ void main() {
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull);
         if (s.key == 'appearance') {
-          await tester.scrollUntilVisible(find.text('Remove').last, 200, scrollable: find.byType(Scrollable).first);
+          // The image rows may sit below the first screen (seven style chips above them): scroll down to them.
+          for (var i = 0; i < 20 && find.text('Remove').evaluate().isEmpty; i++) {
+            await tester.drag(find.byType(Scrollable).first, const Offset(0, -200));
+            await tester.pumpAndSettle();
+          }
           expect(tester.takeException(), isNull);
           expect(find.text('Remove'), findsWidgets);
         }
