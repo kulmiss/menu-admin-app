@@ -409,7 +409,12 @@ class StatTile extends StatelessWidget {
           children: [
             Text(label, style: TextStyle(fontSize: 12, color: context.colors.onSurfaceVariant)),
             const SizedBox(height: 4),
-            Text(value, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
+            // One line, shrunk to fit: big numbers broke in two at large text sizes.
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: AlignmentDirectional.centerStart,
+              child: Text(value, maxLines: 1, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
+            ),
             if (hint != null) ...[const SizedBox(height: 2), Text(hint!, style: TextStyle(fontSize: 12, color: hintColor ?? context.colors.onSurfaceVariant))],
           ],
         ),

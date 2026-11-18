@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/auth/models.dart';
 import '../../core/cache/swr.dart';
 import '../../core/providers.dart';
 import '../../core/util/json.dart';
@@ -14,13 +15,16 @@ import '../restaurant/restaurant_scaffold.dart';
 class SuperAdminScreen extends ConsumerWidget {
   const SuperAdminScreen({super.key});
 
-  static const paths = ['platform/dashboard', 'platform/mobile-app', 'platform/settings'];
+  static const paths = ['super/dashboard', 'super/mobile-app', 'super/settings'];
+
+  /// "Open Super Admin on the web": the area's real address (it can be secret), not the old /platform.
+  static String webUrl(String siteUrl, Me? me) => '$siteUrl${(me?.superAdminPath ?? '/super').replaceFirst(RegExp('^/+'), '')}';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l;
     final s = ref.watch(sessionProvider);
-    final web = '${ref.read(apiProvider).siteUrl}platform';
+    final web = webUrl(ref.read(apiProvider).siteUrl, s.me);
     return RestaurantScaffold.large(
       title: l.saTitle,
       subtitle: s.me?.name,
@@ -91,9 +95,9 @@ class _Overview extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final v = ref.watch(cachedProvider('platform/dashboard'));
+    final v = ref.watch(cachedProvider('super/dashboard'));
     final d = v.value == null ? null : J.data(v.value!.data);
-    if (d == null && v.hasError) return ErrorView(error: v.error!, onRetry: () => ref.refreshPath('platform/dashboard'));
+    if (d == null && v.hasError) return ErrorView(error: v.error!, onRetry: () => ref.refreshPath('super/dashboard'));
     final l = context.l;
     final states = d?.o('states');
     String n(int? x) => x == null ? '—' : '$x';
@@ -140,28 +144,46 @@ class _SwitchesState extends ConsumerState<_Switches> {
   /// Optimistic values while a change is on its way.
   final Map<String, bool> _pending = {};
 
+  /// Switches with a change on its way: locked, so a second tap can't send the
+  /// opposite value and leave the server and the screen disagreeing.
+  final Set<String> _saving = {};
+
   Future<void> _set(String key, bool value, {required String path, required Map<String, dynamic> body, String? confirmText}) async {
+    if (_saving.contains(key)) return;
     final l = context.l;
-    if (confirmText != null && !await confirm(context, title: confirmText, action: value ? l.turnOn : l.turnOff, danger: true)) return;
-    if (!mounted) return;
-    setState(() => _pending[key] = value);
-    final ok = await runOk(context, () => ref.read(apiProvider).put(path, data: body), success: l.saved);
-    ref.invalidate(cachedProvider(path));
-    ref.invalidate(cachedProvider('mobile/config'));
-    if (!ok && mounted) setState(() => _pending.remove(key));
+    _saving.add(key);
+    try {
+      if (confirmText != null && !await confirm(context, title: confirmText, action: value ? l.turnOn : l.turnOff, danger: true)) return;
+      if (!mounted) return;
+      final api = ref.read(apiProvider), container = context.container;
+      setState(() => _pending[key] = value);
+      final ok = await runOk(context, () => api.put(path, data: body), success: l.saved);
+      container
+        ..invalidate(cachedProvider(path))
+        ..invalidate(cachedProvider('mobile/config'));
+      if (!ok && mounted) setState(() => _pending.remove(key));
+    } finally {
+      _saving.remove(key);
+      if (mounted) setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final l = context.l;
-    final mobile = ref.watch(cachedProvider('platform/mobile-app'));
-    final settings = ref.watch(cachedProvider('platform/settings'));
+    final mobile = ref.watch(cachedProvider('super/mobile-app'));
+    final settings = ref.watch(cachedProvider('super/settings'));
     final m = mobile.value == null ? null : J.data(mobile.value!.data);
     final st = settings.value == null ? null : J.data(settings.value!.data);
     bool? value(String key, bool? server) => _pending[key] ?? server;
 
-    Widget row(String key, String title, String hint, bool? v, ValueChanged<bool> onChanged) =>
-        SwitchListTile(key: Key('sa-$key'), title: Text(title), subtitle: Text(hint), value: v ?? false, onChanged: v == null ? null : onChanged);
+    Widget row(String key, String title, String hint, bool? v, ValueChanged<bool> onChanged) => SwitchListTile(
+      key: Key('sa-$key'),
+      title: Text(title),
+      subtitle: Text(hint),
+      value: v ?? false,
+      onChanged: v == null || _saving.contains(key) ? null : onChanged,
+    );
 
     final maintenance = value('maintenance', m?.bN('maintenance'));
     final signup = value('signup_open', st?.bN('signup_open'));
@@ -174,9 +196,9 @@ class _SwitchesState extends ConsumerState<_Switches> {
           l.saMaintenance,
           l.saMaintenanceHint,
           maintenance,
-          (v) => _set('maintenance', v, path: 'platform/mobile-app', body: {'maintenance': v}, confirmText: v ? l.saMaintenanceConfirm : null),
+          (v) => _set('maintenance', v, path: 'super/mobile-app', body: {'maintenance': v}, confirmText: v ? l.saMaintenanceConfirm : null),
         ),
-        row('signup_open', l.saSignup, l.saSignupHint, signup, (v) => _set('signup_open', v, path: 'platform/settings', body: {'signup_open': v})),
+        row('signup_open', l.saSignup, l.saSignupHint, signup, (v) => _set('signup_open', v, path: 'super/settings', body: {'signup_open': v})),
         row(
           'push',
           l.saPush,
@@ -185,7 +207,7 @@ class _SwitchesState extends ConsumerState<_Switches> {
           (v) => _set(
             'push',
             v,
-            path: 'platform/mobile-app',
+            path: 'super/mobile-app',
             body: {
               'app_features': {'push': v},
             },
@@ -196,7 +218,7 @@ class _SwitchesState extends ConsumerState<_Switches> {
           l.saSaSignIn,
           l.saSaSignInHint,
           saSignIn,
-          (v) => _set('super_admin_sign_in', v, path: 'platform/mobile-app', body: {'super_admin_sign_in': v}, confirmText: v ? null : l.saSaSignInConfirm),
+          (v) => _set('super_admin_sign_in', v, path: 'super/mobile-app', body: {'super_admin_sign_in': v}, confirmText: v ? null : l.saSaSignInConfirm),
         ),
       ],
     );

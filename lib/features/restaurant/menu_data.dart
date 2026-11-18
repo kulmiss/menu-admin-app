@@ -23,7 +23,7 @@ class SoldOutOverrides extends Notifier<Map<int, bool>> {
     state = {...state, itemId: soldOut};
     try {
       await ref.read(apiProvider).patch(tenantPath(tenant.id, 'items/$itemId/sold-out'), data: {'is_sold_out': soldOut});
-      await invalidatePrefix(ref, tenantPath(tenant.id, 'dashboard'));
+      await dishesChanged(ref, tenant.id);
     } catch (e) {
       state = {...state}..remove(itemId);
       if (before != null) state = {...state, itemId: before};
@@ -35,6 +35,12 @@ class SoldOutOverrides extends Notifier<Map<int, bool>> {
 }
 
 final soldOutProvider = NotifierProvider<SoldOutOverrides, Map<int, bool>>(SoldOutOverrides.new);
+
+/// After a dish changed: the menu, every dish list (all dishes, sold out) and
+/// Home's cards reload. [ref]: see [invalidatePrefixes].
+Future<void> dishesChanged(Object ref, int tenantId) => invalidatePrefixes(ref, [
+  for (final p in ['menus', 'items', 'dashboard', 'widgets/missing-photos']) tenantPath(tenantId, p),
+]);
 
 /// The restaurant's main language for translated fields ({"en": "…"}).
 String mainLocale(WidgetRef ref) => ref.read(tenantProvider)?.json['default_locale'] as String? ?? 'en';
