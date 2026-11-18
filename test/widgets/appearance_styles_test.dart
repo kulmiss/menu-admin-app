@@ -7,7 +7,25 @@ import 'package:menu_admin/app/router.dart';
 
 import 'flows.dart';
 
-const _all = ['editorial', 'grid', 'bistro', 'minimal', 'mesob', 'lounge', 'board', 'arabic', 'islamic', 'somali', 'mono', 'colour'];
+const _all = [
+  'editorial',
+  'grid',
+  'bistro',
+  'minimal',
+  'mesob',
+  'lounge',
+  'board',
+  'arabic',
+  'islamic',
+  'somali',
+  'mono',
+  'colour',
+  'coffee',
+  'grill',
+  'garden',
+  'coastal',
+  'luxe',
+];
 const _labels = ['A · Editorial', 'B · Grid', 'C · Bistro', 'D · Minimal', 'E · Mesob', 'F · Night Lounge', 'G · Street Board'];
 
 void main() {

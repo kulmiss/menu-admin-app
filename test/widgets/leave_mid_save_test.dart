@@ -167,6 +167,10 @@ void main() {
     final c = await startApp(tester, api, token: 'tok');
     c.read(routerProvider).push('/r/7/appearance');
     await tester.pumpAndSettle();
+    // With 17 styles the font choice is below the first screen: scroll to it.
+    final list = find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).first;
+    await tester.scrollUntilVisible(find.text('Classic (serif)'), 250, scrollable: list);
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Classic (serif)'));
     await tester.pump();
     await tester.tap(find.text('Save'));

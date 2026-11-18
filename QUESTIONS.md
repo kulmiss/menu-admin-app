@@ -81,3 +81,4 @@ Backend decisions for this app are also listed in `kulmiss/menu` QUESTIONS.md (#
 - Live domain for `API_BASE_URL` (M9).
 - Firebase project, `google-services.json`, FCM service-account JSON on the server (see docs/firebase.md).
 - Release keystore + Play Console (see docs/release.md).
+| M55 | Menu styles M–Q in the app | Website #232 (owner, 2026-11-19). The style chips list A–Q (M · Coffee House, N · Grill & BBQ, O · Garden Fresh, P · Coastal, Q · Fine Dining), locked when the plan doesn't include them. While one of M–Q is picked: **Show the style's pictures and icons** (on by default, also when an older server doesn't send it). Saved with the rest. Tested in `test/widgets/appearance_styles_mq_test.dart`; `leave_mid_save_test` now scrolls to the font choice, which the longer style list pushed below the first screen. |

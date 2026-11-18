@@ -2269,6 +2269,36 @@ abstract class L {
   /// **'L · Colourful'**
   String get style_colour;
 
+  /// No description provided for @style_coffee.
+  ///
+  /// In en, this message translates to:
+  /// **'M · Coffee House'**
+  String get style_coffee;
+
+  /// No description provided for @style_grill.
+  ///
+  /// In en, this message translates to:
+  /// **'N · Grill & BBQ'**
+  String get style_grill;
+
+  /// No description provided for @style_garden.
+  ///
+  /// In en, this message translates to:
+  /// **'O · Garden Fresh'**
+  String get style_garden;
+
+  /// No description provided for @style_coastal.
+  ///
+  /// In en, this message translates to:
+  /// **'P · Coastal'**
+  String get style_coastal;
+
+  /// No description provided for @style_luxe.
+  ///
+  /// In en, this message translates to:
+  /// **'Q · Fine Dining'**
+  String get style_luxe;
+
   /// No description provided for @styleOptions.
   ///
   /// In en, this message translates to:
@@ -2352,6 +2382,18 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Your colour on the \"+\" buttons, badges and the chosen category. Prices keep the text colour.'**
   String get opt_mono_accent_hint;
+
+  /// No description provided for @opt_show_decoration.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the style\'s pictures and icons'**
+  String get opt_show_decoration;
+
+  /// No description provided for @opt_show_decoration_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'The header picture, textures and category icons. Your banner replaces the header picture; a category photo replaces its icon.'**
+  String get opt_show_decoration_hint;
 
   /// No description provided for @brandColour.
   ///

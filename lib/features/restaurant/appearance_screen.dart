@@ -35,11 +35,20 @@ const _flags = [
 const _styleFlags = {
   'islamic': ['show_halal', 'ramadan_mode'],
   'mono': ['photos_greyscale', 'mono_accent'],
+  // M–Q (website QUESTIONS #232): their header drawing and category icons, on by default.
+  'coffee': ['show_decoration'],
+  'grill': ['show_decoration'],
+  'garden': ['show_decoration'],
+  'coastal': ['show_decoration'],
+  'luxe': ['show_decoration'],
 };
+
+/// Style options that are on until the restaurant turns them off.
+const _onByDefault = {'show_decoration'};
 const _directions = ['auto', 'ltr', 'rtl'];
 const _palette = ['#0F766E', '#C2410C', '#B91C1C', '#7C3AED', '#1D4ED8', '#15803D', '#A16207', '#0F172A'];
 
-/// Styles A–D, colour, font, logo/banner, switches, with a LIVE preview of
+/// Styles A–Q, colour, font, logo/banner, switches, with a LIVE preview of
 /// the real customer menu (QUESTIONS M20).
 class AppearanceScreen extends ConsumerStatefulWidget {
   const AppearanceScreen({super.key});
@@ -65,6 +74,7 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
     'show_halal' => context.l.opt_show_halal,
     'ramadan_mode' => context.l.opt_ramadan_mode,
     'photos_greyscale' => context.l.opt_photos_greyscale,
+    'show_decoration' => context.l.opt_show_decoration,
     _ => context.l.opt_mono_accent,
   };
 
@@ -72,6 +82,7 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
     'show_halal' => context.l.opt_show_halal_hint,
     'ramadan_mode' => context.l.opt_ramadan_mode_hint,
     'photos_greyscale' => context.l.opt_photos_greyscale_hint,
+    'show_decoration' => context.l.opt_show_decoration_hint,
     _ => context.l.opt_mono_accent_hint,
   };
 
@@ -94,8 +105,26 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
     _ => context.l.show_other_branches,
   };
 
-  /// Guest-menu styles A–L in picker order (website TenantAppearance::STYLES).
-  static const menuStyles = ['editorial', 'grid', 'bistro', 'minimal', 'mesob', 'lounge', 'board', 'arabic', 'islamic', 'somali', 'mono', 'colour'];
+  /// Guest-menu styles A–Q in picker order (website TenantAppearance::STYLES).
+  static const menuStyles = [
+    'editorial',
+    'grid',
+    'bistro',
+    'minimal',
+    'mesob',
+    'lounge',
+    'board',
+    'arabic',
+    'islamic',
+    'somali',
+    'mono',
+    'colour',
+    'coffee',
+    'grill',
+    'garden',
+    'coastal',
+    'luxe',
+  ];
 
   String _styleLabel(String s) => switch (s) {
     'editorial' => context.l.style_editorial,
@@ -110,6 +139,11 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
     'somali' => context.l.style_somali,
     'mono' => context.l.style_mono,
     'colour' => context.l.style_colour,
+    'coffee' => context.l.style_coffee,
+    'grill' => context.l.style_grill,
+    'garden' => context.l.style_garden,
+    'coastal' => context.l.style_coastal,
+    'luxe' => context.l.style_luxe,
     // A style added on the server later: its own name until the app knows it.
     _ => s,
   };
@@ -125,7 +159,7 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
       for (final f in _flags) f: d.b(f, true),
       // Style options (an older server has none: then they stay at their defaults).
       'menu_direction': _directions.contains(d.s('menu_direction')) ? d.s('menu_direction') : 'auto',
-      for (final f in _styleFlags.values.expand((x) => x)) f: d.b(f, false),
+      for (final f in _styleFlags.values.expand((x) => x).toSet()) f: d.b(f, _onByDefault.contains(f)),
     };
     _saved = {...v};
     _v = v;

@@ -1133,6 +1133,21 @@ class LEn extends L {
   String get style_colour => 'L · Colourful';
 
   @override
+  String get style_coffee => 'M · Coffee House';
+
+  @override
+  String get style_grill => 'N · Grill & BBQ';
+
+  @override
+  String get style_garden => 'O · Garden Fresh';
+
+  @override
+  String get style_coastal => 'P · Coastal';
+
+  @override
+  String get style_luxe => 'Q · Fine Dining';
+
+  @override
   String get styleOptions => 'Options for this style';
 
   @override
@@ -1173,6 +1188,13 @@ class LEn extends L {
 
   @override
   String get opt_mono_accent_hint => 'Your colour on the \"+\" buttons, badges and the chosen category. Prices keep the text colour.';
+
+  @override
+  String get opt_show_decoration => 'Show the style\'s pictures and icons';
+
+  @override
+  String get opt_show_decoration_hint =>
+      'The header picture, textures and category icons. Your banner replaces the header picture; a category photo replaces its icon.';
 
   @override
   String get brandColour => 'Brand colour';
