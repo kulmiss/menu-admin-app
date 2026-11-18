@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:menu_admin/features/restaurant/insights_screen.dart' show shortNumber;
 import 'package:menu_admin/app/theme.dart';
 import 'package:menu_admin/core/analytics_names.dart';
 import 'package:menu_admin/core/app_config.dart';
@@ -113,5 +114,9 @@ void main() {
 
   test('analytics screen names carry no ids', () {
     expect(screenNameOf('/r/12/dishes/5?menu=3'), '/r/:id/dishes/:id');
+  });
+
+  test('short chart numbers', () {
+    expect([0, 950, 1000, 3450, 12345, 1200000].map(shortNumber), ['0', '950', '1K', '3.5K', '12K', '1.2M']);
   });
 }

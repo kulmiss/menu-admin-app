@@ -90,11 +90,12 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
 
   Future<void> _save() async {
     final t = ref.read(tenantProvider)!;
+    final api = ref.read(apiProvider), container = context.container;
     setState(() => _busy = true);
     final ok = await runOk(context, () async {
-      final r = await ref.read(apiProvider).put(tenantPath(t.id, 'appearance'), data: _v);
-      _load(J.data(r));
-      ref.invalidate(cachedProvider(tenantPath(t.id, 'appearance')));
+      final r = await api.put(tenantPath(t.id, 'appearance'), data: _v);
+      container.invalidate(cachedProvider(tenantPath(t.id, 'appearance')));
+      if (mounted) setState(() => _load(J.data(r)));
       return null;
     }, success: context.l.saved);
     if (mounted) setState(() => _busy = ok ? false : false);
@@ -104,7 +105,7 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
     final t = ref.read(tenantProvider)!;
     final banner = key == 'cover_media_id';
     final ratio = banner ? data.o('banner').o(_v!['style'] as String).d('ratio', 2.5) : 1.0;
-    final f = await pickPhoto(context, aspect: CropAspectRatio(ratioX: ratio, ratioY: 1));
+    final f = await pickPhoto(context, ref, aspect: CropAspectRatio(ratioX: ratio, ratioY: 1));
     if (f == null || !mounted) return;
     setState(() => _upload = 0);
     try {
@@ -115,9 +116,10 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
             filePath: f.path,
             fileName: '$key.jpg',
             fields: {if (banner) 'purpose': 'banner'},
-            onProgress: (p) => setState(() => _upload = p),
+            onProgress: (p) => mounted ? setState(() => _upload = p) : null,
           );
       final media = J.data(r);
+      if (!mounted) return;
       setState(() {
         _v![key] = media.i('id');
         _thumbs[key] = media.photo('x', width: 640) ?? photoUrl(media.m, width: 640);

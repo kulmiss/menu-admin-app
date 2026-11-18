@@ -30,22 +30,21 @@ class _AllDishesScreenState extends ConsumerState<AllDishesScreen> {
 
   Future<void> _bulk(String action, {Map<String, dynamic> extra = const {}}) async {
     final t = ref.read(tenantProvider)!;
+    final api = ref.read(apiProvider);
+    final container = context.container;
     final ok = await runOk(
       context,
-      () => ref
-          .read(apiProvider)
-          .post(
-            tenantPath(t.id, action == 'price' ? 'items/bulk-price' : 'items/bulk'),
-            data: {'ids': _selected.toList(), if (action != 'price') 'action': action, ...extra},
-          ),
+      () => api.post(
+        tenantPath(t.id, action == 'price' ? 'items/bulk-price' : 'items/bulk'),
+        data: {'ids': _selected.toList(), if (action != 'price') 'action': action, ...extra},
+      ),
       success: context.l.saved,
     );
-    if (ok) {
-      setState(_selected.clear);
-      ref.read(soldOutProvider.notifier).clear();
-      await invalidatePrefix(ref, tenantPath(t.id, 'menus'));
-      await _list.currentState?.refresh();
-    }
+    if (!ok) return;
+    container.read(soldOutProvider.notifier).clear();
+    // Reloads this list (all its pages) and every other place that shows dishes.
+    await dishesChanged(container, t.id);
+    if (mounted) setState(_selected.clear);
   }
 
   Future<void> _priceDialog() async {
@@ -93,10 +92,11 @@ class _AllDishesScreenState extends ConsumerState<AllDishesScreen> {
 
   Future<void> _move() async {
     final t = ref.read(tenantProvider)!;
-    final menus = J.dataList(await ref.read(apiProvider).get(tenantPath(t.id, 'menus')));
+    final api = ref.read(apiProvider);
+    final menus = J.dataList(await api.get(tenantPath(t.id, 'menus')));
     final cats = <(String, int)>[];
     for (final m in menus) {
-      final tree = J.data(await ref.read(apiProvider).get(tenantPath(t.id, 'menus/${m.i('id')}/tree')));
+      final tree = J.data(await api.get(tenantPath(t.id, 'menus/${m.i('id')}/tree')));
       for (final c in tree.list('categories')) {
         cats.add(('${m.t('name')} › ${c.t('name')}', c.i('id')));
       }

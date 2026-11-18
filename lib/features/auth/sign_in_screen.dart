@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../app/env.dart';
 import '../../core/api/api_error.dart';
@@ -57,7 +58,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           case LoggedIn(:final token):
             await ref.read(sessionProvider.notifier).signIn(token);
           case NeedsTwoFactor(:final challenge):
-            setState(() => _challenge = challenge);
+            if (mounted) setState(() => _challenge = challenge);
           case NeedsRestaurant():
             break; // only after "Continue with Google"
         }
@@ -284,8 +285,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 13, color: context.colors.onSurfaceVariant),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      // Wraps: three links overflowed a 360 dp phone with large text.
+                      Wrap(
+                        alignment: WrapAlignment.center,
                         children: [
                           TextButton(
                             onPressed: () => openExternal(context, config?.link('privacy') ?? '${ref.read(apiProvider).siteUrl}privacy'),
@@ -295,6 +297,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                             onPressed: () => openExternal(context, config?.link('terms') ?? '${ref.read(apiProvider).siteUrl}terms'),
                             child: Text(l.terms),
                           ),
+                          TextButton(onPressed: () => context.push('/help'), child: Text(l.helpTitle)),
                         ],
                       ),
                     ],

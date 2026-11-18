@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:dio/dio.dart' show Options;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -112,12 +113,22 @@ class SessionController extends Notifier<SessionState> {
     await _store.write(TokenKeys.token, token);
     ref.read(tokenHolderProvider).token = token;
     state = SessionState(status: SessionStatus.loading, token: token);
-    await refreshMe();
+    try {
+      await refreshMe();
+    } catch (_) {
+      // Without the profile the app can't start: back to the sign-in screen,
+      // which shows the error (it used to stay on the logo for good).
+      await _clear();
+      rethrow;
+    }
   }
 
   Future<Me> refreshMe() async {
+    final token = state.token;
     final json = (await _api.get('me') as Map)['data'] as Map;
     final me = Me(json.cast<String, dynamic>());
+    // Signed out (or someone else signed in) while this was on its way: drop it.
+    if (state.token != token || state.status == SessionStatus.signedOut) return me;
     await _store.write(TokenKeys.me, jsonEncode(json));
     var tenantId = state.tenantId;
     // Restaurant users start in their (first) restaurant; Super Admins in the platform.
@@ -161,15 +172,20 @@ class SessionController extends Notifier<SessionState> {
     await refreshMe();
   }
 
+  /// How long signing out waits for the server before signing out on the phone anyway.
+  static const signOutWait = Duration(seconds: 5);
+
   Future<void> signOut({bool everywhere = false}) async {
+    // One quick try, no retries: offline or a slow server must not keep the
+    // user waiting (it took up to minutes with the normal retries).
+    final once = Options(extra: {'noRetry': true});
     try {
-      if (state.impersonating) await _api.post('impersonation/stop');
-      final token = state.adminToken ?? state.token;
-      if (token != null) {
-        await _api.post(everywhere ? 'mobile/auth/logout-all' : 'mobile/auth/logout', options: null, idempotencyKey: null);
+      if (state.impersonating) await _api.post('impersonation/stop', options: once).timeout(signOutWait);
+      if (state.token != null) {
+        await _api.post(everywhere ? 'mobile/auth/logout-all' : 'mobile/auth/logout', options: once).timeout(signOutWait);
       }
     } catch (_) {
-      // Signing out locally always works, even offline.
+      // Signing out on the phone always works, even offline.
     }
     // Also out of Google on this phone (after "Continue with Google"), so the next sign-in asks for the account.
     try {

@@ -144,15 +144,28 @@ class _SwitchesState extends ConsumerState<_Switches> {
   /// Optimistic values while a change is on its way.
   final Map<String, bool> _pending = {};
 
+  /// Switches with a change on its way: locked, so a second tap can't send the
+  /// opposite value and leave the server and the screen disagreeing.
+  final Set<String> _saving = {};
+
   Future<void> _set(String key, bool value, {required String path, required Map<String, dynamic> body, String? confirmText}) async {
+    if (_saving.contains(key)) return;
     final l = context.l;
-    if (confirmText != null && !await confirm(context, title: confirmText, action: value ? l.turnOn : l.turnOff, danger: true)) return;
-    if (!mounted) return;
-    setState(() => _pending[key] = value);
-    final ok = await runOk(context, () => ref.read(apiProvider).put(path, data: body), success: l.saved);
-    ref.invalidate(cachedProvider(path));
-    ref.invalidate(cachedProvider('mobile/config'));
-    if (!ok && mounted) setState(() => _pending.remove(key));
+    _saving.add(key);
+    try {
+      if (confirmText != null && !await confirm(context, title: confirmText, action: value ? l.turnOn : l.turnOff, danger: true)) return;
+      if (!mounted) return;
+      final api = ref.read(apiProvider), container = context.container;
+      setState(() => _pending[key] = value);
+      final ok = await runOk(context, () => api.put(path, data: body), success: l.saved);
+      container
+        ..invalidate(cachedProvider(path))
+        ..invalidate(cachedProvider('mobile/config'));
+      if (!ok && mounted) setState(() => _pending.remove(key));
+    } finally {
+      _saving.remove(key);
+      if (mounted) setState(() {});
+    }
   }
 
   @override
@@ -164,8 +177,13 @@ class _SwitchesState extends ConsumerState<_Switches> {
     final st = settings.value == null ? null : J.data(settings.value!.data);
     bool? value(String key, bool? server) => _pending[key] ?? server;
 
-    Widget row(String key, String title, String hint, bool? v, ValueChanged<bool> onChanged) =>
-        SwitchListTile(key: Key('sa-$key'), title: Text(title), subtitle: Text(hint), value: v ?? false, onChanged: v == null ? null : onChanged);
+    Widget row(String key, String title, String hint, bool? v, ValueChanged<bool> onChanged) => SwitchListTile(
+      key: Key('sa-$key'),
+      title: Text(title),
+      subtitle: Text(hint),
+      value: v ?? false,
+      onChanged: v == null || _saving.contains(key) ? null : onChanged,
+    );
 
     final maintenance = value('maintenance', m?.bN('maintenance'));
     final signup = value('signup_open', st?.bN('signup_open'));

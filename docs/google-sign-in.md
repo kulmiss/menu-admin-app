@@ -1,6 +1,6 @@
 # Continue with Google (app)
 
-What the app does (QUESTIONS M44) and what you set up once.
+What the app does (QUESTIONS M50) and what you set up once.
 
 ## How it works
 
