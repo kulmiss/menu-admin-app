@@ -379,6 +379,66 @@ abstract class L {
   /// **'New restaurant? Sign up on the website.'**
   String get newRestaurant;
 
+  /// No description provided for @continueWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get continueWithGoogle;
+
+  /// No description provided for @orDivider.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get orDivider;
+
+  /// No description provided for @googleLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Google is now linked. Next time, tap “Continue with Google”.'**
+  String get googleLinked;
+
+  /// No description provided for @googleUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Google sign-in is not available on this phone. Use your e-mail and password.'**
+  String get googleUnavailable;
+
+  /// No description provided for @googleFinishTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Almost done'**
+  String get googleFinishTitle;
+
+  /// No description provided for @googleFinishBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You are signing up with Google as {email}. Type your restaurant name.'**
+  String googleFinishBody(Object email);
+
+  /// No description provided for @restaurantName.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant name'**
+  String get restaurantName;
+
+  /// No description provided for @acceptTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'I accept the Terms of Service and the Privacy Policy.'**
+  String get acceptTerms;
+
+  /// No description provided for @acceptTermsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please accept the terms to continue.'**
+  String get acceptTermsRequired;
+
+  /// No description provided for @createMyFreeMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Create my free menu'**
+  String get createMyFreeMenu;
+
   /// No description provided for @privacy.
   ///
   /// In en, this message translates to:
@@ -1267,6 +1327,18 @@ abstract class L {
   /// **'Crop photo'**
   String get cropPhoto;
 
+  /// No description provided for @photoAccessDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'The app may not use the camera or photos. Allow it in your phone\'s Settings › Apps › Menu Admin › Permissions.'**
+  String get photoAccessDenied;
+
+  /// No description provided for @photoUnreadable.
+  ///
+  /// In en, this message translates to:
+  /// **'This photo can\'t be opened. Try another one.'**
+  String get photoUnreadable;
+
   /// No description provided for @photos.
   ///
   /// In en, this message translates to:
@@ -2149,6 +2221,180 @@ abstract class L {
   /// **'D · Minimal'**
   String get style_minimal;
 
+  /// No description provided for @style_mesob.
+  ///
+  /// In en, this message translates to:
+  /// **'E · Mesob'**
+  String get style_mesob;
+
+  /// No description provided for @style_lounge.
+  ///
+  /// In en, this message translates to:
+  /// **'F · Night Lounge'**
+  String get style_lounge;
+
+  /// No description provided for @style_board.
+  ///
+  /// In en, this message translates to:
+  /// **'G · Street Board'**
+  String get style_board;
+
+  /// No description provided for @style_arabic.
+  ///
+  /// In en, this message translates to:
+  /// **'H · Arabic'**
+  String get style_arabic;
+
+  /// No description provided for @style_islamic.
+  ///
+  /// In en, this message translates to:
+  /// **'I · Islamic'**
+  String get style_islamic;
+
+  /// No description provided for @style_somali.
+  ///
+  /// In en, this message translates to:
+  /// **'J · Somali'**
+  String get style_somali;
+
+  /// No description provided for @style_mono.
+  ///
+  /// In en, this message translates to:
+  /// **'K · Black & White'**
+  String get style_mono;
+
+  /// No description provided for @style_colour.
+  ///
+  /// In en, this message translates to:
+  /// **'L · Colourful'**
+  String get style_colour;
+
+  /// No description provided for @style_coffee.
+  ///
+  /// In en, this message translates to:
+  /// **'M · Coffee House'**
+  String get style_coffee;
+
+  /// No description provided for @style_grill.
+  ///
+  /// In en, this message translates to:
+  /// **'N · Grill & BBQ'**
+  String get style_grill;
+
+  /// No description provided for @style_garden.
+  ///
+  /// In en, this message translates to:
+  /// **'O · Garden Fresh'**
+  String get style_garden;
+
+  /// No description provided for @style_coastal.
+  ///
+  /// In en, this message translates to:
+  /// **'P · Coastal'**
+  String get style_coastal;
+
+  /// No description provided for @style_luxe.
+  ///
+  /// In en, this message translates to:
+  /// **'Q · Fine Dining'**
+  String get style_luxe;
+
+  /// No description provided for @styleOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Options for this style'**
+  String get styleOptions;
+
+  /// No description provided for @menuDirection.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu direction'**
+  String get menuDirection;
+
+  /// No description provided for @menuDirectionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Right-to-left puts the text and buttons on the right side, for Arabic menus.'**
+  String get menuDirectionHint;
+
+  /// No description provided for @direction_auto.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic (follows your menu\'s language)'**
+  String get direction_auto;
+
+  /// No description provided for @direction_ltr.
+  ///
+  /// In en, this message translates to:
+  /// **'Left to right'**
+  String get direction_ltr;
+
+  /// No description provided for @direction_rtl.
+  ///
+  /// In en, this message translates to:
+  /// **'Right to left'**
+  String get direction_rtl;
+
+  /// No description provided for @opt_show_halal.
+  ///
+  /// In en, this message translates to:
+  /// **'Show a \"Halal\" badge'**
+  String get opt_show_halal;
+
+  /// No description provided for @opt_show_halal_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'A small badge under your restaurant\'s name. Turn it on only if all your food is halal.'**
+  String get opt_show_halal_hint;
+
+  /// No description provided for @opt_ramadan_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Ramadan mode'**
+  String get opt_ramadan_mode;
+
+  /// No description provided for @opt_ramadan_mode_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'A night-sky top with a crescent. Turn it off again after Ramadan.'**
+  String get opt_ramadan_mode_hint;
+
+  /// No description provided for @opt_photos_greyscale.
+  ///
+  /// In en, this message translates to:
+  /// **'Black-and-white photos'**
+  String get opt_photos_greyscale;
+
+  /// No description provided for @opt_photos_greyscale_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Shows your dish photos and banner in black and white.'**
+  String get opt_photos_greyscale_hint;
+
+  /// No description provided for @opt_mono_accent.
+  ///
+  /// In en, this message translates to:
+  /// **'Use your brand colour as a small accent'**
+  String get opt_mono_accent;
+
+  /// No description provided for @opt_mono_accent_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your colour on the \"+\" buttons, badges and the chosen category. Prices keep the text colour.'**
+  String get opt_mono_accent_hint;
+
+  /// No description provided for @opt_show_decoration.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the style\'s pictures and icons'**
+  String get opt_show_decoration;
+
+  /// No description provided for @opt_show_decoration_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'The header picture, textures and category icons. Your banner replaces the header picture; a category photo replaces its icon.'**
+  String get opt_show_decoration_hint;
+
   /// No description provided for @brandColour.
   ///
   /// In en, this message translates to:
@@ -2832,6 +3078,204 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Help and support'**
   String get help;
+
+  /// No description provided for @helpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get helpTitle;
+
+  /// No description provided for @helpSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search help'**
+  String get helpSearch;
+
+  /// No description provided for @helpResults.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 article found} other{{count} articles found}}'**
+  String helpResults(int count);
+
+  /// No description provided for @helpNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing found. Try other words.'**
+  String get helpNothing;
+
+  /// No description provided for @helpContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact support'**
+  String get helpContact;
+
+  /// No description provided for @helpNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This article is not available.'**
+  String get helpNotFound;
+
+  /// No description provided for @helpHelpful.
+  ///
+  /// In en, this message translates to:
+  /// **'Was this helpful?'**
+  String get helpHelpful;
+
+  /// No description provided for @helpThanks.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you! You can change your answer.'**
+  String get helpThanks;
+
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// No description provided for @helpThisScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Help for this screen'**
+  String get helpThisScreen;
+
+  /// No description provided for @helpNoArticle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick an article in Help.'**
+  String get helpNoArticle;
+
+  /// No description provided for @helpOpenCentre.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Help'**
+  String get helpOpenCentre;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @tourOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Take the tour'**
+  String get tourOpen;
+
+  /// No description provided for @tourStep.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} of {total}'**
+  String tourStep(int n, int total);
+
+  /// No description provided for @tourSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip tour'**
+  String get tourSkip;
+
+  /// No description provided for @tourNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get tourNext;
+
+  /// No description provided for @tourDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get tourDone;
+
+  /// No description provided for @tourHomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This is Home'**
+  String get tourHomeTitle;
+
+  /// No description provided for @tourHomeText.
+  ///
+  /// In en, this message translates to:
+  /// **'Today’s menu views and QR scans, and the quick actions for the jobs you do every day.'**
+  String get tourHomeText;
+
+  /// No description provided for @tourDishTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first dish'**
+  String get tourDishTitle;
+
+  /// No description provided for @tourDishText.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Add dish with photo, take the photo, type the name and price, and save.'**
+  String get tourDishText;
+
+  /// No description provided for @tourDishGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a dish'**
+  String get tourDishGo;
+
+  /// No description provided for @tourSoldOutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark dishes sold out'**
+  String get tourSoldOutTitle;
+
+  /// No description provided for @tourSoldOutText.
+  ///
+  /// In en, this message translates to:
+  /// **'Finished for today? Mark it sold out. Tap Available again when it is back.'**
+  String get tourSoldOutText;
+
+  /// No description provided for @tourSoldOutGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Sold out'**
+  String get tourSoldOutGo;
+
+  /// No description provided for @tourLookTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your menu look'**
+  String get tourLookTitle;
+
+  /// No description provided for @tourLookText.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a style, your colour, your logo and a banner photo.'**
+  String get tourLookText;
+
+  /// No description provided for @tourLookGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a look'**
+  String get tourLookGo;
+
+  /// No description provided for @tourQrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your QR code'**
+  String get tourQrTitle;
+
+  /// No description provided for @tourQrText.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your menu link on WhatsApp, and print your QR code for the tables.'**
+  String get tourQrText;
+
+  /// No description provided for @tourQrGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Get my QR code'**
+  String get tourQrGo;
 
   /// No description provided for @profileTitle.
   ///

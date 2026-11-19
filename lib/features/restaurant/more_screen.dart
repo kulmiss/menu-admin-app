@@ -84,6 +84,12 @@ class MoreScreen extends ConsumerWidget {
               trailing: const Icon(AppIcons.chevronRight),
               onTap: () => context.push('/account/app'),
             ),
+            ListTile(
+              leading: const Icon(AppIcons.lifeBuoy),
+              title: Text(l.helpTitle),
+              trailing: const Icon(AppIcons.chevronRight),
+              onTap: () => context.push('/help'),
+            ),
           ],
         ),
         if ((s.me?.isSuperAdmin ?? false) && !s.impersonating) ...[
@@ -171,14 +177,22 @@ class ActivityScreen extends ConsumerWidget {
   }
 }
 
-/// One platform announcement.
-class NewsScreen extends ConsumerWidget {
+/// One platform announcement; opening it marks it read (once).
+class NewsScreen extends ConsumerStatefulWidget {
   const NewsScreen({super.key, required this.id});
   final int id;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<NewsScreen> createState() => _NewsScreenState();
+}
+
+class _NewsScreenState extends ConsumerState<NewsScreen> {
+  bool _marked = false;
+
+  @override
+  Widget build(BuildContext context) {
     final t = ref.watch(tenantProvider)!;
+    final id = widget.id;
     return Scaffold(
       appBar: AppBar(title: Text(context.l.news)),
       body: CachedView(
@@ -186,7 +200,11 @@ class NewsScreen extends ConsumerWidget {
         builder: (context, data, _) {
           final a = J.dataList(data).where((x) => x.i('id') == id).firstOrNull;
           if (a == null) return ListView(children: [EmptyState(title: context.l.errorNotFound)]);
-          ref.read(apiProvider).post(tenantPath(t.id, 'announcements/$id/read')).ignore();
+          // Was sent on every redraw (theme change, refresh); once per opening is enough.
+          if (!_marked) {
+            _marked = true;
+            ref.read(apiProvider).post(tenantPath(t.id, 'announcements/$id/read')).ignore();
+          }
           return ListView(
             padding: const EdgeInsets.all(20),
             children: [

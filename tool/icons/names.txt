@@ -119,3 +119,9 @@ wifi-off
 wine
 wrench
 x
+circle-help
+life-buoy
+compass
+thumbs-up
+thumbs-down
+book-open

@@ -47,7 +47,7 @@ void main() {
         _explainOverflows(tester);
         final api = s.key == 'super admin'
             ? demoPlatform()
-            : (demoRestaurant()..json('GET t/7/appearance', {
+            : (demoRestaurant()..json('GET restaurant/7/appearance', {
                 'data': {'style': 'editorial', 'primary_color': '#0F766E', 'font': 'system', 'logo': _media(1), 'cover': _media(2)},
               }));
         final c = await startApp(tester, api, token: s.key == 'super admin' ? 'admin-tok' : 'tok');
@@ -56,7 +56,11 @@ void main() {
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull);
         if (s.key == 'appearance') {
-          await tester.scrollUntilVisible(find.text('Remove').last, 200, scrollable: find.byType(Scrollable).first);
+          // The image rows may sit below the first screen (seven style chips above them): scroll down to them.
+          for (var i = 0; i < 20 && find.text('Remove').evaluate().isEmpty; i++) {
+            await tester.drag(find.byType(Scrollable).first, const Offset(0, -200));
+            await tester.pumpAndSettle();
+          }
           expect(tester.takeException(), isNull);
           expect(find.text('Remove'), findsWidgets);
         }
