@@ -44,7 +44,10 @@ FakeApi demoRestaurant() {
     item(53, 'Ful medames', 'Breakfast', 15000),
     item(54, 'Shiro tegabino', 'Breakfast', 17000, sold: true),
   ];
-  return restaurantServer(features: {'insights': true, 'promotions': true, 'price_periods': true, 'branches': true, 'pdf_menu': true, 'order_list': true})
+  final features = {'insights': true, 'promotions': true, 'price_periods': true, 'branches': true, 'pdf_menu': true, 'order_list': true};
+  return restaurantServer(features: features)
+    // A demo owner who already turned on two-step sign-in: no reminder card in the store pictures.
+    ..json('GET me', meJson(features: features, twoFactor: true))
     ..json('GET restaurant/7/widgets/orders', {
       'data': {
         'enabled': true,
