@@ -55,6 +55,7 @@ void main() {
 
     await tester.tap(await _show(tester, find.widgetWithText(ChoiceChip, 'P · Coastal')));
     await tester.pumpAndSettle();
+    expect(find.text('Menu direction'), findsOneWidget); // for Arabic menus, as in H
     final sw = await _show(tester, find.widgetWithText(SwitchListTile, _deco));
     expect(tester.widget<SwitchListTile>(sw).value, isTrue);
     await tester.tap(sw);

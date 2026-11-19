@@ -43,6 +43,9 @@ const _styleFlags = {
   'luxe': ['show_decoration'],
 };
 
+/// Styles with "Menu direction": H and M–Q (website QUESTIONS #229, #232).
+const _directionStyles = {'arabic', 'coffee', 'grill', 'garden', 'coastal', 'luxe'};
+
 /// Style options that are on until the restaurant turns them off.
 const _onByDefault = {'show_decoration'};
 const _directions = ['auto', 'ltr', 'rtl'];
@@ -296,7 +299,7 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen> {
               ),
           ],
         ),
-        if (_v!['style'] == 'arabic') ...[
+        if (_directionStyles.contains(_v!['style'])) ...[
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
             key: const ValueKey('menu_direction'),
